@@ -1,7 +1,7 @@
 {
   "name": "frontend",
   "version": "0.1.0",
-  "proxy": "http://localhost:5000/",
+  "proxy": "https://fragile-bee-overcoat.cyclic.app/",
   "private": true,
   "dependencies": {
     "@ant-design/icons": "^5.2.6",
