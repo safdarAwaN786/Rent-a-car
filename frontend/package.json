@@ -1,7 +1,7 @@
 {
   "name": "frontend",
   "version": "0.1.0",
-  "proxy": "https://fragile-bee-overcoat.cyclic.app/",
+  "proxy": "https://my-car-backend.vercel.app",
   "private": true,
   "dependencies": {
     "@ant-design/icons": "^5.2.6",
