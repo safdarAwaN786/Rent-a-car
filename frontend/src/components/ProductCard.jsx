@@ -1,5 +1,5 @@
 import React from 'react'
-import carImg from '../assets/img/inner-page/001.png'
+import { useNavigate } from 'react-router-dom'
 import engineImg from '../assets/img/home4/icon/Resized_svg (2).svg'
 import adultImg from '../assets/img/home4/icon/Resized_svg (4).png'
 import doorsImg from '../assets/img/home4/icon/Resized_svg (3).svg'
@@ -10,7 +10,10 @@ import smallLuggageImg from '../assets/img/home4/icon/Resized_svg (8).svg'
 import transmissionImg from '../assets/img/home4/icon/menual.svg'
 import ACImg from '../assets/img/home4/icon/Resized_svg (9).svg'
 
-export default function ProductCard({gridView}) {
+export default function ProductCard({gridView, vehicleData, setSelectedVehicle}) {
+
+
+    const navigate = useNavigate();
 
     return (
         <div class={`product-card ${gridView ? '' : 'd-flex flex-row'} `}>
@@ -19,7 +22,7 @@ export default function ProductCard({gridView}) {
                 <div class="swiper product-img-slider">
                     <div class="swiper-wrapper">
                         <div class="swiper-slide">
-                            <img src={carImg} />
+                            <img src={vehicleData?.imageUrl} />
 
                         </div>
 
@@ -27,56 +30,62 @@ export default function ProductCard({gridView}) {
                 </div>
             </div>
             <div class="product-content">
-                <h5><a className='text-decoration-none cursor-pointer' >Nissan Altima-2022</a></h5>
+                <h5><a className='text-decoration-none cursor-pointer' >{vehicleData?.name}</a></h5>
                 <div class="price-location">
                     <div class="price">
-                        <strong>$300</strong>
+                        <strong>${vehicleData?.price}</strong>
                     </div>
                     <div class="location">
-                        <a className='text-decoration-none cursor-pointer'><i class="bi bi-geo-alt"></i> Panama City</a>
+                        <a className='text-decoration-none cursor-pointer'><i class="bi bi-geo-alt"></i>{vehicleData?.location}</a>
                     </div>
                 </div>
                 <ul class="features">
                     <li>
                         <img src={engineImg} alt />
-                        Engine Size: 1000cc
+                        Engine Size: {vehicleData?.engineSize}
                     </li>
                     <li>
                         <img width={14} src={adultImg} alt />
-                        Adults: 2
+                        Adults: {vehicleData?.adults}
                     </li>
                     <li>
                         <img src={doorsImg} alt />
-                        Doors: 5
+                        Doors: {vehicleData?.doors}
                     </li>
                     <li>
                         <img src={childrenImg} alt />
-                        Children: 2
+                        Children: {vehicleData?.children}
                     </li>
                     <li>
                         <img src={seatsImg} alt />
-                        Seats: 4
+                        Seats: {vehicleData?.seats}
                     </li>
                     <li>
                         <img src={bigLuggageImg} alt />
-                        Big Luggage: -
+                        Big Luggage: {vehicleData?.bigLuggage}
                     </li>
                     <li>
                         <img src={smallLuggageImg} alt />
-                        Small Luggage: -
+                        Small Luggage: {vehicleData?.smallLuggage}
                     </li>
                     <li>
                         <img src={transmissionImg} alt />
-                        Transmission: Manual
+                        Transmission: {vehicleData?.transmissionType}
                     </li>
-                    <li>
-                        <img src={ACImg} alt />
-                        AC
-                    </li>
+                    {vehicleData?.AC && (
+
+                        <li>
+                            <img src={ACImg} alt />
+                            AC
+                        </li>
+                    )}
                 </ul>
 
                 <div class="content-btm">
-                    <a class="text-decoration-none cursor-pointer view-btn2" >
+                    <a onClick={()=>{
+                        navigate('/complete-booking');
+                        setSelectedVehicle(vehicleData)
+                    }} class="text-decoration-none cursor-pointer view-btn2" >
                         <svg className='text-black' width="35" height="21" viewBox="0 0 35 21"
                             xmlns="http://www.w3.org/2000/svg">
                             <path

@@ -11,6 +11,8 @@ require('./src/db/connectdb');
 // Import routes
 const userRoutes = require('./src/routes/userRoutes'); // Adjust the path based on your file structure
 const adminRoutes = require('./src/routes/adminRoutes'); // Adjust the path based on your file structure
+const vehicleRoutes = require('./src/routes/vehicleRoutes'); // Adjust the path based on your file structure
+const extrasRoutes = require('./src/routes/extrasRoutes'); // Adjust the path based on your file structure
 
 const PORT = process.env.PORT || 5000;
 app.use(cors());
@@ -32,16 +34,18 @@ app.use((req, res, next) => {
 app.use('/user', userRoutes); // Assuming user routes are prefixed with '/user'
 
 app.use('/admin', adminRoutes); // Assuming user routes are prefixed with '/user'
+app.use('/vehicle', vehicleRoutes); // Assuming user routes are prefixed with '/user'
+app.use('/extras', extrasRoutes);
 
 
-// Serve static assets if in production
-if (process.env.NODE_ENV === 'production') {
-  app.use(express.static('client/build'));
+// // Serve static assets if in production
+// if (process.env.NODE_ENV === 'production') {
+//   app.use(express.static('client/build'));
 
-  app.get('*', (req, res) => {
-    res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'));
-  });
-}
+//   app.get('*', (req, res) => {
+//     res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'));
+//   });
+// }
 
 // Start server
 app.listen(PORT, () => {

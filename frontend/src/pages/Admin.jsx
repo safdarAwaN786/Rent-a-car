@@ -1,13 +1,42 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import Navbar from '../components/Navbar'
-import Footer from '../components/Footer'
-import { PiPhoneCallLight } from 'react-icons/pi'
-import { CiLocationOn } from 'react-icons/ci'
+
 import axios from 'axios'
 import { toast } from 'react-toastify'
+import { useNavigate } from 'react-router-dom'
+import AdminProductsSection from '../components/AdminProductsSection'
+import AdminExtras from '../components/AdminExtras'
 
-export default function Admin({ user, loggedIn, setLoggedIn, setUser }) {
+export default function Admin({ user, loggedIn, setLoggedIn, setUser, tab }) {
     const [vatObj, setVatObj] = useState(null);
+
+    const adminSidebar = useRef(null);
+
+    const navigate = useNavigate();
+    const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+
+    useEffect(()=>{
+        if(user){
+            if (user.IsAdmin === false) {
+                navigate('/')
+            }
+        } else {
+            navigate('/')
+        }
+    }, [])
+
+    useEffect(() => {
+        const handleResize = () => {
+            setWindowWidth(window.innerWidth);
+           
+        };
+
+        window.addEventListener('resize', handleResize);
+
+        return () => {
+            window.removeEventListener('resize', handleResize);
+        };
+    }, []);
 
     const reGetVat = () => {
         {
@@ -32,70 +61,68 @@ export default function Admin({ user, loggedIn, setLoggedIn, setUser }) {
     const [vatValue, setVatValue] = useState(null);
     return (
         <>
-            <Navbar loggedIn={loggedIn} user={user} setLoggedIn={setLoggedIn} setUser={setUser}  />
-            <div class="contact-page pt-100 mb-10 mt-5">
-                <div class="container">
+            <Navbar loggedIn={loggedIn} user={user} setLoggedIn={setLoggedIn} setUser={setUser} />
 
+            <div className='row my-5 pt-5'>
+                <div ref={adminSidebar} className='col-md-3  bg-dark mt-3 p-4 admin-sidebar'>
+                    <ul className=' list-unstyled'>
+                        <li onClick={()=>{
+                            navigate('/admin-vehicles')
+                        }} className={` ${tab === 'Vehicles' && 'bg-white'} cursor-pointer p-2  m-1 border-circle admin-sidebar-li`}>
+                            <a className={` ${tab === 'Vehicles' ? 'text-dark' : 'text-white'} text-decoration-none`}>
+                                Vehicles
+                            </a>
+                        </li>
+                        <li onClick={()=>{
+                            navigate('/admin-extras')
+                        }} className={` ${tab === 'Extras' && 'bg-white'} cursor-pointer p-2  m-1 border-circle admin-sidebar-li`}>
+                            <a className={` ${tab === 'Extras' ? 'text-dark' : 'text-white'} text-decoration-none`}>
+                                Extras
+                            </a>
+                        </li>
+                        <li className='cursor-pointer  p-2  m-1 border-circle admin-sidebar-li'>
+                            <a className=' text-decoration-none text-white'>
+                                Prices
+                            </a>
+                        </li>
+                        <li className='cursor-pointer  p-2  m-1 border-circle admin-sidebar-li'>
+                            <a className=' text-decoration-none text-white'>
+                                Change VAT
+                            </a>
+                        </li>
+                        <li onClick={()=>{
+                            navigate('/admin-bookings')
+                        }} className={` ${tab === 'Bookings' && 'bg-white'} cursor-pointer p-2  m-1 border-circle admin-sidebar-li`}>
+                            <a className={` ${tab === 'Bookings' ? 'text-dark' : 'text-white'} text-decoration-none`}>
+                               Bookings
+                            </a>
+                        </li>
 
-                    <div class="row g-4 mb-10">
-                        <div class="section-title mb-20">
-                            <h4>Admin Features</h4>
+                    </ul>
 
-                        </div>
-                    </div>
-                    <div class="row g-4 justify-content-center mb-1">
-                        <div class="col-lg-4">
-                            <div class="single-location">
-                                <div class="title-and-view-btn">
-                                    <h5>VAT (Value Added as Tax) :</h5>
+                </div>
+                <div className={`${windowWidth < 1199 ? 'col-12'
+                    : 'col-9'
+                    } bg-white mt-3 p-2 admin-Box`}>
 
-                                </div>
-                                <ul>
-                                    <li>
+                    {tab === 'Vehicles' && (
+                        <AdminProductsSection />
+                    )}
 
-
-                                        <div class="info">
-                                            <a className='text-decoration-none' >Cuurent value : {vatObj?.value}%</a>
-
-                                        </div>
-                                    </li>
-                                    <li>
-
-                                        <div class="info">
-                                            <input onChange={(e) => {
-                                                setVatValue(e.target.value);
-                                            }} style={{
-                                                borderRadius: '10px'
-                                            }} type='number' className='p-2 bg-light  border border-secondary' placeholder='%' />
-                                        </div>
-                                    </li>
-                                    <li>
-
-                                        <div class="info">
-                                            <button onClick={() => {
-                                                if (vatValue) {
-                                                    axios.post('/admin/add-vat', { id: vatObj._id, value: vatValue }).then((res) => {
-                                                        toast.success('VAT updated Successfully !');
-                                                        reGetVat();
-                                                    }).catch((e) => {
-                                                        toast.error("Please try Again !")
-                                                    })
-                                                } else {
-                                                    toast.warning('Please provide VAT value !')
-                                                }
-                                            }} className='primary-btn6'>
-                                                UPDATE
-                                            </button>
-                                        </div>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
+                    {tab === 'Extras' && (
+                        <AdminExtras />
+                    )}
+                    
                 </div>
 
             </div>
-            <Footer />
+
+
+
+
+
+           
+
         </>
     )
 }

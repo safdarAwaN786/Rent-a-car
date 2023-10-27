@@ -1,24 +1,31 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { useNavigate } from "react-router-dom"
 import logo from '../assets/img/home2/icon/bottom_logo.png'
+import blackLogo from '../assets/img/black-logo.png'
 import { VscAccount } from 'react-icons/vsc'
 import Cookies from 'js-cookie'
 import axios from 'axios';
 import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Button from 'react-bootstrap/Button';
+import Offcanvas from 'react-bootstrap/Offcanvas';
+import { SlMenu } from 'react-icons/sl'
 
-export default function Navbar({loggedIn, user, setUser, setLoggedIn}) {
+export default function Navbar({ loggedIn, user, setUser, setLoggedIn }) {
 
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [confirmPassword, setConfirmPassword] = useState(null);
+    const loginButtonRef = useRef(null);
+    const [show, setShow] = useState(false);
 
-
+    const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
     const signUpCloseButtonRef = useRef(null);
     const loginCloseButtonRef = useRef(null);
 
-    
+
 
     const [showLoginPassword, setShowLoginPassword] = useState(false);
     const [remeberMe, setRememberMe] = useState(false);
@@ -37,6 +44,9 @@ export default function Navbar({loggedIn, user, setUser, setLoggedIn}) {
                 .then(response => {
                     setUser(response.data);
                     setLoggedIn(true);
+                    if (response.data.IsAdmin) {
+                        navigate('/admin-vehicles')
+                    }
                 })
                 .catch(error => console.error('Error fetching user data:', error));
         }
@@ -58,6 +68,7 @@ export default function Navbar({loggedIn, user, setUser, setLoggedIn}) {
                 if (signUpCloseButtonRef.current) {
                     signUpCloseButtonRef.current.click();
                 }
+                window.location.reload()
             })
             .catch(error => {
                 toast.error('Invalid Credentials!')
@@ -85,6 +96,7 @@ export default function Navbar({loggedIn, user, setUser, setLoggedIn}) {
                 if (loginCloseButtonRef.current) {
                     loginCloseButtonRef.current.click();
                 }
+                window.location.reload()
             })
             .catch(error => {
                 toast.error('Invalid Credentials!')
@@ -99,6 +111,7 @@ export default function Navbar({loggedIn, user, setUser, setLoggedIn}) {
         setUser(null);
         setLoggedIn(false);
         toast.success("Logged Out Successfully!");
+        navigate('/')
     };
 
 
@@ -262,7 +275,7 @@ export default function Navbar({loggedIn, user, setUser, setLoggedIn}) {
                                                     updateUserData(e);
                                                 }} name='password' id="password3" type={`${showLoginPassword ? 'text' : 'password'} `} placeholder="*** ***" required /> */}
 
-                                                
+
                                                 {
                                                     showLoginPassword ? (
                                                         <input
@@ -338,79 +351,158 @@ export default function Navbar({loggedIn, user, setUser, setLoggedIn}) {
             </div>
 
             <div class="topbar-header">
-                <div class="top-bar style-2">
+                <div class="top-bar style-2 d-flex justify-content-between">
                     <div class="company-logo">
                         <a href="index.html"><img src={logo} alt /></a>
                     </div>
                     <div class="top-bar-items">
                         <ul class="menu-list">
 
+                            {user?.IsAdmin ? (
+                                null
+                            ) : (
+                                <>
+                                    <li onClick={() => {
+                                        navigate('/')
+                                    }} className='cursor-pointer'>
+                                        <a className='text-decoration-none cursor-pointer' >Home</a>
 
-                            <li onClick={() => {
-                                navigate('/')
-                            }} className='cursor-pointer'>
-                                <a className='text-decoration-none cursor-pointer' >Home</a>
+                                    </li>
+                                    <li onClick={() => {
+                                        navigate('/reservations')
+                                    }}>
+                                        <a class="text-decoration-none cursor-pointer">Reservations</a>
 
-                            </li>
-                            <li onClick={() => {
-                                navigate('/reservations')
-                            }}>
-                                <a class="text-decoration-none cursor-pointer">Reservations</a>
+                                    </li>
+                                    <li>
+                                        <a onClick={() => {
+                                            navigate('/vehicle-guide')
+                                        }} class="text-decoration-none cursor-pointer">Vehicle Guide</a>
 
-                            </li>
-                            <li>
-                                <a onClick={() => {
-                                    navigate('/vehicle-guide')
-                                }} class="text-decoration-none cursor-pointer">Vehicle Guide</a>
+                                    </li>
+                                    <li>
+                                        <a href="#" class="text-decoration-none cursor-pointer">Price</a>
 
-                            </li>
-                            <li>
-                                <a href="#" class="text-decoration-none cursor-pointer">Price</a>
+                                    </li>
+                                    <li>
+                                        <a onClick={() => {
+                                            navigate('/terms-and-conditions')
+                                        }} class="text-decoration-none cursor-pointer">Terms & Conditions</a>
 
-                            </li>
-                            <li>
-                                <a onClick={() => {
-                                    navigate('/terms-and-conditions')
-                                }} class="text-decoration-none cursor-pointer">Terms & Conditions</a>
+                                    </li>
 
-                            </li>
+                                    <li>
+                                        <a onClick={() => {
+                                            navigate('/contact')
+                                        }} class="text-decoration-none cursor-pointer">CONTACT US</a>
+                                    </li>
 
-                            <li>
-                                <a onClick={() => {
-                                    navigate('/contact')
-                                }} class="text-decoration-none cursor-pointer">CONTACT US</a>
-                            </li>
-                            {user?.IsAdmin && (
 
-                            <li>
-                                <a onClick={() => {
-                                    navigate('/admin')
-                                }} class="text-decoration-none cursor-pointer">ADMIN</a>
-                            </li>
+
+                                </>
+
                             )}
-                            <li>
 
-                                {loggedIn ? (
-                                    <button onClick={() => {
-                                        handleLogout();
-                                    }} type="button" class="primary-btn6" >
-                                        <VscAccount className='fs-5' />
-                                        LOG OUT
-                                    </button>
-                                ) : (
 
-                                    <button type="button" class="primary-btn6" data-bs-toggle="modal" data-bs-target="#signUpModal01">
-                                        <VscAccount className='fs-5' />
-                                        LOGIN / SIGN UP
-                                    </button>
-                                )}
-                                <div class="sidebar-button mobile-menu-btn ">
-                                    <span></span>
-                                </div>
 
-                            </li>
+
                         </ul>
 
+                    </div>
+                    <div className='d-flex flex-row gap-2'>
+
+                        <div>
+
+
+                            {loggedIn ? (
+                                <button onClick={() => {
+                                    handleLogout();
+                                }} type="button" class="primary-btn6 p-sm-2 p-1 " >
+                                    <VscAccount className='fs-6' />
+                                    LOG OUT
+                                </button>
+                            ) : (
+
+                                <button ref={loginButtonRef} type="button" class="primary-btn6 p-sm-2 p-1 " data-bs-toggle="modal" data-bs-target="#signUpModal01">
+                                    <VscAccount className='fs-6' />
+                                    LOGIN / SIGN UP
+                                </button>
+                            )}
+                            <div class="sidebar-button mobile-menu-btn ">
+                                <span></span>
+                            </div>
+
+
+                        </div>
+                        <div className='nav-sidebar'>
+                            <Button variant="dark" className='text-white' onClick={handleShow}>
+                                <SlMenu />
+                            </Button>
+
+                            <Offcanvas show={show} onHide={handleClose}>
+                                <Offcanvas.Header closeButton>
+                                    <Offcanvas.Title><img src={blackLogo} /></Offcanvas.Title>
+                                </Offcanvas.Header>
+                                <Offcanvas.Body>
+                                    <ul class="menu-list list-unstyled p-2">
+
+                                        {user?.IsAdmin ? (
+                                            null
+                                        ) : (
+                                            <>
+
+
+                                                <li onClick={() => {
+                                                    navigate('/')
+                                                }} className='cursor-pointer p-1 border-circle sidebar-li'>
+                                                    <a className='text-decoration-none cursor-pointer text-dark fs-5' >Home</a>
+
+                                                </li>
+                                                <li onClick={() => {
+                                                    navigate('/reservations')
+                                                }} className='cursor-pointer p-1 border-circle sidebar-li'>
+                                                    <a class="text-decoration-none cursor-pointer text-dark fs-5">Reservations</a>
+
+                                                </li>
+                                                <li className='cursor-pointer p-1 border-circle sidebar-li '>
+                                                    <a onClick={() => {
+                                                        navigate('/vehicle-guide')
+                                                    }} class="text-decoration-none cursor-pointer text-dark fs-5">Vehicle Guide</a>
+
+                                                </li>
+                                                <li className='cursor-pointer p-1 border-circle sidebar-li '>
+                                                    <a href="#" class="text-decoration-none cursor-pointer text-dark fs-5">Price</a>
+
+                                                </li>
+                                                <li className='cursor-pointer  p-1 border-circle sidebar-li '>
+                                                    <a onClick={() => {
+                                                        navigate('/terms-and-conditions')
+                                                    }} class="text-decoration-none cursor-pointer text-dark fs-5">Terms & Conditions</a>
+
+                                                </li>
+
+                                                <li className='cursor-pointer  p-1 border-circle sidebar-li '>
+                                                    <a onClick={() => {
+                                                        navigate('/contact')
+                                                    }} class="text-decoration-none cursor-pointer text-dark fs-5">CONTACT US</a>
+                                                </li>
+                                            </>
+                                        )}
+                                        {/* {user?.IsAdmin && (
+
+                                        <li className='cursor-pointer p-1 border-circle sidebar-li '>
+                                            <a onClick={() => {
+                                                navigate('/admin')
+                                            }} class="text-decoration-none cursor-pointer text-dark fs-5">ADMIN</a>
+                                        </li>
+                                    )} */}
+
+                                    </ul>
+
+                                </Offcanvas.Body>
+                            </Offcanvas>
+
+                        </div>
                     </div>
 
 

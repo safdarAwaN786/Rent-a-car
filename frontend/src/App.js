@@ -33,9 +33,12 @@ import ContactUs from './pages/ContactUs';
 import TermsConditions from './pages/TermsConditions';
 import PrivacyCookiesPolicy from './pages/PrivacyCookiesPolicy';
 import VehicleGuide from './pages/VehicleGuide';
-import Admin from './pages/Admin';
+
 import axios from 'axios';
 import Cookies from 'js-cookie'
+import Admin from './pages/Admin';
+import CompleteBooking from './pages/CompleteBooking';
+
 
 function App() {
 
@@ -65,6 +68,8 @@ function App() {
     }
 }, []);
 
+const [selectedVehicle, setSelectedVehicle] = useState(null);
+
 
 
   return (
@@ -74,12 +79,24 @@ function App() {
 
 
           <Route path="/" element={<Home loggedIn={loggedIn} user={user} setLoggedIn={setLoggedIn}  setUser={setUser} />} />
+
           <Route path="/reservations" element={<Reservations setLoggedIn={setLoggedIn}  setUser={setUser}  loggedIn={loggedIn} user={user} />} />
+
           <Route path="/contact" element={<ContactUs setLoggedIn={setLoggedIn}  setUser={setUser} loggedIn={loggedIn} user={user} />} />
+
           <Route path="/terms-and-conditions" element={<TermsConditions setLoggedIn={setLoggedIn}  setUser={setUser} loggedIn={loggedIn} user={user} />} />
+
           <Route path="/privacy-and-cookies" element={<PrivacyCookiesPolicy setLoggedIn={setLoggedIn}  setUser={setUser} loggedIn={loggedIn} user={user} />} />
-          <Route path="/vehicle-guide" element={<VehicleGuide setLoggedIn={setLoggedIn}  setUser={setUser} loggedIn={loggedIn} user={user} />} />
-          <Route path="/admin" element={<Admin setLoggedIn={setLoggedIn}  setUser={setUser} loggedIn={loggedIn} user={user} />} />
+
+          <Route path="/vehicle-guide" element={<VehicleGuide setSelectedVehicle={setSelectedVehicle} setLoggedIn={setLoggedIn}  setUser={setUser} loggedIn={loggedIn} user={user} />} />
+
+          <Route path="/admin-vehicles" element={<Admin tab={'Vehicles'} setLoggedIn={setLoggedIn}  setUser={setUser} loggedIn={loggedIn} user={user} />} />
+          
+          <Route path="/admin-extras" element={<Admin tab={'Extras'} setLoggedIn={setLoggedIn}  setUser={setUser} loggedIn={loggedIn} user={user} />} />
+
+          <Route path="/admin-bookings" element={<Admin tab={'Bookings'} setLoggedIn={setLoggedIn}  setUser={setUser} loggedIn={loggedIn} user={user} />} />
+
+          <Route path="/complete-booking" element={<CompleteBooking selectedVehicle={selectedVehicle}  setLoggedIn={setLoggedIn}  setUser={setUser} loggedIn={loggedIn} user={user} />} />
 
           {/* <Route component={NotFound} /> */}
 
