@@ -21,7 +21,7 @@ export default function CompleteBooking({ selectedVehicle }) {
     const [extrasArr, setExtrasArr] = useState(null);
 
     useEffect(() => {
-        axios.get(`/extras/read-extras-by-group/${selectedVehicle?.group}`).then((res) => {
+        axios.get(`https://my-car-backend.vercel.app/extras/read-extras-by-group/${selectedVehicle?.group}`).then((res) => {
             console.log(res.data)
             setExtrasArr(res.data.data.extrasAdded);
         })

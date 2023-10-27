@@ -8,7 +8,7 @@ import AdminProductsSection from '../components/AdminProductsSection'
 import AdminExtras from '../components/AdminExtras'
 
 export default function Admin({ user, loggedIn, setLoggedIn, setUser, tab }) {
-    const [vatObj, setVatObj] = useState(null);
+    
 
     const adminSidebar = useRef(null);
 
@@ -38,27 +38,10 @@ export default function Admin({ user, loggedIn, setLoggedIn, setUser, tab }) {
         };
     }, []);
 
-    const reGetVat = () => {
-        {
-            axios.get('admin/get-vat').then((res) => {
+    
 
-                setVatObj(res.data[0])
-            }).catch((e) => {
-                console.log(e);
-            })
-        }
-    }
-
-    useEffect(() => {
-        axios.get('admin/get-vat').then((res) => {
-
-            setVatObj(res.data[0])
-        }).catch((e) => {
-            console.log(e);
-        })
-    }, [])
-
-    const [vatValue, setVatValue] = useState(null);
+    
+    
     return (
         <>
             <Navbar loggedIn={loggedIn} user={user} setLoggedIn={setLoggedIn} setUser={setUser} />

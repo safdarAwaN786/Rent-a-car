@@ -178,7 +178,7 @@ export default function AdminProductCard({ gridView, vehicleData, reGetData }) {
                                 setEditVehicle(false);
 
 
-                                axios.post(`/vehicle/edit-vehicle/${vehicleToEdit?._id}`, data)
+                                axios.post(`https://my-car-backend.vercel.app/vehicle/edit-vehicle/${vehicleToEdit?._id}`, data)
                                     .then(response => {
                                         console.log(response);
                                         reGetData();
@@ -395,7 +395,7 @@ export default function AdminProductCard({ gridView, vehicleData, reGetData }) {
                                 onOk() {
                                     console.log('Deleting');
                                     axios
-                                        .delete(`/vehicle/delete-vehicle/${vehicleData?._id}`)
+                                        .delete(`https://my-car-backend.vercel.app/vehicle/delete-vehicle/${vehicleData?._id}`)
                                         .then((res) => {
                                             toast.success('Vehicle deleted Successfully!');
                                             reGetData();

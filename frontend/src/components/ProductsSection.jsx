@@ -14,7 +14,7 @@ export default function ProductsSection({setSelectedVehicle}) {
 
 
     useEffect(() => {
-        axios.get('/vehicle/read-vehicles').then((res) => {
+        axios.get('https://my-car-backend.vercel.app/vehicle/read-vehicles').then((res) => {
             console.log(res);
             setAllDataArr(res.data.data);
             setVehiclesList(res.data.data)
