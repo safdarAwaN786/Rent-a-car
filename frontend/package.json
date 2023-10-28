@@ -32,9 +32,7 @@
     "waypoints": "^4.0.1",
     "web-vitals": "^2.1.4"
   },
-  "axios": {
-    "baseURL": "https://my-car-backend.vercel.app/"
-  },
+ 
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
