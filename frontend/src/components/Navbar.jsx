@@ -40,7 +40,7 @@ export default function Navbar({ loggedIn, user, setUser, setLoggedIn }) {
         if (userToken) {
             console.log(userToken);
             // Make a request to the backend to verify the user token and get user information
-            axios.get('https://my-car-backend.vercel.app/user/verify-user', { headers: { Authorization: `Bearer ${userToken}` } })
+            axios.get('/user/verify-user', { headers: { Authorization: `Bearer ${userToken}` } })
                 .then(response => {
                     setUser(response.data);
                     setLoggedIn(true);
@@ -56,7 +56,7 @@ export default function Navbar({ loggedIn, user, setUser, setLoggedIn }) {
     // User sign up function
     const handleSignup = () => {
         // Perform signup API request
-        axios.post('https://my-car-backend.vercel.app/user/signup', userDataToSend)
+        axios.post('/user/signup', userDataToSend)
             .then(response => {
                 console.log(response);
                 const { token } = response.data;
@@ -81,7 +81,7 @@ export default function Navbar({ loggedIn, user, setUser, setLoggedIn }) {
     // User login function
     const handleLogin = () => {
         // Perform login API request
-        axios.post('https://my-car-backend.vercel.app/user/login', userDataToSend)
+        axios.post('/user/login', userDataToSend)
             .then(response => {
                 console.log(remeberMe);
                 if (remeberMe) {

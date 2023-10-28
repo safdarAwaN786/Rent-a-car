@@ -29,7 +29,7 @@ export default function AdminExtras() {
 
 
     const updateExtras = ()=>{
-        axios.get('https://my-car-backend.vercel.app/extras/read-extras').then((response)=>{
+        axios.get('/extras/read-extras').then((response)=>{
             console.log(response.data);
             setGroupsExtras(response.data.data);
         }).catch((e)=>{
@@ -40,7 +40,7 @@ export default function AdminExtras() {
 
 
     useEffect(()=>{
-        axios.get('https://my-car-backend.vercel.app/extras/read-extras').then((response)=>{
+        axios.get('/extras/read-extras').then((response)=>{
             console.log(response.data);
             setGroupsExtras(response.data.data);
         }).catch((e)=>{
@@ -84,7 +84,7 @@ export default function AdminExtras() {
                                     
 
 
-                                    axios.post('https://my-car-backend.vercel.app/extras/add-extra', { ...groupForExtras, extrasAdded: extrasArr })
+                                    axios.post('/extras/add-extra', { ...groupForExtras, extrasAdded: extrasArr })
                                         .then(response => {
                                             console.log(response);
                                             setEditExtras(false);

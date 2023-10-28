@@ -128,7 +128,7 @@ export default function AdminProductsSection() {
 
 
     const reGetData = () => {
-        axios.get('https://my-car-backend.vercel.app/vehicle/read-vehicles').then((res) => {
+        axios.get('/vehicle/read-vehicles').then((res) => {
             console.log(res);
             setAllDataArr(res.data.data);
             setVehiclesList(res.data.data)
@@ -136,7 +136,7 @@ export default function AdminProductsSection() {
     }
 
     useEffect(() => {
-        axios.get('https://my-car-backend.vercel.app/vehicle/read-vehicles').then((res) => {
+        axios.get('/vehicle/read-vehicles').then((res) => {
             console.log(res);
             setAllDataArr(res.data.data);
             setVehiclesList(res.data.data)
@@ -334,7 +334,7 @@ export default function AdminProductsSection() {
                                         setAddProduct(false);
 
 
-                                        axios.post('https://my-car-backend.vercel.app/vehicle/add-vehicle', data)
+                                        axios.post('/vehicle/add-vehicle', data)
                                             .then(response => {
                                                 console.log(response);
 
