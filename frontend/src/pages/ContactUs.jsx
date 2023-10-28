@@ -25,7 +25,7 @@ export default function ContactUs({loggedIn, user, setLoggedIn, setUser }) {
 
                             </p>
                         </div>
-                        <div class="row g-4 justify-content-center mb-1">
+                        <div class="row g-4 d-flex  justify-content-between mb-1">
                             <div class="col-lg-4">
                                 <div class="single-location">
                                     <div class="title-and-view-btn">

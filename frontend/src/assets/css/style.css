@@ -28454,11 +28454,7 @@ button {
 .cursor-pointer{
 cursor: pointer;
 }
-.justify-content-center > div {
-    flex: 1;
-    margin: 10px; /* adjust this value to change the spacing */
-	padding: 10px 5px;
-}
+
 
 
 

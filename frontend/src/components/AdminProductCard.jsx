@@ -19,6 +19,7 @@ import { PlusOutlined } from '@ant-design/icons';
 import { Modal, Upload } from 'antd';
 import axios from 'axios'
 import { toast } from 'react-toastify'
+import Spinner from 'react-bootstrap/esm/Spinner'
 
 const getBase64 = (file) =>
     new Promise((resolve, reject) => {
@@ -31,7 +32,7 @@ const getBase64 = (file) =>
 export default function AdminProductCard({ gridView, vehicleData, reGetData }) {
     const [vehicleToEdit, setVehicleToEdit] = useState(null);
     const [editVehicle, setEditVehicle] = useState(false);
-
+    const [editingVehicle, setEditingVehicle] = useState(false);
     const customStyles = {
         menu: (provided) => ({
             ...provided,
@@ -152,6 +153,7 @@ export default function AdminProductCard({ gridView, vehicleData, reGetData }) {
 
                             <form encType='multipart/form-data' onSubmit={(event) => {
                                 event.preventDefault();
+                                setEditingVehicle(true);
                                 const data = new FormData();
 
                                 console.log(vehicleToEdit)
@@ -175,11 +177,12 @@ export default function AdminProductCard({ gridView, vehicleData, reGetData }) {
 
                                 event.target.reset();
 
-                                setEditVehicle(false);
 
 
                                 axios.post(`/vehicle/edit-vehicle/${vehicleToEdit?._id}`, data)
                                     .then(response => {
+                                        setEditVehicle(false);
+                                        setEditingVehicle(false)
                                         console.log(response);
                                         reGetData();
 
@@ -300,7 +303,13 @@ export default function AdminProductCard({ gridView, vehicleData, reGetData }) {
                                         <button style={{
                                             zIndex: '00'
                                         }} type="submit" class="primary-btn6 p-sm-2 p-1 ">
-                                            UPDATE
+                                            {editingVehicle ? (
+                                                <Spinner animation="border" size="sm" />
+                                            ) : (
+
+                                                'UPDATE'
+                                            )}
+
                                         </button>
 
                                     </div>
@@ -408,7 +417,7 @@ export default function AdminProductCard({ gridView, vehicleData, reGetData }) {
                                     <>
 
                                         <CancelBtn />
-                                        <OkBtn  />
+                                        <OkBtn />
                                     </>
                                 ),
                             });

@@ -10,10 +10,11 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Button from 'react-bootstrap/Button';
 import Offcanvas from 'react-bootstrap/Offcanvas';
-import { SlMenu } from 'react-icons/sl'
+import { SlMenu } from 'react-icons/sl';
+import Spinner from 'react-bootstrap/Spinner';
 
 export default function Navbar({ loggedIn, user, setUser, setLoggedIn }) {
-
+    const [validationMessage, setValidationMessage] = useState(null);
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [confirmPassword, setConfirmPassword] = useState(null);
@@ -25,10 +26,28 @@ export default function Navbar({ loggedIn, user, setUser, setLoggedIn }) {
     const signUpCloseButtonRef = useRef(null);
     const loginCloseButtonRef = useRef(null);
 
+    function CheckPassword(submittedPassword) {
+        if (submittedPassword?.length < 8) {
+            setValidationMessage('Password must be at least 8 characters long.');
+            return;
+        }
+
+        if (
+            !/[a-z]/.test(submittedPassword) ||
+            !/[A-Z]/.test(submittedPassword) ||
+            !/[0-9]/.test(submittedPassword)
+        ) {
+            setValidationMessage('Password must contain at least one uppercase letter, one lowercase letter, and one number.');
+            return;
+        }
+
+        // Password is valid
+        setValidationMessage('Password is valid!');
+    }
 
 
     const [showLoginPassword, setShowLoginPassword] = useState(false);
-    const [remeberMe, setRememberMe] = useState(false);
+
 
     const [userDataToSend, setUserDataToSend] = useState(null);
 
@@ -52,12 +71,17 @@ export default function Navbar({ loggedIn, user, setUser, setLoggedIn }) {
         }
     }, []);
 
+    const [signingUp, setSigningUp] = useState(false);
+    const [loggingIn, setLoggingIn] = useState(false);
+
 
     // User sign up function
     const handleSignup = () => {
+        setSigningUp(true);
         // Perform signup API request
         axios.post('/user/signup', userDataToSend)
             .then(response => {
+                setSigningUp(false);
                 console.log(response);
                 const { token } = response.data;
                 Cookies.set('userToken', token, { expires: 1 }); // Set the user token in the cookie
@@ -68,11 +92,21 @@ export default function Navbar({ loggedIn, user, setUser, setLoggedIn }) {
                 if (signUpCloseButtonRef.current) {
                     signUpCloseButtonRef.current.click();
                 }
+
                 window.location.reload()
             })
             .catch(error => {
-                toast.error('Invalid Credentials!')
-                console.error('Error signing up:', error)
+                setSigningUp(false);
+                setValidationMessage(null);
+                console.log(error);
+                if (error.response.status === 400) {
+                    toast.error(error.response.data.message);
+
+                } else {
+                    toast.error('Server Error , Try Again !');
+
+                }
+
             });
     };
 
@@ -80,16 +114,16 @@ export default function Navbar({ loggedIn, user, setUser, setLoggedIn }) {
 
     // User login function
     const handleLogin = () => {
+        setLoggingIn(true);
         // Perform login API request
         axios.post('/user/login', userDataToSend)
             .then(response => {
-                console.log(remeberMe);
-                if (remeberMe) {
 
-                    const { token } = response.data;
-                    Cookies.set('userToken', token, { expires: 1 }); // Set the user token in the cookie
-                    console.log(Cookies);
-                }
+                setLoggingIn(false);
+                const { token } = response.data;
+                Cookies.set('userToken', token, { expires: 1 }); // Set the user token in the cookie
+                console.log(Cookies);
+
                 setUser(userDataToSend)
                 setLoggedIn(true);
                 toast.success("Logged In Successfully!");
@@ -99,7 +133,14 @@ export default function Navbar({ loggedIn, user, setUser, setLoggedIn }) {
                 window.location.reload()
             })
             .catch(error => {
-                toast.error('Invalid Credentials!')
+                setLoggingIn(false);
+                if (error.response.status === 400) {
+                    toast.error(error.response.data.message);
+
+                } else {
+                    toast.error('Server Error , Try Again !');
+
+                }
                 console.error('Error logging in:', error)
             });
     };
@@ -134,23 +175,32 @@ export default function Navbar({ loggedIn, user, setUser, setLoggedIn }) {
                                 data-bs-target="#logInModal01">Log In</button></p>
                             <button onClick={() => {
                                 setUserDataToSend(null);
+                                setValidationMessage(null);
+                                setConfirmPassword(null);
                             }} ref={signUpCloseButtonRef} type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"><i
                                 class="bi bi-x"></i></button>
                         </div>
                         <div class="modal-body">
                             <form onSubmit={(e) => {
                                 e.preventDefault();
+                                e.target.reset();
                                 if (userDataToSend.password === confirmPassword) {
-                                    handleSignup();
+
+                                    if (validationMessage === 'Password is valid!') {
+
+                                        handleSignup();
+                                    } else {
+                                        toast.warning(validationMessage)
+                                    }
                                 } else {
-                                    toast.error('Password not matched !')
+                                    toast.warning('Password not matched !')
                                 }
                             }}>
                                 <div class="row g-4">
                                     <div class="col-md-6">
                                         <div class="form-inner">
                                             <label>First Name*</label>
-                                            <input onChange={(e) => {
+                                            <input value={userDataToSend?.firstName} onChange={(e) => {
                                                 updateUserData(e);
                                             }} name='firstName' type="text" placeholder="Daniel" required />
                                         </div>
@@ -158,7 +208,7 @@ export default function Navbar({ loggedIn, user, setUser, setLoggedIn }) {
                                     <div class="col-md-6">
                                         <div class="form-inner">
                                             <label>Last Name*</label>
-                                            <input onChange={(e) => {
+                                            <input value={userDataToSend?.lastName} onChange={(e) => {
                                                 updateUserData(e);
                                             }} name='lastName' type="text" placeholder="Last name" required />
                                         </div>
@@ -166,7 +216,7 @@ export default function Navbar({ loggedIn, user, setUser, setLoggedIn }) {
                                     <div class="col-md-12">
                                         <div class="form-inner">
                                             <label>Enter your email address*</label>
-                                            <input onChange={(e) => {
+                                            <input value={userDataToSend?.email} onChange={(e) => {
                                                 updateUserData(e);
                                             }} type="email" placeholder="Type email" name='email' required />
                                         </div>
@@ -176,8 +226,9 @@ export default function Navbar({ loggedIn, user, setUser, setLoggedIn }) {
                                             <label>Password*</label>
                                             <div className='d-felx flex-row justify-content-between passwordBox'>
 
-                                                <input onChange={(e) => {
+                                                <input value={userDataToSend?.password} onChange={(e) => {
                                                     updateUserData(e);
+                                                    CheckPassword(e.target.value);
                                                 }} name='password' id="password" type={`${showPassword ? 'text' : 'password'}`} placeholder="*** ***" />
 
 
@@ -193,6 +244,9 @@ export default function Navbar({ loggedIn, user, setUser, setLoggedIn }) {
                                                     }} className='fs-5 text-dark' />
                                                 )}
                                             </div>
+                                            {validationMessage && (
+                                                <p className={`${validationMessage === 'Password is valid!' ? 'text-success' : 'text-danger'} `}>{validationMessage}</p>
+                                            )}
                                         </div>
                                     </div>
                                     <div class="col-md-6">
@@ -200,7 +254,7 @@ export default function Navbar({ loggedIn, user, setUser, setLoggedIn }) {
                                             <label>Confirm Password*</label>
                                             <div className='d-felx flex-row justify-content-between passwordBox'>
 
-                                                <input onChange={(e) => {
+                                                <input value={confirmPassword} onChange={(e) => {
                                                     setConfirmPassword(e.target.value)
                                                 }} id="password2" type={`${showConfirmPassword ? 'text' : 'password'}`} placeholder="*** ***" />
 
@@ -223,12 +277,27 @@ export default function Navbar({ loggedIn, user, setUser, setLoggedIn }) {
                                     </div>
                                     <div class="col-md-12">
                                         <div class="form-inner mt-3">
-                                            <button class="primary-btn2" type="submit">Sign Up Now</button>
+                                            <button class="primary-btn2" type="submit">
+                                                {signingUp ? (
+                                                    <Spinner animation="border" size="sm" />
+                                                ) : (
+
+                                                    'Sign Up Now'
+                                                )}
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="terms-conditon">
-                                    <p>By sign up,you agree to the <a href="#">‘terms & conditons’</a></p>
+                                    <p>By sign up,you agree to the <a className='cursor-pointer' onClick={() => {
+                                        if (loginCloseButtonRef.current) {
+                                            loginCloseButtonRef.current.click();
+                                        }
+                                        if (signUpCloseButtonRef.current) {
+                                            signUpCloseButtonRef.current.click();
+                                        }
+                                        navigate('/terms-and-conditions');
+                                    }}>‘terms & conditons’</a></p>
                                 </div>
 
                             </form>
@@ -249,6 +318,7 @@ export default function Navbar({ loggedIn, user, setUser, setLoggedIn }) {
                                 data-bs-target="#signUpModal01">Sign Up</button></p>
                             <button onClick={() => {
                                 setUserDataToSend(null);
+
                             }} ref={loginCloseButtonRef} type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"><i
                                 class="bi bi-x"></i></button>
                         </div>
@@ -271,9 +341,7 @@ export default function Navbar({ loggedIn, user, setUser, setLoggedIn }) {
                                             <label>Password*</label>
                                             <div className='d-felx flex-row justify-content-between passwordBox'>
 
-                                                {/* <input onClick={(e) => {
-                                                    updateUserData(e);
-                                                }} name='password' id="password3" type={`${showLoginPassword ? 'text' : 'password'} `} placeholder="*** ***" required /> */}
+
 
 
                                                 {
@@ -325,23 +393,36 @@ export default function Navbar({ loggedIn, user, setUser, setLoggedIn }) {
                                     </div>
                                     <div class="col-lg-12">
                                         <div class="form-agreement form-inner d-flex justify-content-between flex-wrap">
-                                            <div class="form-group">
-                                                <input onChange={(e) => {
-                                                    setRememberMe(e.target.checked);
-                                                }} type="checkbox" id="html" />
-                                                <label for="html">Remember Me</label>
+                                            <div>
+
                                             </div>
                                             <a href="#" class="forgot-pass">Forget Password?</a>
                                         </div>
                                     </div>
                                     <div class="col-md-12">
                                         <div class="form-inner">
-                                            <button class="primary-btn2" type="submit">Log In</button>
+                                            <button class="primary-btn2" type="submit">
+
+                                                {loggingIn ? (
+                                                    <Spinner animation="border" size="sm" />
+                                                ) : (
+                                                    'Log In'
+                                                )}
+
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="terms-conditon">
-                                    <p>By sign up,you agree to the <a href="#">‘terms & conditons’</a></p>
+                                    <p>By sign up,you agree to the <a className='cursor-pointer' onClick={() => {
+                                        if (loginCloseButtonRef.current) {
+                                            loginCloseButtonRef.current.click();
+                                        }
+                                        if (signUpCloseButtonRef.current) {
+                                            signUpCloseButtonRef.current.click();
+                                        }
+                                        navigate('/terms-and-conditions');
+                                    }}>‘terms & conditons’</a></p>
                                 </div>
 
                             </form>
@@ -352,8 +433,10 @@ export default function Navbar({ loggedIn, user, setUser, setLoggedIn }) {
 
             <div class="topbar-header">
                 <div class="top-bar style-2 d-flex justify-content-between">
-                    <div class="company-logo">
-                        <a href="index.html"><img src={logo} alt /></a>
+                    <div  class="company-logo">
+                        <a className='cursor-pointer' onClick={()=>{
+                        navigate('/')
+                    }} ><img src={logo} alt /></a>
                     </div>
                     <div class="top-bar-items">
                         <ul class="menu-list">
@@ -447,7 +530,20 @@ export default function Navbar({ loggedIn, user, setUser, setLoggedIn }) {
                                     <ul class="menu-list list-unstyled p-2">
 
                                         {user?.IsAdmin ? (
-                                            null
+                                            <>
+                                                <li onClick={() => {
+                                                    navigate('/admin-vehicles')
+                                                }} className='cursor-pointer p-1 border-circle sidebar-li'>
+                                                    <a className='text-decoration-none cursor-pointer text-dark fs-5' >Vehicles</a>
+
+                                                </li>
+                                                <li onClick={() => {
+                                                    navigate('/admin-extras')
+                                                }} className='cursor-pointer p-1 border-circle sidebar-li'>
+                                                    <a class="text-decoration-none cursor-pointer text-dark fs-5">Extras</a>
+
+                                                </li>
+                                            </>
                                         ) : (
                                             <>
 
