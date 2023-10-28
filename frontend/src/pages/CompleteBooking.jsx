@@ -10,9 +10,12 @@ import boosterSeat from '../assets/img/inner-page/icon/seat.png';
 import rack from '../assets/img/inner-page/icon/rack.png';
 import skiRack from '../assets/img/inner-page/icon/ski.png';
 import axios from 'axios';
+import Spinner from 'react-bootstrap/esm/Spinner';
+import { toast } from 'react-toastify';
 
 export default function CompleteBooking({ selectedVehicle }) {
     const navigate = useNavigate();
+    const [gettingExtras, setGettingExtras] = useState(true);
     useEffect(() => {
         if (!selectedVehicle) {
             navigate('/vehicle-guide')
@@ -22,8 +25,11 @@ export default function CompleteBooking({ selectedVehicle }) {
 
     useEffect(() => {
         axios.get(`/extras/read-extras-by-group/${selectedVehicle?.group}`).then((res) => {
+            setGettingExtras(false);
             console.log(res.data)
             setExtrasArr(res.data.data.extrasAdded);
+        }).catch((e)=>{
+            toast.error('Error Slow Internet, Please Refresh!')
         })
     }, [])
     return (
@@ -106,156 +112,167 @@ export default function CompleteBooking({ selectedVehicle }) {
                     </div>
                     <div class="row">
                         <div class="col-lg-8">
-                            <div data-bs-spy="scroll" data-bs-target="#navbar-example2" data-bs-offset="0"
-                                class="scrollspy-example" tabindex="0">
+                            {gettingExtras ? (
+                                <div style={{
+                                    height: '200px'
+                                }} className='mt-5 pt-5 d-flex justify-content-center align-items-center'>
+                                    <Spinner animation="border" variant="secondary" />
+                                </div>
+                            ) : (
 
-                                {extrasArr && (
-
-                                    <>
 
 
-                                        <div class="single-item mb-50" id="car-info">
-                                            <div class="car-info">
-                                                <div class="title mb-20">
-                                                    <h4>Recommended Extras</h4>
+                                <div data-bs-spy="scroll" data-bs-target="#navbar-example2" data-bs-offset="0"
+                                    class="scrollspy-example" tabindex="0">
+
+                                    {extrasArr && (
+
+                                        <>
+
+
+                                            <div class="single-item mb-50" id="car-info">
+                                                <div class="car-info">
+                                                    <div class="title mb-20">
+                                                        <h4>Recommended Extras</h4>
+                                                    </div>
+                                                    <div class="title mb-20">
+                                                        <h5></h5>
+                                                    </div>
+
+
+
+                                                    {extrasArr?.map((extraObj) => {
+                                                        return (
+                                                            <ul>
+
+                                                                {extraObj?.extraName === 'Super Collision Damage Waiver (SCDW)' && (
+                                                                    <li>
+                                                                        <div class="icon">
+                                                                            <img src={SCDW} alt />
+                                                                        </div>
+                                                                        <div class="content">
+                                                                            <input type="checkbox" />
+                                                                            <h6>Super Collision Damage Waiver</h6>
+
+
+                                                                        </div>
+                                                                    </li>
+                                                                )}
+
+
+                                                                {extraObj?.extraName === 'Tyres, Windscreen, Underbody' && (
+                                                                    <li>
+                                                                        <div class="icon">
+                                                                            <img src={Tyre} alt />
+                                                                        </div>
+                                                                        <div class="content">
+                                                                            <input type="checkbox" />
+                                                                            <h6>Tyres, Windscreen, Underbody</h6>
+
+                                                                        </div>
+                                                                    </li>
+                                                                )}
+                                                                {extraObj?.extraName === 'GPS' && (
+                                                                    <li>
+                                                                        <div class="icon">
+                                                                            <img src={GPS} alt />
+                                                                        </div>
+                                                                        <div class="content">
+                                                                            <input type="checkbox" />
+                                                                            <h6>GPS </h6>
+
+                                                                        </div>
+                                                                    </li>
+                                                                )}
+                                                            </ul>
+                                                        )
+                                                    })}
+
+
+
+
+
+
                                                 </div>
-                                                <div class="title mb-20">
-                                                    <h5></h5>
+
+                                            </div>
+                                            <div class="single-item mb-50" id="car-info">
+                                                <div class="car-info">
+                                                    <div class="title mb-20">
+                                                        <h5></h5>
+                                                    </div>
+
+
+                                                    {extrasArr?.map((extraObj) => {
+                                                        return (
+
+                                                            <ul>
+                                                                {extraObj?.extraName === 'Baby Seat' && (
+                                                                    <li>
+                                                                        <div class="icon">
+                                                                            <img src={babySeat} alt />
+                                                                        </div>
+                                                                        <div class="content">
+                                                                            <input type="checkbox" />
+                                                                            <h6>Baby Seat</h6>
+
+
+                                                                        </div>
+                                                                    </li>
+                                                                )}
+                                                                {extraObj?.extraName === 'Booster Seat' && (
+                                                                    <li>
+                                                                        <div class="icon">
+                                                                            <img src={boosterSeat} alt />
+                                                                        </div>
+                                                                        <div class="content">
+                                                                            <input type="checkbox" />
+                                                                            <h6>Booster Seat</h6>
+
+                                                                        </div>
+                                                                    </li>
+                                                                )}
+                                                                {extraObj?.extraName === 'Roof Rack' && (
+                                                                    <li>
+                                                                        <div class="icon">
+                                                                            <img src={rack} alt />
+                                                                        </div>
+                                                                        <div class="content">
+                                                                            <input type="checkbox" />
+                                                                            <h6>Roof Rack</h6>
+
+                                                                        </div>
+                                                                    </li>
+                                                                )}
+                                                                {extraObj?.extraName === 'Ski Rack' && (
+                                                                    <li>
+                                                                        <div class="icon">
+                                                                            <img src={skiRack} alt />
+                                                                        </div>
+                                                                        <div class="content">
+                                                                            <input type="checkbox" />
+                                                                            <h6>Ski Rack</h6>
+
+                                                                        </div>
+                                                                    </li>
+                                                                )}
+
+                                                            </ul>
+                                                        )
+                                                    })}
+
+
                                                 </div>
-
-
-
-                                                {extrasArr?.map((extraObj) => {
-                                                    return (
-                                                        <ul>
-
-                                                            {extraObj?.extraName === 'Super Collision Damage Waiver (SCDW)' && (
-                                                                <li>
-                                                                    <div class="icon">
-                                                                        <img src={SCDW} alt />
-                                                                    </div>
-                                                                    <div class="content">
-                                                                        <input type="checkbox" />
-                                                                        <h6>Super Collision Damage Waiver</h6>
-
-
-                                                                    </div>
-                                                                </li>
-                                                            )}
-
-
-                                                            {extraObj?.extraName === 'Tyres, Windscreen, Underbody' && (
-                                                                <li>
-                                                                    <div class="icon">
-                                                                        <img src={Tyre} alt />
-                                                                    </div>
-                                                                    <div class="content">
-                                                                        <input type="checkbox" />
-                                                                        <h6>Tyres, Windscreen, Underbody</h6>
-
-                                                                    </div>
-                                                                </li>
-                                                            )}
-                                                            {extraObj?.extraName === 'GPS' && (
-                                                                <li>
-                                                                    <div class="icon">
-                                                                        <img src={GPS} alt />
-                                                                    </div>
-                                                                    <div class="content">
-                                                                        <input type="checkbox" />
-                                                                        <h6>GPS </h6>
-
-                                                                    </div>
-                                                                </li>
-                                                            )}
-                                                        </ul>
-                                                    )
-                                                })}
-
-
-
-
-
 
                                             </div>
 
-                                        </div>
-                                        <div class="single-item mb-50" id="car-info">
-                                            <div class="car-info">
-                                                <div class="title mb-20">
-                                                    <h5></h5>
-                                                </div>
+                                        </>
+
+                                    )}
 
 
-                                                {extrasArr?.map((extraObj) => {
-                                                    return (
-
-                                                        <ul>
-                                                            {extraObj?.extraName === 'Baby Seat' && (
-                                                                <li>
-                                                                    <div class="icon">
-                                                                        <img src={babySeat} alt />
-                                                                    </div>
-                                                                    <div class="content">
-                                                                        <input type="checkbox" />
-                                                                        <h6>Baby Seat</h6>
-
-
-                                                                    </div>
-                                                                </li>
-                                                            )}
-                                                            {extraObj?.extraName === 'Booster Seat' && (
-                                                                <li>
-                                                                    <div class="icon">
-                                                                        <img src={boosterSeat} alt />
-                                                                    </div>
-                                                                    <div class="content">
-                                                                        <input type="checkbox" />
-                                                                        <h6>Booster Seat</h6>
-
-                                                                    </div>
-                                                                </li>
-                                                            )}
-                                                            {extraObj?.extraName === 'Roof Rack' && (
-                                                                <li>
-                                                                    <div class="icon">
-                                                                        <img src={rack} alt />
-                                                                    </div>
-                                                                    <div class="content">
-                                                                        <input type="checkbox" />
-                                                                        <h6>Roof Rack</h6>
-
-                                                                    </div>
-                                                                </li>
-                                                            )}
-                                                            {extraObj?.extraName === 'Ski Rack' && (
-                                                                <li>
-                                                                    <div class="icon">
-                                                                        <img src={skiRack} alt />
-                                                                    </div>
-                                                                    <div class="content">
-                                                                        <input type="checkbox" />
-                                                                        <h6>Ski Rack</h6>
-
-                                                                    </div>
-                                                                </li>
-                                                            )}
-
-                                                        </ul>
-                                                    )
-                                                })}
-
-
-                                            </div>
-
-                                        </div>
-
-                                    </>
-
-                                )}
-
-
-                            </div>
+                                </div>
+                            )}
                         </div>
                         <div class="col-lg-4">
                             <div class="car-details-sidebar">

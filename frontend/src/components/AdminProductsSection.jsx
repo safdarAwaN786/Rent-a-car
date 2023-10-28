@@ -142,6 +142,8 @@ export default function AdminProductsSection() {
             setLoading(false)
             setAllDataArr(res.data.data);
             setVehiclesList(res.data.data)
+        }).catch((e)=>{
+            toast.error('Error Slow Internet, Please Refresh!')
         })
     }, [])
 

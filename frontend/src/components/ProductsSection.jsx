@@ -3,6 +3,7 @@ import { BiSolidGridAlt, BiListUl } from 'react-icons/bi'
 import ProductCard from './ProductCard'
 import axios from 'axios';
 import Spinner from 'react-bootstrap/Spinner';
+import { toast } from 'react-toastify';
 
 
 export default function ProductsSection({ setSelectedVehicle }) {
@@ -20,6 +21,8 @@ export default function ProductsSection({ setSelectedVehicle }) {
             setLoading(false);
             setAllDataArr(res.data.data);
             setVehiclesList(res.data.data)
+        }).catch((e)=>{
+            toast.error('Error Slow Internet, Please Refresh!');
         })
     }, [])
 

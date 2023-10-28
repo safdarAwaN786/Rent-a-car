@@ -72,7 +72,7 @@ const [selectedVehicle, setSelectedVehicle] = useState(null);
 
           <Route path="/" element={<Home loggedIn={loggedIn} user={user} setLoggedIn={setLoggedIn}  setUser={setUser} />} />
 
-          <Route path="/reservations" element={<Reservations setLoggedIn={setLoggedIn}  setUser={setUser}  loggedIn={loggedIn} user={user} />} />
+          <Route path="/reservations" element={<Reservations setSelectedVehicle={setSelectedVehicle} setLoggedIn={setLoggedIn}  setUser={setUser}  loggedIn={loggedIn} user={user} />} />
 
           <Route path="/contact" element={<ContactUs setLoggedIn={setLoggedIn}  setUser={setUser} loggedIn={loggedIn} user={user} />} />
 

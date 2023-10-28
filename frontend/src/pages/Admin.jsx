@@ -63,24 +63,7 @@ export default function Admin({ user, loggedIn, setLoggedIn, setUser, tab }) {
                                 Extras
                             </a>
                         </li>
-                        {/* <li className='cursor-pointer  p-2  m-1 border-circle admin-sidebar-li'>
-                            <a className=' text-decoration-none text-white'>
-                                Prices
-                            </a>
-                        </li>
-                        <li className='cursor-pointer  p-2  m-1 border-circle admin-sidebar-li'>
-                            <a className=' text-decoration-none text-white'>
-                                Change VAT
-                            </a>
-                        </li>
-                        <li onClick={()=>{
-                            navigate('/admin-bookings')
-                        }} className={` ${tab === 'Bookings' && 'bg-white'} cursor-pointer p-2  m-1 border-circle admin-sidebar-li`}>
-                            <a className={` ${tab === 'Bookings' ? 'text-dark' : 'text-white'} text-decoration-none`}>
-                               Bookings
-                            </a>
-                        </li> */}
-
+                       
                     </ul>
 
                 </div>

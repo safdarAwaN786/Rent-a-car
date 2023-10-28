@@ -35,8 +35,8 @@ export default function AdminExtras() {
         axios.get('/extras/read-extras').then((response) => {
             console.log(response.data);
             setGroupsExtras(response.data.data);
-        }).catch((e) => {
-            console.log(e);
+        }).catch((e)=>{
+            toast.error('Error Slow Internet, Please Refresh!')
         })
     }
 
