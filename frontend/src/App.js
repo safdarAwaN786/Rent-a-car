@@ -59,7 +59,7 @@ function App() {
     if (userToken) {
         console.log(userToken);
         // Make a request to the backend to verify the user token and get user information
-        axios.get('/user/verify-user', { headers: { Authorization: `Bearer ${userToken}` } })
+        axios.get('https://my-car-backend.vercel.app/user/verify-user', { headers: { Authorization: `Bearer ${userToken}` } })
             .then(response => {
                 setUser(response.data);
                 setLoggedIn(true);
