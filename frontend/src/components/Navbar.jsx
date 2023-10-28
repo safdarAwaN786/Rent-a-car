@@ -532,13 +532,15 @@ export default function Navbar({ loggedIn, user, setUser, setLoggedIn }) {
                                         {user?.IsAdmin ? (
                                             <>
                                                 <li onClick={() => {
-                                                    navigate('/admin-vehicles')
+                                                    navigate('/admin-vehicles');
+                                                    handleClose();
                                                 }} className='cursor-pointer p-1 border-circle sidebar-li'>
                                                     <a className='text-decoration-none cursor-pointer text-dark fs-5' >Vehicles</a>
 
                                                 </li>
                                                 <li onClick={() => {
-                                                    navigate('/admin-extras')
+                                                    navigate('/admin-extras');
+                                                    handleClose();
                                                 }} className='cursor-pointer p-1 border-circle sidebar-li'>
                                                     <a class="text-decoration-none cursor-pointer text-dark fs-5">Extras</a>
 
