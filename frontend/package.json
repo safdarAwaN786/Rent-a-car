@@ -33,7 +33,7 @@
     "web-vitals": "^2.1.4"
   },
   "axios": {
-    "baseURL": "https://my-car-backend.vercel.app"
+    "baseURL": "https://my-car-backend.vercel.app/"
   },
   "scripts": {
     "start": "react-scripts start",
