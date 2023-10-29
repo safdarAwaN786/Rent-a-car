@@ -392,8 +392,7 @@ export default function AdminProductsSection() {
 
                                                 <label className='mt-1'>Vehicle Name :</label>
                                                 <input name='name' type='text' className='p-1 border border-secondary border-circle mb-1' />
-                                                <label className='mt-1'>Location :</label>
-                                                <input name='location' type='text' className='p-1 border border-secondary border-circle mb-1' />
+                                               
                                                 <label className='mt-1'>Engine Size :</label>
                                                 <input name='engineSize' type='text' className='p-1 border border-secondary border-circle mb-1' />
 
@@ -430,7 +429,7 @@ export default function AdminProductsSection() {
                                                 ]} />
 
 
-                                                <label className='mt-2'>Price ($):</label>
+                                                <label className='mt-2'>Price (€EUR):</label>
                                                 <input name='price' type='number' className='p-1 border border-secondary border-circle mb-1' />
                                                 <div className='my-2'>
 

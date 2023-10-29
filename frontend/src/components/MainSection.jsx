@@ -1,24 +1,12 @@
 import React, { useEffect, useState} from 'react'
 import { BsSearch } from 'react-icons/bs'
-import Select from 'react-select';
+import {Select} from 'antd';
 import { useNavigate } from "react-router-dom"
 
 
 export default function MainSection() {
 
-    const customStyles = {
-        menu: (provided) => ({
-            ...provided,
-            maxHeight: '200px', // Set the maximum height of the menu
-            overflowY: 'scroll', // Set overflow to auto to enable scrolling
-        }),
-        option: (provided) => ({
-            ...provided,
-            minHeight: '40px', // Set the minimum height of each option
-            display: 'flex',
-            alignItems: 'center',
-        }),
-    };
+   
 
     const navigate = useNavigate()
     const pickUpLocations = [
@@ -28,6 +16,7 @@ export default function MainSection() {
         { value: 'Limassol Office', label: <div>Limassol Office</div> },
         { value: 'Ayia Napa Office', label: <div>Ayia Napa Office</div> },
         { value: 'Nicosia Office', label: <div>Nicosia Office</div> },
+        
     ]
     return (
         <>
@@ -49,9 +38,9 @@ export default function MainSection() {
 
                                             <div style={{
                                                 width: '200px'
-                                            }} class="form-inner">
+                                            }} class="form-inner d-flex flex-column">
                                                 <label for="pickup-location">Pick-up location</label>
-                                                <Select styles={customStyles} options={pickUpLocations} required/>
+                                                <Select  options={pickUpLocations} required/>
                                             </div>
 
 
@@ -85,9 +74,9 @@ export default function MainSection() {
                                         <div class="m-2">
                                             <div style={{
                                                 width: '200px'
-                                            }} class="form-inner">
+                                            }} class="form-inner d-flex flex-column">
                                                 <label for="pickup-location">Drop-Off location</label>
-                                                <Select styles={customStyles} options={pickUpLocations} required/>
+                                                <Select  options={pickUpLocations} required/>
                                             </div>
                                         </div>
                                         <div class="m-2">

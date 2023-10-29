@@ -15,6 +15,8 @@ const extrasSchema = new mongoose.Schema({
             },
             maxQuantity: {
                 type: Number,
+                required : true,
+                deafault : 1
                 
             },
             priceOfExtra: {

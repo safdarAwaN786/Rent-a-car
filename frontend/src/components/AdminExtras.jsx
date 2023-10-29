@@ -35,7 +35,7 @@ export default function AdminExtras() {
         axios.get('/extras/read-extras').then((response) => {
             console.log(response.data);
             setGroupsExtras(response.data.data);
-        }).catch((e)=>{
+        }).catch((e) => {
             toast.error('Error Slow Internet, Please Refresh!')
         })
     }
@@ -128,10 +128,13 @@ export default function AdminExtras() {
 
                                                             {extrasArr[index]?.extraName === extraText && (
                                                                 <>
+                                                                    {(extraText === 'Baby Seat' || extraText === 'Booster Seat') && (
 
 
-                                                                    <label className='mt-1'>Max Quantity :</label>
-                                                                    <label className='mt-1'>Price($) :</label>
+
+                                                                        <label className='mt-1'>Max Quantity :</label>
+                                                                    )}
+                                                                    <label className='mt-1'>Price(€EUR) :</label>
                                                                 </>
                                                             )}
 
@@ -157,12 +160,13 @@ export default function AdminExtras() {
                                                             {extrasArr[index]?.extraName === extraText && (
                                                                 <>
 
-
-                                                                    <input value={extrasArr[index]?.maxQuantity} onChange={(e) => {
-                                                                        const updatedExtras = [...extrasArr];
-                                                                        updatedExtras[index].maxQuantity = e.target.value;
-                                                                        setExtrasArr(updatedExtras)
-                                                                    }} type='number' className='p-1 mx-2 border border-secondary border-circle mb-1' required />
+                                                                    {(extraText === 'Baby Seat' || extraText === 'Booster Seat') && (
+                                                                        <input max={3} value={extrasArr[index]?.maxQuantity} onChange={(e) => {
+                                                                            const updatedExtras = [...extrasArr];
+                                                                            updatedExtras[index].maxQuantity = e.target.value;
+                                                                            setExtrasArr(updatedExtras)
+                                                                        }} type='number' className='p-1 mx-2 border border-secondary border-circle mb-1' required />
+                                                                    )}
 
                                                                     <input value={extrasArr[index]?.priceOfExtra} onChange={(e) => {
                                                                         const updatedExtras = [...extrasArr];
@@ -244,7 +248,7 @@ export default function AdminExtras() {
 
 
                                                                     <label className='mt-1'>Max Quantity :</label>
-                                                                    <label className='mt-1'>Price($) :</label>
+                                                                    <label className='mt-1'>Price(€EUR) :</label>
                                                                 </>
                                                             )}
 

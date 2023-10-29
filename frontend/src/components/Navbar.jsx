@@ -134,7 +134,7 @@ export default function Navbar({ loggedIn, user, setUser, setLoggedIn }) {
             })
             .catch(error => {
                 setLoggingIn(false);
-                if (error.response.status === 400) {
+                if (error?.response?.status === 400) {
                     toast.error(error.response.data.message);
 
                 } else {

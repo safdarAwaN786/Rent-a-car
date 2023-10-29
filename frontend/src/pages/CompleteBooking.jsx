@@ -295,7 +295,7 @@ export default function CompleteBooking({ selectedVehicle }) {
 
                                                         </div>
                                                         <div class="col-6">
-                                                            <span><strong>$15</strong></span>
+                                                            <span><strong>€EUR15</strong></span>
                                                         </div>
 
                                                     </div>
@@ -324,7 +324,7 @@ export default function CompleteBooking({ selectedVehicle }) {
 
                                                             </div>
                                                             <div class="col-6">
-                                                                <span><strong>$15</strong></span>
+                                                                <span><strong>€15</strong></span>
                                                             </div>
                                                         </div>
                                                         <div class="row g-3">
@@ -334,7 +334,7 @@ export default function CompleteBooking({ selectedVehicle }) {
 
                                                             </div>
                                                             <div class="col-6">
-                                                                <span><strong>$15</strong></span>
+                                                                <span><strong>€15</strong></span>
                                                             </div>
                                                         </div>
                                                         <div class="row g-3">
@@ -343,7 +343,7 @@ export default function CompleteBooking({ selectedVehicle }) {
 
                                                             </div>
                                                             <div class="col-6">
-                                                                <span><strong>$15</strong></span>
+                                                                <span><strong>€15</strong></span>
                                                             </div>
                                                         </div>
                                                         <div class="row g-3">
@@ -352,7 +352,7 @@ export default function CompleteBooking({ selectedVehicle }) {
 
                                                             </div>
                                                             <div class="col-6">
-                                                                <span><strong>$35</strong></span>
+                                                                <span><strong>€35</strong></span>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -367,7 +367,7 @@ export default function CompleteBooking({ selectedVehicle }) {
 
                                                             </div>
                                                             <div class="col-6">
-                                                                <span><strong>$315</strong></span>
+                                                                <span><strong>€315</strong></span>
                                                             </div>
 
                                                         </div>

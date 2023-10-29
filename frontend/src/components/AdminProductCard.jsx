@@ -160,7 +160,7 @@ export default function AdminProductCard({ gridView, vehicleData, reGetData }) {
 
                                 // Append each field individually to the FormData object
                                 data.append('name', vehicleToEdit.name);
-                                data.append('location', vehicleToEdit.location);
+                             
                                 data.append('engineSize', vehicleToEdit.engineSize);
                                 data.append('adults', vehicleToEdit.adults);
                                 data.append('doors', vehicleToEdit.doors);
@@ -225,10 +225,7 @@ export default function AdminProductCard({ gridView, vehicleData, reGetData }) {
                                     <input value={vehicleToEdit?.name} onChange={(e) => {
                                         updateVehicleData(e)
                                     }} name='name' type='text' className='p-1 border border-secondary border-circle mb-1' />
-                                    <label className='mt-1'>Location :</label>
-                                    <input value={vehicleToEdit?.location} onChange={(e) => {
-                                        updateVehicleData(e)
-                                    }} name='location' type='text' className='p-1 border border-secondary border-circle mb-1' />
+                                    
                                     <label className='mt-1'>Engine Size :</label>
                                     <input value={vehicleToEdit?.engineSize} onChange={(e) => {
                                         updateVehicleData(e)
@@ -273,7 +270,7 @@ export default function AdminProductCard({ gridView, vehicleData, reGetData }) {
                                     ]} />
 
 
-                                    <label className='mt-2'>Price ($):</label>
+                                    <label className='mt-2'>Price (€EUR):</label>
                                     <input value={vehicleToEdit?.price} onChange={(e) => {
                                         updateVehicleData(e)
                                     }} name='price' type='number' className='p-1 border border-secondary border-circle mb-1' />
@@ -341,11 +338,9 @@ export default function AdminProductCard({ gridView, vehicleData, reGetData }) {
                     <h5><a className='text-decoration-none cursor-pointer' >{vehicleData?.name}</a></h5>
                     <div class="price-location">
                         <div class="price">
-                            <strong>${vehicleData?.price}</strong>
+                            <strong>€EUR{vehicleData?.price}</strong>
                         </div>
-                        <div class="location">
-                            <a className='text-decoration-none cursor-pointer'><i class="bi bi-geo-alt"></i>{vehicleData?.location}</a>
-                        </div>
+                        
                     </div>
                     <ul class="features">
                         <li>

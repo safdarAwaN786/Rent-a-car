@@ -33,7 +33,7 @@ export default function ProductCard({gridView, vehicleData, setSelectedVehicle})
                 <h5><a className='text-decoration-none cursor-pointer' >{vehicleData?.name}</a></h5>
                 <div class="price-location">
                     <div class="price">
-                        <strong>${vehicleData?.price}</strong>
+                        <strong>€EUR{vehicleData?.price}</strong>
                     </div>
                     <div class="location">
                         <a className='text-decoration-none cursor-pointer'><i class="bi bi-geo-alt"></i>{vehicleData?.location}</a>
