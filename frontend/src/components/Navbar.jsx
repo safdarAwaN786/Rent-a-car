@@ -12,8 +12,10 @@ import Button from 'react-bootstrap/Button';
 import Offcanvas from 'react-bootstrap/Offcanvas';
 import { SlMenu } from 'react-icons/sl';
 import Spinner from 'react-bootstrap/Spinner';
+import { useDispatch, useSelector } from 'react-redux'
+import { logInUser, logOutUser } from '../redux/slices/authSlice'
 
-export default function Navbar({ loggedIn, user, setUser, setLoggedIn }) {
+export default function Navbar() {
     const [validationMessage, setValidationMessage] = useState(null);
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -25,6 +27,10 @@ export default function Navbar({ loggedIn, user, setUser, setLoggedIn }) {
     const handleShow = () => setShow(true);
     const signUpCloseButtonRef = useRef(null);
     const loginCloseButtonRef = useRef(null);
+
+    const loggedIn = useSelector(state => state.auth.loggedIn);
+    const user = useSelector(state => state.auth.user);
+    const dispatch = useDispatch();
 
     function CheckPassword(submittedPassword) {
         if (submittedPassword?.length < 8) {
@@ -61,8 +67,11 @@ export default function Navbar({ loggedIn, user, setUser, setLoggedIn }) {
             // Make a request to the backend to verify the user token and get user information
             axios.get('/user/verify-user', { headers: { Authorization: `Bearer ${userToken}` } })
                 .then(response => {
-                    setUser(response.data);
-                    setLoggedIn(true);
+                    dispatch(logInUser({
+                        loggedIn: true,
+                        user: response.data
+                    }))
+
                     if (response.data.IsAdmin) {
                         navigate('/admin-vehicles')
                     }
@@ -70,6 +79,9 @@ export default function Navbar({ loggedIn, user, setUser, setLoggedIn }) {
                 .catch(error => console.error('Error fetching user data:', error));
         }
     }, []);
+
+   
+
 
     const [signingUp, setSigningUp] = useState(false);
     const [loggingIn, setLoggingIn] = useState(false);
@@ -85,8 +97,10 @@ export default function Navbar({ loggedIn, user, setUser, setLoggedIn }) {
                 console.log(response);
                 const { token } = response.data;
                 Cookies.set('userToken', token, { expires: 1 }); // Set the user token in the cookie
-                setUser(userDataToSend);
-                setLoggedIn(true);
+                dispatch(logInUser({
+                    loggedIn: true,
+                    user: userDataToSend
+                }))
 
                 toast.success("Signed Up Successfully!");
                 if (signUpCloseButtonRef.current) {
@@ -122,10 +136,12 @@ export default function Navbar({ loggedIn, user, setUser, setLoggedIn }) {
                 setLoggingIn(false);
                 const { token } = response.data;
                 Cookies.set('userToken', token, { expires: 1 }); // Set the user token in the cookie
-                console.log(Cookies);
+                // console.log(Cookies);
 
-                setUser(userDataToSend)
-                setLoggedIn(true);
+                dispatch(logInUser({
+                    loggedIn: true,
+                    user: userDataToSend
+                }))
                 toast.success("Logged In Successfully!");
                 if (loginCloseButtonRef.current) {
                     loginCloseButtonRef.current.click();
@@ -149,10 +165,10 @@ export default function Navbar({ loggedIn, user, setUser, setLoggedIn }) {
     // User logout function
     const handleLogout = () => {
         Cookies.remove('userToken');
-        setUser(null);
-        setLoggedIn(false);
+        dispatch(logOutUser())
         toast.success("Logged Out Successfully!");
-        navigate('/')
+        navigate('/');
+        
     };
 
 
@@ -177,6 +193,7 @@ export default function Navbar({ loggedIn, user, setUser, setLoggedIn }) {
                                 setUserDataToSend(null);
                                 setValidationMessage(null);
                                 setConfirmPassword(null);
+                                setSigningUp(false);
                             }} ref={signUpCloseButtonRef} type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"><i
                                 class="bi bi-x"></i></button>
                         </div>
@@ -318,6 +335,8 @@ export default function Navbar({ loggedIn, user, setUser, setLoggedIn }) {
                                 data-bs-target="#signUpModal01">Sign Up</button></p>
                             <button onClick={() => {
                                 setUserDataToSend(null);
+                                setLoggingIn(false);
+
 
                             }} ref={loginCloseButtonRef} type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"><i
                                 class="bi bi-x"></i></button>
@@ -362,7 +381,7 @@ export default function Navbar({ loggedIn, user, setUser, setLoggedIn }) {
                                                         <input
                                                             onChange={(e) => {
                                                                 updateUserData(e);
-                                                                console.log(userDataToSend)
+
                                                             }}
                                                             value={userDataToSend?.password}
                                                             name='password'
@@ -433,10 +452,10 @@ export default function Navbar({ loggedIn, user, setUser, setLoggedIn }) {
 
             <div class="topbar-header">
                 <div class="top-bar style-2 d-flex justify-content-between">
-                    <div  class="company-logo">
-                        <a className='cursor-pointer' onClick={()=>{
-                        navigate('/')
-                    }} ><img src={logo} alt /></a>
+                    <div class="company-logo">
+                        <a className='cursor-pointer' onClick={() => {
+                            navigate('/')
+                        }} ><img src={logo} alt /></a>
                     </div>
                     <div class="top-bar-items">
                         <ul class="menu-list">
@@ -543,6 +562,20 @@ export default function Navbar({ loggedIn, user, setUser, setLoggedIn }) {
                                                     handleClose();
                                                 }} className='cursor-pointer p-1 border-circle sidebar-li'>
                                                     <a class="text-decoration-none cursor-pointer text-dark fs-5">Extras</a>
+
+                                                </li>
+                                                <li onClick={() => {
+                                                    navigate('/admin-pricing');
+                                                    handleClose();
+                                                }} className='cursor-pointer p-1 border-circle sidebar-li'>
+                                                    <a class="text-decoration-none cursor-pointer text-dark fs-5">VAT & Codes</a>
+
+                                                </li>
+                                                <li onClick={() => {
+                                                    navigate('/admin-bookings');
+                                                    handleClose();
+                                                }} className='cursor-pointer p-1 border-circle sidebar-li'>
+                                                    <a class="text-decoration-none cursor-pointer text-dark fs-5">Bookings</a>
 
                                                 </li>
                                             </>

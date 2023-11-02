@@ -3,13 +3,16 @@ import Navbar from '../components/Navbar'
 import ProductsSection from '../components/ProductsSection'
 import Footer from '../components/Footer'
 
-export default function VehicleGuide({loggedIn, user, setLoggedIn, setUser, setSelectedVehicle }) {
+export default function VehicleGuide() {
+
+
+  
   return (
     <>
-      <Navbar loggedIn={loggedIn} user={user} setLoggedIn={setLoggedIn} setUser={setUser} />
+      <Navbar  />
       <div className='mt-5'>
 
-        <ProductsSection setSelectedVehicle={setSelectedVehicle} />
+        <ProductsSection   />
       </div>
       <Footer />
     </>

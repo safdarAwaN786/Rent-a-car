@@ -429,7 +429,7 @@ export default function AdminProductsSection() {
                                                 ]} />
 
 
-                                                <label className='mt-2'>Price (€EUR):</label>
+                                                <label className='mt-2'>Price (€):</label>
                                                 <input name='price' type='number' className='p-1 border border-secondary border-circle mb-1' />
                                                 <div className='my-2'>
 

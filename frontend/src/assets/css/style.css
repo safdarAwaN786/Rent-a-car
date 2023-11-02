@@ -24581,7 +24581,9 @@ button {
 .product-sidebar .wp-block-categoris-cloud li a:hover .number-of-categoris {
 	color: var(--primary-color1)
 }
-
+.extraImg{
+width:  100px !important;
+}
 .product-sidebar .product-widget {
 	background-image: url(../img/inner-page/product-wd-bg.png), linear-gradient(#FAF8FB, #FAF8FB);
 	background-position: center center;

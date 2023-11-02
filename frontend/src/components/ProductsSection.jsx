@@ -6,10 +6,11 @@ import Spinner from 'react-bootstrap/Spinner';
 import { toast } from 'react-toastify';
 
 
-export default function ProductsSection({ setSelectedVehicle }) {
+export default function ProductsSection() {
     const [allDataArr, setAllDataArr] = useState(null);
 
     const [vehiclesList, setVehiclesList] = useState(null);
+
 
 
 
@@ -559,7 +560,7 @@ export default function ProductsSection({ setSelectedVehicle }) {
 
                                                 return (
                                                     <div class={`${gridView ? 'col-lg-6 col-md-6 col-sm-12' : 'col-12'}  wow fadeInUp item`}>
-                                                        <ProductCard setSelectedVehicle={setSelectedVehicle} gridView={gridView} vehicleData={vehicleObj} />
+                                                        <ProductCard  gridView={gridView} vehicleData={vehicleObj} />
                                                     </div>
                                                 )
                                             })}

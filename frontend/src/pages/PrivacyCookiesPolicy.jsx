@@ -2,10 +2,10 @@ import React from 'react'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
 
-export default function PrivacyCookiesPolicy({loggedIn, user, setLoggedIn, setUser }) {
+export default function PrivacyCookiesPolicy() {
     return (
         <>
-            <Navbar loggedIn={loggedIn} user={user} setLoggedIn={setLoggedIn} setUser={setUser}  />
+            <Navbar  />
 
             <div class="return-and-exchange-pages pt-100 mb-100 mt-5">
                 <div class="container">

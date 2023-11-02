@@ -9,7 +9,7 @@ export default function ContactUs({loggedIn, user, setLoggedIn, setUser }) {
 
     return (
         <>
-            <Navbar loggedIn={loggedIn} user={user} setLoggedIn={setLoggedIn} setUser={setUser}  />
+            <Navbar   />
             <div class="contact-page pt-100 mb-10 mt-5">
                 <div class="container">
 

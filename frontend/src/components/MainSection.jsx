@@ -1,22 +1,42 @@
-import React, { useEffect, useState} from 'react'
+import React, { useEffect, useState } from 'react'
 import { BsSearch } from 'react-icons/bs'
-import {Select} from 'antd';
+import { Select } from 'antd';
 import { useNavigate } from "react-router-dom"
+import { toast } from 'react-toastify';
+import { useDispatch, useSelector } from 'react-redux';
+import { clearPreSubmission, submitPreBooking, updateBookingInfo } from '../redux/slices/bookingSlices';
 
 
 export default function MainSection() {
 
-   
+    const [customPickUp, setCustomPickUp] = useState(false);
+    const [customDropOff, setCustomDropOff] = useState(false);
+
+    const loggedIn = useSelector(state => state.auth.loggedIn);
+    const user = useSelector(state => state.auth.user);
+    const dispatch = useDispatch();
+
+    const bookingSubmitted = useSelector(state => state.booking.isBookingSubmitted);
+    const bookingData = useSelector(state => state.booking.bookingData);
+
+
+    const updateBookingData = (e) => {
+        
+        dispatch(updateBookingInfo({...bookingData, [e.target.name] : e.target.value}));
+
+        // setBookingData({ ...bookingData, [e.target.name]: e.target.value })
+    }
 
     const navigate = useNavigate()
-    const pickUpLocations = [
+    const locations = [
         { value: 'Larnaka Airport', label: <div>Larnaka Airport</div> },
         { value: 'Pafos Airport', label: <div>Pafos Airport</div> },
         { value: 'Pafos Office', label: <div>Pafos Office</div> },
         { value: 'Limassol Office', label: <div>Limassol Office</div> },
         { value: 'Ayia Napa Office', label: <div>Ayia Napa Office</div> },
         { value: 'Nicosia Office', label: <div>Nicosia Office</div> },
-        
+        { value: 'Custom Location', label: <div>Custom Location</div> },
+
     ]
     return (
         <>
@@ -29,9 +49,17 @@ export default function MainSection() {
                             <p className='px-2'>Drive into Unforgettable Experiences with 'Your Way' Car Hire - Your Companion for Reliable and
                                 Exciting Journeys Across the Island</p>
                             <div className='bg-white py-3'>
-                                <form onSubmit={(e)=>{
+                                <form onSubmit={(e) => {
                                     e.preventDefault();
-                                    navigate('/vehicle-guide')
+                                    if (loggedIn) {
+                                        dispatch(submitPreBooking());
+                                        
+                                        dispatch(updateBookingInfo({...bookingData, user : user._id}));                                       
+                                        navigate('/vehicle-guide')
+                                    } else {
+                                        dispatch(clearPreSubmission());
+                                        toast.warning('Please LogIn or Sign Up!');
+                                    }
                                 }}>
                                     <div class="d-flex flex-row flex-wrap">
                                         <div class="m-2">
@@ -40,7 +68,34 @@ export default function MainSection() {
                                                 width: '200px'
                                             }} class="form-inner d-flex flex-column">
                                                 <label for="pickup-location">Pick-up location</label>
-                                                <Select  options={pickUpLocations} required/>
+                                                {customPickUp ? (
+                                                    <input value={bookingData?.pickUpLocation} onChange={(e) => {
+                                                        if (loggedIn) {
+
+                                                            updateBookingData(e);
+                                                        } else {
+                                                            toast.warning('Please LogIn or Sign Up!');
+                                                        }
+                                                    }} type='text' placeholder='Provide Your Location' className="form-control" name='pickUpLocation' required />
+                                                ) : (
+
+
+                                                    <Select value={bookingData?.pickUpLocation} onChange={(value) => {
+                                                        // selected is now defined in the scope of this function
+
+                                                        if (loggedIn) {
+                                                            if (value != 'Custom Location') {
+                                                                dispatch(updateBookingInfo({...bookingData, pickUpLocation : value}))
+                                                                
+                                                            } else {
+                                                                
+                                                                setCustomPickUp(true);
+                                                            }
+                                                        } else {
+                                                            toast.warning('Please LogIn or Sign Up!');
+                                                        }
+                                                    }} options={locations} required />
+                                                )}
                                             </div>
 
 
@@ -54,8 +109,15 @@ export default function MainSection() {
                                                 <div class="formbuilder-date form-group field-date-1696006456045">
                                                     <label for="date-1696006456045" class="formbuilder-date-label">Pick-up
                                                         Date</label>
-                                                    <input type="date" class="form-control" name="date-1696006456045"
-                                                        access="false" id="date-1696006456045" required/>
+                                                    <input value={bookingData?.pickUpDate} onChange={(e) => {
+                                                        if (loggedIn) {
+
+                                                            updateBookingData(e);
+                                                        } else {
+                                                            toast.warning('Please LogIn or Sign Up!');
+                                                        }
+                                                    }} name='pickUpDate' type="date" class="form-control"
+                                                        access="false" id="date-1696006456045" required />
                                                 </div>
                                             </div>
                                         </div>
@@ -65,8 +127,15 @@ export default function MainSection() {
                                                     <label class="formester-label">
                                                         Pick-up Time</label>
 
-                                                    <input type="time" class="form-control" name="date-1696006456045"
-                                                        access="false" id="date-1696006456045" required/>
+                                                    <input value={bookingData?.pickUpTime} onChange={(e) => {
+                                                        if (loggedIn) {
+
+                                                            updateBookingData(e);
+                                                        } else {
+                                                            toast.warning('Please LogIn or Sign Up!');
+                                                        }
+                                                    }} type="time" class="form-control" name="pickUpTime"
+                                                        access="false" id="date-1696006456045" required />
                                                 </div>
                                             </div>
 
@@ -76,7 +145,34 @@ export default function MainSection() {
                                                 width: '200px'
                                             }} class="form-inner d-flex flex-column">
                                                 <label for="pickup-location">Drop-Off location</label>
-                                                <Select  options={pickUpLocations} required/>
+                                                {customDropOff ? (
+                                                    <input value={bookingData?.dropOffLocation} onChange={(e) => {
+                                                        if (loggedIn) {
+
+                                                            updateBookingData(e);
+                                                        } else {
+                                                            toast.warning('Please LogIn or Sign Up!');
+                                                        }
+                                                    }} type='text' placeholder='Provide Your Location' className="form-control" name='dropOffLocation' required />
+
+                                                ) : (
+
+                                                    <Select value={bookingData?.dropOffLocation} onChange={(value) => {
+                                                        // selected is now defined in the scope of this function
+
+                                                        if (loggedIn) {
+                                                            if (value != 'Custom Location') {
+                                                                dispatch(updateBookingInfo({...bookingData, dropOffLocation : value}));
+                                                                
+                                                            } else {
+                                                                
+                                                                setCustomDropOff(true);
+                                                            }
+                                                        } else {
+                                                            toast.warning('Please LogIn or Sign Up!');
+                                                        }
+                                                    }} options={locations} required />
+                                                )}
                                             </div>
                                         </div>
                                         <div class="m-2">
@@ -84,8 +180,15 @@ export default function MainSection() {
                                                 <div class="formbuilder-date form-group field-date-1696006456045">
                                                     <label for="date-1696006456045" class="formbuilder-date-label">Drop-off
                                                         date</label>
-                                                    <input type="date" class="form-control" name="date-1696006456045"
-                                                        access="false" id="date-1696006456045" required/>
+                                                    <input value={bookingData?.dropOffDate} onChange={(e) => {
+                                                        if (loggedIn) {
+
+                                                            updateBookingData(e);
+                                                        } else {
+                                                            toast.warning('Please LogIn or Sign Up!');
+                                                        }
+                                                    }} type="date" class="form-control" name="dropOffDate"
+                                                        access="false" id="date-1696006456045" required />
                                                 </div>
                                             </div>
                                         </div>
@@ -94,8 +197,15 @@ export default function MainSection() {
                                                 <div class="">
                                                     <label class="formester-label">
                                                         Drop-off Time</label>
-                                                    <input type="time" class="form-control" name="date-1696006456045"
-                                                        access="false" id="date-1696006456045" required/>
+                                                    <input value={bookingData?.dropOffTime} onChange={(e) => {
+                                                        if (loggedIn) {
+
+                                                            updateBookingData(e);
+                                                        } else {
+                                                            toast.warning('Please LogIn or Sign Up!');
+                                                        }
+                                                    }} type="time" class="form-control" name="dropOffTime"
+                                                        access="false" id="date-1696006456045" required />
                                                 </div>
                                             </div>
 

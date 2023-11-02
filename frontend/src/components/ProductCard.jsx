@@ -9,11 +9,16 @@ import bigLuggageImg from '../assets/img/home4/icon/Resized_svg (7).svg'
 import smallLuggageImg from '../assets/img/home4/icon/Resized_svg (8).svg'
 import transmissionImg from '../assets/img/home4/icon/menual.svg'
 import ACImg from '../assets/img/home4/icon/Resized_svg (9).svg'
+import { toast } from 'react-toastify'
+import { useDispatch, useSelector } from 'react-redux'
+import { selectVehicle, updateBookingInfo } from '../redux/slices/bookingSlices'
 
-export default function ProductCard({gridView, vehicleData, setSelectedVehicle}) {
+export default function ProductCard({gridView, vehicleData }) {
 
-
+    const bookingSubmitted = useSelector(state => state.booking.isBookingSubmitted);
     const navigate = useNavigate();
+    const bookingData = useSelector(state => state.booking.bookingData);
+    const dispatch = useDispatch()
 
     return (
         <div class={`product-card ${gridView ? '' : 'd-flex flex-row'} `}>
@@ -33,7 +38,7 @@ export default function ProductCard({gridView, vehicleData, setSelectedVehicle})
                 <h5><a className='text-decoration-none cursor-pointer' >{vehicleData?.name}</a></h5>
                 <div class="price-location">
                     <div class="price">
-                        <strong>€EUR{vehicleData?.price}</strong>
+                        <strong>€{vehicleData?.price}</strong>
                     </div>
                     <div class="location">
                         <a className='text-decoration-none cursor-pointer'><i class="bi bi-geo-alt"></i>{vehicleData?.location}</a>
@@ -83,8 +88,17 @@ export default function ProductCard({gridView, vehicleData, setSelectedVehicle})
 
                 <div class="content-btm">
                     <a onClick={()=>{
+                        if(bookingSubmitted === true){
+                            console.log('correct');
+                            dispatch(updateBookingInfo({...bookingData, vehicle : vehicleData._id, totalPrice : vehicleData.price}))
+                        dispatch(selectVehicle(vehicleData))
+                        
                         navigate('/complete-booking');
-                        setSelectedVehicle(vehicleData)
+                      
+                        } else {
+                            toast.warning("Please Log In or Sign Up!");
+                            navigate('/');
+                        }
                     }} class="text-decoration-none cursor-pointer view-btn2" >
                         <svg className='text-black' width="35" height="21" viewBox="0 0 35 21"
                             xmlns="http://www.w3.org/2000/svg">

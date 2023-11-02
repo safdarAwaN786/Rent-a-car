@@ -8,11 +8,11 @@ import FleetSection from '../components/FleetSection'
 import Footer from '../components/Footer'
 
 
-export default function Home({loggedIn, user, setLoggedIn, setUser }) {
+export default function Home() {
     return (
         <div>
-            <Navbar  loggedIn={loggedIn} user={user} setLoggedIn={setLoggedIn} setUser={setUser}  />
-            <MainSection />
+            <Navbar   />
+            <MainSection  />
             <WorkFlowSection />
             <ChooseUsSection />
             <BrandsSection />

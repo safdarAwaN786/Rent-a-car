@@ -6,11 +6,17 @@ import { toast } from 'react-toastify'
 import { useNavigate } from 'react-router-dom'
 import AdminProductsSection from '../components/AdminProductsSection'
 import AdminExtras from '../components/AdminExtras'
+import { useDispatch, useSelector } from 'react-redux'
+import AdminPricing from '../components/AdminPricing'
+import AdminBookings from '../components/AdminBookings'
 
-export default function Admin({ user, loggedIn, setLoggedIn, setUser, tab }) {
+export default function Admin({ tab }) {
     
 
     const adminSidebar = useRef(null);
+    const loggedIn = useSelector(state => state.auth.loggedIn);
+  const user = useSelector(state => state.auth.user);
+  const dispatch = useDispatch();
 
     const navigate = useNavigate();
     const [windowWidth, setWindowWidth] = useState(window.innerWidth);
@@ -44,7 +50,7 @@ export default function Admin({ user, loggedIn, setLoggedIn, setUser, tab }) {
     
     return (
         <>
-            <Navbar loggedIn={loggedIn} user={user} setLoggedIn={setLoggedIn} setUser={setUser} />
+            <Navbar  />
 
             <div className='row my-5 pt-5'>
                 <div ref={adminSidebar} className='col-md-3  bg-dark mt-3 p-4 admin-sidebar'>
@@ -63,6 +69,20 @@ export default function Admin({ user, loggedIn, setLoggedIn, setUser, tab }) {
                                 Extras
                             </a>
                         </li>
+                        <li onClick={()=>{
+                            navigate('/admin-pricing')
+                        }} className={` ${tab === 'Pricing' && 'bg-white'} cursor-pointer p-2  m-1 border-circle admin-sidebar-li`}>
+                            <a className={` ${tab === 'Pricing' ? 'text-dark' : 'text-white'} text-decoration-none`}>
+                                VAT & Codes
+                            </a>
+                        </li>
+                        <li onClick={()=>{
+                            navigate('/admin-bookings')
+                        }} className={` ${tab === 'Bookings' && 'bg-white'} cursor-pointer p-2  m-1 border-circle admin-sidebar-li`}>
+                            <a className={` ${tab === 'Bookings' ? 'text-dark' : 'text-white'} text-decoration-none`}>
+                                Bookings
+                            </a>
+                        </li>
                        
                     </ul>
 
@@ -77,6 +97,13 @@ export default function Admin({ user, loggedIn, setLoggedIn, setUser, tab }) {
 
                     {tab === 'Extras' && (
                         <AdminExtras />
+                    )}
+
+                    {tab === 'Pricing' && (
+                        <AdminPricing />
+                    )}
+                    {tab === 'Bookings' && (
+                        <AdminBookings />
                     )}
                     
                 </div>

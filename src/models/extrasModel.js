@@ -1,13 +1,9 @@
 const mongoose = require('mongoose');
 
 const extrasSchema = new mongoose.Schema({
-    groupName: {
-        type: String,
-        required: true,
-        unique : true
-    },
+   
 
-    extrasAdded: [
+    Extras: [
         {
             extraName: {
                 type: String,
@@ -16,13 +12,10 @@ const extrasSchema = new mongoose.Schema({
             maxQuantity: {
                 type: Number,
                 required : true,
-                deafault : 1
+                default : 1
                 
             },
-            priceOfExtra: {
-                type: Number,
-                
-            }
+            priceOfExtra : {},
 
         }
     ],

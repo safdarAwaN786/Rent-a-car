@@ -1,14 +1,16 @@
 const Extra = require('../models/extrasModel');
 
 
-const addExtra = async (req, res) => {
-    console.log(req.body);
+const updateExtra = async (req, res) => {
+   
     try {
 
+        
 
         const updatedExtras = await Extra.findByIdAndUpdate(req.body._id, req.body, {
             new: true,
           });
+        
 
           console.log(updatedExtras);
 
@@ -39,22 +41,22 @@ const getExtras = async (req, res) => {
         res.status(400).send({ status: false, message: error.message });
     }
 }
-const getExtrasByGroup = async (req, res) => {
+// const getExtrasByGroup = async (req, res) => {
 
-    console.log(req.params);
-    console.log('extras getting');
-    try {
+//     console.log(req.params);
+//     console.log('extras getting');
+//     try {
         
-        const groupExtras = await Extra.findOne({groupName : req.params.groupName});
-        console.log(groupExtras);
+//         const groupExtras = await Extra.findOne({groupName : req.params.groupName});
+//         console.log(groupExtras);
 
 
-        res.status(200).send({
-            status: true, message: "The Extras are :", data: groupExtras
-        });
-    } catch (error) {
-        res.status(400).send({ status: false, message: error.message });
-    }
-}
+//         res.status(200).send({
+//             status: true, message: "The Extras are :", data: groupExtras
+//         });
+//     } catch (error) {
+//         res.status(400).send({ status: false, message: error.message });
+//     }
+// }
 
-module.exports = { addExtra, getExtras, getExtrasByGroup } 
+module.exports = { updateExtra, getExtras} 

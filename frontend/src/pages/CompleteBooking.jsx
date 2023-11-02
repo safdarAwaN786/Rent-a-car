@@ -12,23 +12,93 @@ import skiRack from '../assets/img/inner-page/icon/ski.png';
 import axios from 'axios';
 import Spinner from 'react-bootstrap/esm/Spinner';
 import { toast } from 'react-toastify';
+import { Modal, Select } from 'antd';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectVehicle, updateBookingInfo } from '../redux/slices/bookingSlices';
+import { CiLocationArrow1 } from 'react-icons/ci'
+import { BiMinus } from 'react-icons/bi';
+import { AiOutlineCloseCircle } from 'react-icons/ai';
 
-export default function CompleteBooking({ selectedVehicle }) {
+export default function CompleteBooking() {
+
+    const [applyingPromo, setApplyingPromo] = useState(false);
+    const [makingBooking, setMakingBooking] = useState(false);
+    const loggedIn = useSelector(state => state.auth.loggedIn);
+    const user = useSelector(state => state.auth.user);
+    const bookingSubmitted = useSelector(state => state.booking.isBookingSubmitted);
+    const selectedVehicle = useSelector(state => state.vehicle);
+
+
+    const bookingData = useSelector(state => state.booking.bookingData);
+    const dispatch = useDispatch();
     const navigate = useNavigate();
     const [gettingExtras, setGettingExtras] = useState(true);
+
+    const [daysNumber, setDaysNumber] = useState(null);
+
     useEffect(() => {
+        if (!bookingSubmitted || !bookingData || !loggedIn) {
+            navigate('/');
+        }
         if (!selectedVehicle) {
             navigate('/vehicle-guide')
         }
-    })
+    });
+
+    useEffect(() => {
+        const pickUpDate = new Date(bookingData?.pickUpDate);
+        const dropOffDate = new Date(bookingData?.dropOffDate);
+
+        // To calculate the time difference
+        const timeDiff = Math.abs(dropOffDate.getTime() - pickUpDate.getTime());
+        const numberOfDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
+        console.log(numberOfDays);
+        setDaysNumber(numberOfDays)
+
+        dispatch(updateBookingInfo({ ...bookingData, totalPricePerDay: Math.round(bookingData?.totalPricePerDay), totalPrice: Math.round(bookingData?.totalPricePerDay * numberOfDays) }))
+
+
+    }, [bookingData?.totalPricePerDay])
+
+    const [promoCodeObj, setPromoCodeObj] = useState(null);
+
+    useEffect(() => {
+
+
+
+        if (promoCodeObj) {
+
+            let totalPricePerDay = bookingData.totalPricePerDay;
+
+
+            totalPricePerDay = totalPricePerDay - ((selectedVehicle.price / 100) * promoCodeObj.discountPercent)
+            dispatch(updateBookingInfo({ ...bookingData, promoCode: promoCodeObj, totalPricePerDay: Math.round(totalPricePerDay) }))
+        } else {
+            let totalPricePerDay = selectedVehicle.price
+
+            for (let i = 0; i < bookingData?.addedExtras?.length; i++) {
+                const extraObj = bookingData.addedExtras[i];
+                totalPricePerDay += extraObj.price * extraObj.quantity;
+            }
+
+            dispatch(updateBookingInfo({ ...bookingData, totalPricePerDay: Math.round(totalPricePerDay), promoCode: null }));
+        }
+
+    }, [promoCodeObj])
+
+
+
+
+    const [codeValue, setCodeValue] = useState(null);
+
     const [extrasArr, setExtrasArr] = useState(null);
 
     useEffect(() => {
-        axios.get(`/extras/read-extras-by-group/${selectedVehicle?.group}`).then((res) => {
+        axios.get(`/extras/read-extras`).then((res) => {
             setGettingExtras(false);
             console.log(res.data)
-            setExtrasArr(res.data.data.extrasAdded);
-        }).catch((e)=>{
+            setExtrasArr(res.data.data[0].Extras);
+        }).catch((e) => {
             toast.error('Error Slow Internet, Please Refresh!')
         })
     }, [])
@@ -47,7 +117,7 @@ export default function CompleteBooking({ selectedVehicle }) {
                                         <div class="price-model-and-fav-area">
                                             <div class="price-and-model">
                                                 <div class="price">
-                                                    <h3>${selectedVehicle?.price}/day</h3>
+                                                    <h3>€{selectedVehicle?.price}/day</h3>
                                                 </div>
 
                                             </div>
@@ -124,272 +194,570 @@ export default function CompleteBooking({ selectedVehicle }) {
 
                                 <div data-bs-spy="scroll" data-bs-target="#navbar-example2" data-bs-offset="0"
                                     class="scrollspy-example" tabindex="0">
-
-                                    {extrasArr && (
-
-                                        <>
-
-
-                                            <div class="single-item mb-50" id="car-info">
-                                                <div class="car-info">
-                                                    <div class="title mb-20">
-                                                        <h4>Recommended Extras</h4>
-                                                    </div>
-                                                    <div class="title mb-20">
-                                                        <h5></h5>
-                                                    </div>
-
-
-
-                                                    {extrasArr?.map((extraObj) => {
-                                                        return (
-                                                            <ul>
-
-                                                                {extraObj?.extraName === 'Super Collision Damage Waiver (SCDW)' && (
-                                                                    <li>
-                                                                        <div class="icon">
-                                                                            <img src={SCDW} alt />
-                                                                        </div>
-                                                                        <div class="content">
-                                                                            <input type="checkbox" />
-                                                                            <h6>Super Collision Damage Waiver</h6>
-
-
-                                                                        </div>
-                                                                    </li>
-                                                                )}
-
-
-                                                                {extraObj?.extraName === 'Tyres, Windscreen, Underbody' && (
-                                                                    <li>
-                                                                        <div class="icon">
-                                                                            <img src={Tyre} alt />
-                                                                        </div>
-                                                                        <div class="content">
-                                                                            <input type="checkbox" />
-                                                                            <h6>Tyres, Windscreen, Underbody</h6>
-
-                                                                        </div>
-                                                                    </li>
-                                                                )}
-                                                                {extraObj?.extraName === 'GPS' && (
-                                                                    <li>
-                                                                        <div class="icon">
-                                                                            <img src={GPS} alt />
-                                                                        </div>
-                                                                        <div class="content">
-                                                                            <input type="checkbox" />
-                                                                            <h6>GPS </h6>
-
-                                                                        </div>
-                                                                    </li>
-                                                                )}
-                                                            </ul>
-                                                        )
-                                                    })}
-
-
-
-
-
-
-                                                </div>
-
+                                    <div class="single-item mb-50" id="car-info">
+                                        <div class="car-info">
+                                            <div class="title mb-20">
+                                                <h4>Recommended Extras</h4>
                                             </div>
-                                            <div class="single-item mb-50" id="car-info">
-                                                <div class="car-info">
-                                                    <div class="title mb-20">
-                                                        <h5></h5>
-                                                    </div>
-
-
-                                                    {extrasArr?.map((extraObj) => {
-                                                        return (
-
-                                                            <ul>
-                                                                {extraObj?.extraName === 'Baby Seat' && (
-                                                                    <li>
-                                                                        <div class="icon">
-                                                                            <img src={babySeat} alt />
-                                                                        </div>
-                                                                        <div class="content">
-                                                                            <input type="checkbox" />
-                                                                            <h6>Baby Seat</h6>
-
-
-                                                                        </div>
-                                                                    </li>
-                                                                )}
-                                                                {extraObj?.extraName === 'Booster Seat' && (
-                                                                    <li>
-                                                                        <div class="icon">
-                                                                            <img src={boosterSeat} alt />
-                                                                        </div>
-                                                                        <div class="content">
-                                                                            <input type="checkbox" />
-                                                                            <h6>Booster Seat</h6>
-
-                                                                        </div>
-                                                                    </li>
-                                                                )}
-                                                                {extraObj?.extraName === 'Roof Rack' && (
-                                                                    <li>
-                                                                        <div class="icon">
-                                                                            <img src={rack} alt />
-                                                                        </div>
-                                                                        <div class="content">
-                                                                            <input type="checkbox" />
-                                                                            <h6>Roof Rack</h6>
-
-                                                                        </div>
-                                                                    </li>
-                                                                )}
-                                                                {extraObj?.extraName === 'Ski Rack' && (
-                                                                    <li>
-                                                                        <div class="icon">
-                                                                            <img src={skiRack} alt />
-                                                                        </div>
-                                                                        <div class="content">
-                                                                            <input type="checkbox" />
-                                                                            <h6>Ski Rack</h6>
-
-                                                                        </div>
-                                                                    </li>
-                                                                )}
-
-                                                            </ul>
-                                                        )
-                                                    })}
-
-
-                                                </div>
-
+                                            <div class="title mb-20">
+                                                <h5></h5>
                                             </div>
 
-                                        </>
+                                            <ul>
 
-                                    )}
+                                                <li>
+                                                    <div class="icon">
+                                                        <img className='extraImg' src={SCDW} alt />
+                                                    </div>
+                                                    <div class="content">
+                                                        <input className='cursor-pointer' checked={bookingData?.addedExtras?.some(extraObj => extraObj.extraName === 'Super Collision Damage Waiver (SCDW)')} onChange={(e) => {
+                                                            let updatedExtras;
+                                                            if (bookingData.addedExtras) {
+                                                                updatedExtras = [...bookingData.addedExtras];
+                                                            } else {
+                                                                updatedExtras = [];
+                                                            }
+
+                                                            if (e.target.checked) {
+                                                                updatedExtras.push({
+                                                                    extraName: 'Super Collision Damage Waiver (SCDW)',
+                                                                    price: extrasArr.find((extraObj) => extraObj.extraName === 'Super Collision Damage Waiver (SCDW)').priceOfExtra.find((priceObj) => priceObj.groupName === selectedVehicle.group).price,
+                                                                    quantity: 1
+                                                                })
+                                                            } else {
+                                                                const extraFound = updatedExtras.find((extraObj) => extraObj.extraName === 'Super Collision Damage Waiver (SCDW)');
 
 
+
+                                                                updatedExtras = updatedExtras.filter((extraObj) => extraObj !== extraFound);
+
+                                                            }
+
+                                                            let totalPricePerDay;
+
+                                                            if (promoCodeObj) {
+                                                                totalPricePerDay = selectedVehicle.price - ((selectedVehicle.price / 100) * promoCodeObj.discountPercent)
+                                                            } else {
+                                                                totalPricePerDay = selectedVehicle.price;
+                                                            }
+
+
+                                                            for (let i = 0; i < updatedExtras.length; i++) {
+                                                                const extraObj = updatedExtras[i];
+                                                                totalPricePerDay += extraObj.price * extraObj.quantity;
+                                                            }
+
+
+
+                                                            dispatch(updateBookingInfo({ ...bookingData, addedExtras: updatedExtras, totalPricePerDay }))
+
+
+
+                                                        }} type="checkbox" />
+                                                        <h6>Super Collision Damage Waiver(SCDW)</h6>
+
+
+                                                    </div>
+                                                </li>
+
+
+
+
+                                                <li>
+                                                    <div class="icon">
+                                                        <img className='extraImg' src={Tyre} alt />
+                                                    </div>
+                                                    <div class="content">
+                                                        <input className='cursor-pointer' checked={bookingData?.addedExtras?.some(extraObj => extraObj.extraName === 'Tyres, Windscreen, Underbody')} onChange={(e) => {
+                                                            let updatedExtras;
+                                                            if (bookingData.addedExtras) {
+                                                                updatedExtras = [...bookingData.addedExtras];
+                                                            } else {
+                                                                updatedExtras = [];
+                                                            }
+
+                                                            if (e.target.checked) {
+                                                                updatedExtras.push({
+                                                                    extraName: 'Tyres, Windscreen, Underbody',
+                                                                    price: extrasArr.find((extraObj) => extraObj.extraName === 'Tyres, Windscreen, Underbody').priceOfExtra.find((priceObj) => priceObj.groupName === selectedVehicle.group).price,
+                                                                    quantity: 1
+                                                                })
+                                                            } else {
+                                                                const extraFound = updatedExtras.find((extraObj) => extraObj.extraName === 'Tyres, Windscreen, Underbody');
+
+                                                                updatedExtras = updatedExtras.filter((extraObj) => extraObj !== extraFound);
+
+                                                            }
+
+                                                            let totalPricePerDay;
+
+                                                            if (promoCodeObj) {
+                                                                totalPricePerDay = selectedVehicle.price - ((selectedVehicle.price / 100) * promoCodeObj.discountPercent)
+                                                            } else {
+                                                                totalPricePerDay = selectedVehicle.price;
+                                                            }
+
+
+                                                            for (let i = 0; i < updatedExtras.length; i++) {
+                                                                const extraObj = updatedExtras[i];
+                                                                totalPricePerDay += extraObj.price * extraObj.quantity;
+                                                            }
+
+
+
+                                                            dispatch(updateBookingInfo({ ...bookingData, addedExtras: updatedExtras, totalPricePerDay }))
+                                                        }} type="checkbox" />
+                                                        <h6>Tyres, Windscreen, Underbody</h6>
+
+                                                    </div>
+                                                </li>
+
+
+                                                <li>
+                                                    <div class="icon">
+                                                        <img className='extraImg' src={GPS} alt />
+                                                    </div>
+                                                    <div class="content">
+                                                        <input className='cursor-pointer' checked={bookingData?.addedExtras?.some(extraObj => extraObj.extraName === 'GPS')} onChange={(e) => {
+                                                            let updatedExtras;
+                                                            if (bookingData.addedExtras) {
+                                                                updatedExtras = [...bookingData.addedExtras];
+                                                            } else {
+                                                                updatedExtras = [];
+                                                            }
+
+                                                            if (e.target.checked) {
+                                                                updatedExtras.push({
+                                                                    extraName: 'GPS',
+                                                                    price: extrasArr.find((extraObj) => extraObj.extraName === 'GPS').priceOfExtra.find((priceObj) => priceObj.groupName === selectedVehicle.group).price,
+                                                                    quantity: 1
+                                                                })
+                                                            } else {
+                                                                const extraFound = updatedExtras.find((extraObj) => extraObj.extraName === 'GPS');
+                                                                updatedExtras = updatedExtras.filter((extraObj) => extraObj !== extraFound);
+                                                            }
+                                                            let totalPricePerDay;
+
+                                                            if (promoCodeObj) {
+                                                                totalPricePerDay = selectedVehicle.price - ((selectedVehicle.price / 100) * promoCodeObj.discountPercent)
+                                                            } else {
+                                                                totalPricePerDay = selectedVehicle.price;
+                                                            }
+
+
+                                                            for (let i = 0; i < updatedExtras.length; i++) {
+                                                                const extraObj = updatedExtras[i];
+                                                                totalPricePerDay += extraObj.price * extraObj.quantity;
+                                                            }
+
+
+
+                                                            dispatch(updateBookingInfo({ ...bookingData, addedExtras: updatedExtras, totalPricePerDay }))
+                                                        }} type="checkbox" />
+                                                        <h6>GPS</h6>
+                                                    </div>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="single-item mb-50" id="car-info">
+                                        <div class="car-info">
+                                            <div class="title mb-20">
+                                                <h5></h5>
+                                            </div>
+
+                                            <ul>
+                                                <li>
+                                                    <div class="icon">
+                                                        <img className='extraImg' src={babySeat} alt />
+                                                    </div>
+                                                    <div class="content">
+                                                        <input className='cursor-pointer' checked={bookingData?.addedExtras?.some(extraObj => extraObj.extraName === 'Baby Seat')} onChange={(e) => {
+                                                            let updatedExtras;
+                                                            if (bookingData.addedExtras) {
+                                                                updatedExtras = [...bookingData.addedExtras];
+                                                            } else {
+                                                                updatedExtras = [];
+                                                            }
+
+                                                            if (e.target.checked) {
+                                                                updatedExtras.push({
+                                                                    extraName: 'Baby Seat',
+                                                                    price: extrasArr.find((extraObj) => extraObj.extraName === 'Baby Seat').priceOfExtra,
+                                                                    quantity: 1
+
+
+                                                                })
+                                                            } else {
+                                                                const extraFound = updatedExtras.find((extraObj) => extraObj.extraName === 'Baby Seat');
+                                                                updatedExtras = updatedExtras.filter((extraObj) => extraObj !== extraFound);
+                                                            }
+                                                            let totalPricePerDay;
+
+                                                            if (promoCodeObj) {
+                                                                totalPricePerDay = selectedVehicle.price - ((selectedVehicle.price / 100) * promoCodeObj.discountPercent)
+                                                            } else {
+                                                                totalPricePerDay = selectedVehicle.price;
+                                                            }
+
+
+                                                            for (let i = 0; i < updatedExtras.length; i++) {
+                                                                const extraObj = updatedExtras[i];
+                                                                totalPricePerDay += extraObj.price * extraObj.quantity;
+                                                            }
+
+
+
+                                                            dispatch(updateBookingInfo({ ...bookingData, addedExtras: updatedExtras, totalPricePerDay }))
+                                                        }} type="checkbox" />
+                                                        <h6>Baby Seat</h6>
+                                                    </div>
+                                                </li>
+                                                <li>
+                                                    <div class="icon">
+                                                        <img className='extraImg' src={boosterSeat} alt />
+                                                    </div>
+                                                    <div class="content">
+                                                        <input className='cursor-pointer' checked={bookingData?.addedExtras?.some(extraObj => extraObj.extraName === 'Booster Seat')} onChange={(e) => {
+                                                            let updatedExtras;
+                                                            if (bookingData.addedExtras) {
+                                                                updatedExtras = [...bookingData.addedExtras];
+                                                            } else {
+                                                                updatedExtras = [];
+                                                            }
+                                                            if (e.target.checked) {
+                                                                updatedExtras.push({
+                                                                    extraName: 'Booster Seat',
+                                                                    price: extrasArr.find((extraObj) => extraObj.extraName === 'Booster Seat').priceOfExtra,
+                                                                    quantity: 1
+
+                                                                })
+                                                            } else {
+                                                                const extraFound = updatedExtras.find((extraObj) => extraObj.extraName === 'Booster Seat');
+                                                                updatedExtras = updatedExtras.filter((extraObj) => extraObj !== extraFound);
+                                                            }
+                                                            let totalPricePerDay;
+
+                                                            if (promoCodeObj) {
+                                                                totalPricePerDay = selectedVehicle.price - ((selectedVehicle.price / 100) * promoCodeObj.discountPercent)
+                                                            } else {
+                                                                totalPricePerDay = selectedVehicle.price;
+                                                            }
+
+
+                                                            for (let i = 0; i < updatedExtras.length; i++) {
+                                                                const extraObj = updatedExtras[i];
+                                                                totalPricePerDay += extraObj.price * extraObj.quantity;
+                                                            }
+
+
+
+                                                            dispatch(updateBookingInfo({ ...bookingData, addedExtras: updatedExtras, totalPricePerDay }))
+                                                        }} type="checkbox" />
+                                                        <h6>Booster Seat</h6>
+                                                    </div>
+                                                </li>
+                                                <li>
+                                                    <div class="icon">
+                                                        <img className='extraImg' src={rack} alt />
+                                                    </div>
+                                                    <div class="content">
+                                                        <input className='cursor-pointer' checked={bookingData?.addedExtras?.some(extraObj => extraObj.extraName === 'Roof Rack')} onChange={(e) => {
+                                                            let updatedExtras;
+                                                            if (bookingData.addedExtras) {
+                                                                updatedExtras = [...bookingData.addedExtras];
+                                                            } else {
+                                                                updatedExtras = [];
+                                                            }
+                                                            if (e.target.checked) {
+                                                                updatedExtras.push({
+                                                                    extraName: 'Roof Rack',
+                                                                    price: extrasArr.find((extraObj) => extraObj.extraName === 'Roof Rack').priceOfExtra,
+                                                                    quantity: 1
+                                                                })
+                                                            } else {
+                                                                const extraFound = updatedExtras.find((extraObj) => extraObj.extraName === 'Roof Rack');
+                                                                updatedExtras = updatedExtras.filter((extraObj) => extraObj !== extraFound);
+                                                            }
+                                                            let totalPricePerDay;
+
+                                                            if (promoCodeObj) {
+                                                                totalPricePerDay = selectedVehicle.price - ((selectedVehicle.price / 100) * promoCodeObj.discountPercent)
+                                                            } else {
+                                                                totalPricePerDay = selectedVehicle.price;
+                                                            }
+
+
+                                                            for (let i = 0; i < updatedExtras.length; i++) {
+                                                                const extraObj = updatedExtras[i];
+                                                                totalPricePerDay += extraObj.price * extraObj.quantity;
+                                                            }
+
+
+
+                                                            dispatch(updateBookingInfo({ ...bookingData, addedExtras: updatedExtras, totalPricePerDay }))
+                                                        }} type="checkbox" />
+                                                        <h6>Roof Rack</h6>
+                                                    </div>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="single-item mb-50" id="car-info">
+                                        <div class="car-info">
+                                            <div class="title mb-20">
+                                                <h5></h5>
+                                            </div>
+                                            <ul>
+                                                <li>
+                                                    <div class="icon">
+                                                        <img className='extraImg' src={skiRack} alt />
+                                                    </div>
+                                                    <div class="content">
+                                                        <input className='cursor-pointer' checked={bookingData?.addedExtras?.some(extraObj => extraObj.extraName === 'Ski Rack')} onChange={(e) => {
+                                                            let updatedExtras;
+                                                            if (bookingData.addedExtras) {
+                                                                updatedExtras = [...bookingData.addedExtras];
+                                                            } else {
+                                                                updatedExtras = [];
+                                                            }
+                                                            if (e.target.checked) {
+                                                                updatedExtras.push({
+                                                                    extraName: 'Ski Rack',
+                                                                    price: extrasArr.find((extraObj) => extraObj.extraName === 'Ski Rack').priceOfExtra,
+                                                                    quantity: 1
+                                                                })
+                                                            } else {
+                                                                const extraFound = updatedExtras.find((extraObj) => extraObj.extraName === 'Ski Rack');
+                                                                updatedExtras = updatedExtras.filter((extraObj) => extraObj !== extraFound);
+                                                            }
+                                                            let totalPricePerDay;
+
+                                                            if (promoCodeObj) {
+                                                                totalPricePerDay = selectedVehicle.price - ((selectedVehicle.price / 100) * promoCodeObj.discountPercent)
+                                                            } else {
+                                                                totalPricePerDay = selectedVehicle.price;
+                                                            }
+
+
+                                                            for (let i = 0; i < updatedExtras.length; i++) {
+                                                                const extraObj = updatedExtras[i];
+                                                                totalPricePerDay += extraObj.price * extraObj.quantity;
+                                                            }
+
+
+
+                                                            dispatch(updateBookingInfo({ ...bookingData, addedExtras: updatedExtras, totalPricePerDay }))
+                                                        }} type="checkbox" />
+                                                        <h6>Ski Rack</h6>
+                                                    </div>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
                                 </div>
                             )}
                         </div>
                         <div class="col-lg-4">
                             <div class="car-details-sidebar">
-
                                 <div class="inquiry-form mb-40">
                                     <div class="title">
                                         <h4>Your Selection</h4>
                                         <p></p>
                                     </div>
-                                    <form>
 
-                                        <div class="product-widget mb-20">
+
+                                    <div class="product-widget mb-20">
+                                        <div class="check-box-item">
+                                            <h6 class="product-widget-title mb-20"></h6>
+                                            <div class="checkbox-container">
+                                                <div class="row g-3">
+                                                    <div class="col-6">
+                                                        <li>
+                                                            Basic Rate:</li>
+
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <span><strong>€{selectedVehicle?.price}</strong></span>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+
+                                            <div class="form-inner mb-20">
+                                                <form onSubmit={(e) => {
+                                                    e.preventDefault();
+                                                    setApplyingPromo(true)
+                                                    e.target.reset();
+                                                    axios.get(`/promo-code/get-code/${codeValue}`).then((res) => {
+                                                        console.log(res);
+                                                        setApplyingPromo(false);
+                                                        if (res.status === 201) {
+                                                            toast.error(res.data.message)
+                                                        } else {
+                                                            setPromoCodeObj(res.data.data);
+                                                            setCodeValue(null)
+                                                            toast.success('Promo Code Activated !');
+                                                        }
+                                                    }).catch(err => {
+                                                        setApplyingPromo(false);
+                                                        console.log(err);
+                                                        setPromoCodeObj(null);
+                                                        toast.error('Error on Applying Code!')
+                                                    })
+                                                }}>
+                                                    <h5 class="product-widget-title mb-20">Promo</h5>
+                                                    {promoCodeObj && (
+                                                        <div className=' px-2 my-2 d-flex justify-content-between'>
+                                                            <span>{promoCodeObj.code}</span>
+                                                            <div>
+
+                                                                <span><BiMinus />{promoCodeObj.discountPercent}%</span>
+                                                                <AiOutlineCloseCircle className='mx-2 cursor-pointer fs-5' onClick={() => {
+                                                                    setPromoCodeObj(null);
+                                                                    toast.success('Promo Code Removed!')
+                                                                }} />
+                                                            </div>
+
+                                                        </div>
+                                                    )}
+                                                    <input onChange={(e) => {
+                                                        setCodeValue(e.target.value);
+                                                    }} type="text" placeholder="Ex- Jhon Numan" required />
+                                                    <button class="primary-btn3" type="submit">
+                                                        {!applyingPromo && (
+                                                            <CiLocationArrow1 className='fs-4' />
+                                                        )}
+                                                        {applyingPromo ? (
+                                                            <Spinner animation="border" size="sm" />
+                                                        ) : (
+                                                            'Activate'
+                                                        )}
+                                                    </button>
+                                                </form>
+                                            </div>
+                                            <div class="checkbox-container">
+                                                <h5 class="product-widget-title mb-20">Extras</h5>
+                                                <div class="checkbox-container">
+
+
+                                                    {bookingData?.addedExtras?.map((extraObj) => {
+                                                        return (
+                                                            <div class="row g-3">
+                                                                <div class="col-6">
+                                                                    <li>{extraObj.extraName}</li>
+
+                                                                </div>
+                                                                <div class="col-6">
+                                                                    {(extraObj.extraName !== 'Booster Seat' && extraObj.extraName !== 'Baby Seat') ? (
+                                                                        <>
+                                                                            <span><strong>€{extraObj.price}</strong> × {extraObj.quantity}</span>
+                                                                        </>
+
+                                                                    ) : (
+                                                                        <>
+                                                                            <span><strong>€{extraObj.price}</strong>  ×  </span>
+
+                                                                            <Select value={extraObj.quantity} onChange={(value) => {
+                                                                                // Destructure bookingData from the store
+                                                                                const { addedExtras } = bookingData;
+
+                                                                                // Update the specific item in the array
+                                                                                const updatedExtras = addedExtras.map((extraItem) =>
+                                                                                    extraItem.extraName === extraObj.extraName
+                                                                                        ? { ...extraItem, quantity: value }
+                                                                                        : extraItem
+                                                                                );
+
+                                                                                let totalPricePerDay;
+
+                                                                                if (promoCodeObj) {
+                                                                                    totalPricePerDay = selectedVehicle.price - ((selectedVehicle.price / 100) * promoCodeObj.discountPercent)
+                                                                                } else {
+                                                                                    totalPricePerDay = selectedVehicle.price;
+                                                                                }
+
+
+                                                                                for (let i = 0; i < updatedExtras.length; i++) {
+                                                                                    const extraObj = updatedExtras[i];
+                                                                                    totalPricePerDay += extraObj.price * extraObj.quantity;
+                                                                                }
+
+
+
+                                                                                dispatch(updateBookingInfo({ ...bookingData, addedExtras: updatedExtras, totalPricePerDay }))
+
+                                                                            }} options={[
+                                                                                { value: 1, label: 1 },
+                                                                                { value: 2, label: 2 },
+                                                                                { value: 3, label: 3 },
+                                                                            ]} />
+                                                                        </>
+                                                                    )}
+
+                                                                </div>
+                                                            </div>
+                                                        )
+                                                    })}
+
+
+
+
+                                                </div>
+                                            </div>
                                             <div class="check-box-item">
                                                 <h6 class="product-widget-title mb-20"></h6>
                                                 <div class="checkbox-container">
                                                     <div class="row g-3">
                                                         <div class="col-6">
-                                                            <li>
-                                                                Basic Rate:</li>
+                                                            <li><strong>Total</strong></li>
 
                                                         </div>
                                                         <div class="col-6">
-                                                            <span><strong>€EUR15</strong></span>
+                                                            <span><span className='mx-2'>€ {bookingData?.totalPricePerDay}</span> × <span>{daysNumber}days</span> = <strong>€ {bookingData?.totalPrice}</strong> </span>
+
                                                         </div>
 
                                                     </div>
                                                 </div>
-
-                                                <div class="form-inner mb-20">
-                                                    <h5 class="product-widget-title mb-20">Promo</h5>
-                                                    <input type="text" placeholder="Ex- Jhon Numan"
-
-                                                    />
-                                                    <button class="primary-btn3" type="submit">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
-                                                            viewBox="0 0 14 14">
-                                                            <path
-                                                                d="M13.8697 0.129409C13.9314 0.191213 13.9736 0.269783 13.991 0.355362C14.0085 0.44094 14.0004 0.529754 13.9678 0.610771L8.78063 13.5781C8.73492 13.6923 8.65859 13.7917 8.56003 13.8653C8.46148 13.9389 8.34453 13.9839 8.22206 13.9954C8.09958 14.0068 7.97633 13.9842 7.86586 13.9301C7.75539 13.876 7.66199 13.7924 7.59594 13.6887L4.76304 9.23607L0.310438 6.40316C0.206426 6.33718 0.122663 6.24375 0.0683925 6.13318C0.0141218 6.02261 -0.00854707 5.89919 0.00288719 5.77655C0.0143215 5.65391 0.0594144 5.53681 0.13319 5.43817C0.206966 5.33954 0.306557 5.2632 0.420973 5.21759L13.3883 0.0322452C13.4694 -0.000369522 13.5582 -0.00846329 13.6437 0.00896931C13.7293 0.0264019 13.8079 0.0685926 13.8697 0.1303V0.129409ZM5.65267 8.97578L8.11385 12.8427L12.3329 2.29554L5.65267 8.97578ZM11.7027 1.66531L1.1555 5.88436L5.02333 8.34466L11.7027 1.66531Z" />
-                                                        </svg> Activate
-                                                    </button>
-                                                </div>
-                                                <div class="checkbox-container">
-                                                    <h5 class="product-widget-title mb-20">Extras</h5>
-                                                    <div class="checkbox-container">
-                                                        <div class="row g-3">
-                                                            <div class="col-6">
-                                                                <li>
-                                                                    Booster Seat</li>
-
-                                                            </div>
-                                                            <div class="col-6">
-                                                                <span><strong>€15</strong></span>
-                                                            </div>
-                                                        </div>
-                                                        <div class="row g-3">
-                                                            <div class="col-6">
-                                                                <li>
-                                                                    Roof Rack</li>
-
-                                                            </div>
-                                                            <div class="col-6">
-                                                                <span><strong>€15</strong></span>
-                                                            </div>
-                                                        </div>
-                                                        <div class="row g-3">
-                                                            <div class="col-6">
-                                                                <li>GPS </li>
-
-                                                            </div>
-                                                            <div class="col-6">
-                                                                <span><strong>€15</strong></span>
-                                                            </div>
-                                                        </div>
-                                                        <div class="row g-3">
-                                                            <div class="col-6">
-                                                                <li>TWU</li>
-
-                                                            </div>
-                                                            <div class="col-6">
-                                                                <span><strong>€35</strong></span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="check-box-item">
-                                                    <h6 class="product-widget-title mb-20"></h6>
-                                                    <div class="checkbox-container">
-                                                        <div class="row g-3">
-                                                            <div class="col-6">
-                                                                <li>
-                                                                    <strong>Total</strong></li>
-
-                                                            </div>
-                                                            <div class="col-6">
-                                                                <span><strong>€315</strong></span>
-                                                            </div>
-
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-
-
-
-                                                <div class="form-inner">
-                                                    <button class="primary-btn3" type="submit">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
-                                                            viewBox="0 0 14 14">
-                                                            <path
-                                                                d="M13.8697 0.129409C13.9314 0.191213 13.9736 0.269783 13.991 0.355362C14.0085 0.44094 14.0004 0.529754 13.9678 0.610771L8.78063 13.5781C8.73492 13.6923 8.65859 13.7917 8.56003 13.8653C8.46148 13.9389 8.34453 13.9839 8.22206 13.9954C8.09958 14.0068 7.97633 13.9842 7.86586 13.9301C7.75539 13.876 7.66199 13.7924 7.59594 13.6887L4.76304 9.23607L0.310438 6.40316C0.206426 6.33718 0.122663 6.24375 0.0683925 6.13318C0.0141218 6.02261 -0.00854707 5.89919 0.00288719 5.77655C0.0143215 5.65391 0.0594144 5.53681 0.13319 5.43817C0.206966 5.33954 0.306557 5.2632 0.420973 5.21759L13.3883 0.0322452C13.4694 -0.000369522 13.5582 -0.00846329 13.6437 0.00896931C13.7293 0.0264019 13.8079 0.0685926 13.8697 0.1303V0.129409ZM5.65267 8.97578L8.11385 12.8427L12.3329 2.29554L5.65267 8.97578ZM11.7027 1.66531L1.1555 5.88436L5.02333 8.34466L11.7027 1.66531Z" />
-                                                        </svg> Book Now
-                                                    </button>
-                                                </div>
-
                                             </div>
+
+
+
+
+                                            <div class="form-inner">
+                                                <button onClick={() => {
+                                                    setMakingBooking(true);
+                                                    axios.post('/booking/add-booking', bookingData).then((res) => {
+                                                        toast.success('Booking Made Successfully, Kindly Check your Email for Booking Confirmation!');
+                                                        setMakingBooking(false);
+                                                        // Adding a 3-second delay before navigating to '/'
+                                                        setTimeout(() => {
+                                                            dispatch(updateBookingInfo({}));
+                                                            navigate('/');
+                                                        }, 3000);
+
+                                                    }).catch((err) => {
+                                                        setMakingBooking(false);
+                                                        toast.error('Booking not Submitted, Try Again!');
+
+                                                    })
+                                                }} class="primary-btn3" type="submit">
+                                                    {!makingBooking && (
+
+                                                        <CiLocationArrow1 className='fs-4' />
+                                                    )}
+                                                    {makingBooking ? (
+                                                        <Spinner animation="border" size="sm" />
+                                                    ) : (
+                                                        'Book Now'
+                                                    )}
+                                                </button>
+                                            </div>
+
                                         </div>
-                                    </form>
+                                    </div>
+
                                 </div>
                             </div>
                         </div>

@@ -8,11 +8,7 @@ const MongoDBStore = require('connect-mongodb-session')(session);
 const app = express();
 require('./src/db/connectdb');
 
-// Import routes
-const userRoutes = require('./src/routes/userRoutes'); // Adjust the path based on your file structure
-const adminRoutes = require('./src/routes/adminRoutes'); // Adjust the path based on your file structure
-const vehicleRoutes = require('./src/routes/vehicleRoutes'); // Adjust the path based on your file structure
-const extrasRoutes = require('./src/routes/extrasRoutes'); // Adjust the path based on your file structure
+
 
 const PORT = process.env.PORT || 5000;
 app.use(cors());
@@ -30,12 +26,24 @@ app.use((req, res, next) => {
   next();
 });
 
+// Import routes
+const userRoutes = require('./src/routes/userRoutes'); // Adjust the path based on your file structure
+const adminRoutes = require('./src/routes/VATRoutes'); // Adjust the path based on your file structure
+const vehicleRoutes = require('./src/routes/vehicleRoutes'); // Adjust the path based on your file structure
+const extrasRoutes = require('./src/routes/extrasRoutes'); // Adjust the path based on your file structure
+const promoCodeRoutes = require('./src/routes/promoCodeRoutes'); // Adjust the path based on your file structure
+const bookingRoutes = require('./src/routes/bookingRoutes'); // Adjust the path based on your file structure
+
+
+
 // Use the user routes
 app.use('/user', userRoutes); // Assuming user routes are prefixed with '/user'
 
-app.use('/admin', adminRoutes); // Assuming user routes are prefixed with '/user'
+app.use('/vat', adminRoutes); // Assuming user routes are prefixed with '/user'
 app.use('/vehicle', vehicleRoutes); // Assuming user routes are prefixed with '/user'
 app.use('/extras', extrasRoutes);
+app.use('/promo-code', promoCodeRoutes);
+app.use('/booking', bookingRoutes);
 
 
 
