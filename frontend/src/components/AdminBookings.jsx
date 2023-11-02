@@ -149,9 +149,10 @@ export default function AdminBookings() {
                         <span className=' fw-bold'>€{bookingToView.netVatedTotal}</span>
                       </div>
 
-                      {bookingToView.status === 'Confirmed' && (
 
-                        <div className='border-circle px-2 py-2 d-flex  justify-content-center'>
+
+                      <div className='border-circle px-2 py-2 d-flex  justify-content-center'>
+                        {bookingToView.status === 'Confirmed' && (
                           <a onClick={() => {
                             axios.post(`/booking/complete-booking/${bookingToView._id}`).then((res) => {
                               updateData();
@@ -163,19 +164,20 @@ export default function AdminBookings() {
                               toast.error('Booking not Completed, Try Again')
                             })
                           }} className='btn btn-success'>Complete</a>
-                          <a onClick={() => {
-                            axios.delete(`/booking/delete-booking/${bookingToView._id}`).then((res) => {
-                              setLoading(true);
-                              updateData()
-                              setViewBooking(false);
-                              setBookingToView(null);
-                              toast.success('Booking is Deleted!')
-                            }).catch(e => {
-                              toast.error('Booking not Deleted, Try Again')
-                            })
-                          }} className='btn btn-dark mx-1 p-1 px-2'><MdDelete className='fs-4' /></a>
-                        </div>
-                      )}
+                        )}
+                        <a onClick={() => {
+                          axios.delete(`/booking/delete-booking/${bookingToView._id}`).then((res) => {
+                            setLoading(true);
+                            updateData()
+                            setViewBooking(false);
+                            setBookingToView(null);
+                            toast.success('Booking is Deleted!')
+                          }).catch(e => {
+                            toast.error('Booking not Deleted, Try Again')
+                          })
+                        }} className='btn btn-dark mx-1 p-1 px-2'><MdDelete className='fs-4' /></a>
+                      </div>
+
 
 
                     </div>

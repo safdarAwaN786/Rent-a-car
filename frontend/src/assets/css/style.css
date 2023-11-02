@@ -1171,7 +1171,7 @@ table {
 	overflow-x: scroll !important;
 }
 .underTable{
-	width: 600px !important;
+	min-width: 600px !important;
 }
 
 

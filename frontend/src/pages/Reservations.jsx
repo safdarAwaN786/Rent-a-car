@@ -193,7 +193,7 @@ export default function Reservations() {
 
           <div className='underTable d-flex bg-secondary text-bold text-light border-circle py-2 px-2 justify-content-between'>
             <div>
-              <span className='fs-5 fw-bold'>Car</span>
+              <span className='fs-5 fw-bold'>Vehicle Name</span>
             </div>
             <div>
               <span className='fs-5 fw-bold'>Booking Status</span>
