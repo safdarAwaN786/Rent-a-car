@@ -187,46 +187,49 @@ export default function AdminBookings() {
               </div>
             </div>
           )}
+          <div className='myTable'>
 
-          <div className='d-flex bg-secondary text-white p-2 fw-bold justify-content-between'>
-            <span>#. Vehicle</span>
-            <span>Status</span>
-            <span>Booing Date</span>
-            <span>Action</span>
-          </div>
 
-          {allBookings?.filter(booking => booking.status !== 'Completed').map((booking, index) => {
+            <div className=' d-flex bg-secondary text-white p-2 fw-bold justify-content-between'>
+              <span>#. Vehicle</span>
+              <span>Status</span>
+              <span>Booing Date</span>
+              <span>Action</span>
+            </div>
 
-            const date = new Date(booking.bookingDate); // Convert to Date object
-            const formattedDate = date.toLocaleDateString('en-GB', {
-              day: '2-digit',
-              month: '2-digit',
-              year: 'numeric',
-            });
-            return (
-              <div className='d-flex bg-light p-2 fw-bold justify-content-between'>
-                <span>{index + 1}. {booking.vehicle.name}</span>
-                <span className={`${booking.status === 'Not Confirmed' && 'text-danger'} ${booking.status === 'Confirmed' && 'text-primary'} ${booking.status === 'Completed' && 'text-success'}`}>{booking.status}</span>
-                <span>{formattedDate}</span>
-                <span><button onClick={() => {
-                  setViewBooking(true);
-                  setBookingToView(booking);
-                }} className='btn btn-outline-dark px-1'><BsEyeFill className='fs-5' />View
-                  {/* <button className='btn btn-outline-success mx-1' onClick={()=>{
+            {allBookings?.filter(booking => booking.status !== 'Completed').map((booking, index) => {
+
+              const date = new Date(booking.bookingDate); // Convert to Date object
+              const formattedDate = date.toLocaleDateString('en-GB', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+              });
+              return (
+                <div className=' d-flex bg-light p-2 fw-bold justify-content-between'>
+                  <span>{index + 1}. {booking.vehicle.name}</span>
+                  <span className={`${booking.status === 'Not Confirmed' && 'text-danger'} ${booking.status === 'Confirmed' && 'text-primary'} ${booking.status === 'Completed' && 'text-success'}`}>{booking.status}</span>
+                  <span>{formattedDate}</span>
+                  <span><button onClick={() => {
+                    setViewBooking(true);
+                    setBookingToView(booking);
+                  }} className='btn btn-outline-dark px-1'><BsEyeFill className='fs-5' />View
+                    {/* <button className='btn btn-outline-success mx-1' onClick={()=>{
                 axios.post(`/booking/send-confirmation-email/${booking._id}`).then((res) => {
                         toast.success('Booking is Completed!')
                       }).catch(e => {
                         toast.error('Booking not Completed, Try Again')
                       })
               }}>Complete</button> */}
-                </button></span>
-              </div>
-            )
-          })}
+                  </button></span>
+                </div>
+              )
+            })}
+          </div>
           {!allBookings || allBookings.length === 0 && (
             <div className='d-flex justify-content-center py-2'>
-                <p>No Bookings Found!</p>
-              </div>
+              <p>No Bookings Found!</p>
+            </div>
           )}
 
         </div>

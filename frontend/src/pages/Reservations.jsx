@@ -97,69 +97,69 @@ export default function Reservations() {
 
 
                   <div className=' border-circle px-2 py-1 d-flex  justify-content-between'>
-                    <span className='fw-bold'>Your Email :</span>
-                    <span className=' fw-bold'>{bookingToView.user.email}</span>
+                    <span className='w-50 fw-bold'>Your Email :</span>
+                    <span className='w-50 text-end  fw-bold'>{bookingToView.user.email}</span>
                   </div>
                   <div className=' border-circle px-2 py-1 d-flex  justify-content-between'>
-                    <span className='fw-bold'>Booked Vehicle :</span>
-                    <span className=' fw-bold'>{bookingToView.vehicle.name}</span>
+                    <span className='w-50 fw-bold'>Booked Vehicle :</span>
+                    <span className='w-50 text-end  fw-bold'>{bookingToView.vehicle.name}</span>
                   </div>
                   <div className=' border-circle px-2 py-1 d-flex  justify-content-between'>
-                    <span className='fw-bold'>Booking Date :</span>
-                    <span className=' fw-bold'>{formatDate(bookingToView.bookingDate)}</span>
+                    <span className='w-50 fw-bold'>Booking Date :</span>
+                    <span className='w-50 text-end  fw-bold'>{formatDate(bookingToView.bookingDate)}</span>
                   </div>
                   <div className=' border-circle px-2 py-1 d-flex  justify-content-between'>
-                    <span className='fw-bold'>Current Status :</span>
-                    <span className={`fw-bold ${bookingToView.status === 'Not Confirmed' && 'text-danger'} ${bookingToView.status === 'Confirmed' && 'text-primary'} ${bookingToView.status === 'Completed' && 'text-success'}`}>{bookingToView.status}</span>
+                    <span className='w-50 fw-bold'>Current Status :</span>
+                    <span className={`w-50 text-end fw-bold ${bookingToView.status === 'Not Confirmed' && 'text-danger'} ${bookingToView.status === 'Confirmed' && 'text-primary'} ${bookingToView.status === 'Completed' && 'text-success'}`}>{bookingToView.status}</span>
                   </div>
                   <div className=' border-circle px-2 py-1 d-flex  justify-content-between'>
-                    <span className='fw-bold'>Pick Up Date :</span>
-                    <span className=' fw-bold'>{formatDate(bookingToView.pickUpDate)}</span>
+                    <span className='w-50 fw-bold'>Pick Up Date :</span>
+                    <span className='w-50 text-end  fw-bold'>{formatDate(bookingToView.pickUpDate)}</span>
                   </div>
                   <div className=' border-circle px-2 py-1 d-flex  justify-content-between'>
-                    <span className='fw-bold'>Pick Up Time :</span>
-                    <span className=' fw-bold'>{bookingToView.pickUpTime}</span>
+                    <span className='w-50 fw-bold'>Pick Up Time :</span>
+                    <span className='w-50 text-end  fw-bold'>{bookingToView.pickUpTime}</span>
                   </div>
                   <div className=' border-circle px-2 py-1 d-flex  justify-content-between'>
-                    <span className='fw-bold'>Pick Up Location :</span>
-                    <span className=' fw-bold'>{bookingToView.pickUpLocation}</span>
+                    <span className='w-50 fw-bold'>Pick Up Location :</span>
+                    <span className='w-50 text-end  fw-bold'>{bookingToView.pickUpLocation}</span>
                   </div>
                   <div className=' border-circle px-2 py-1 d-flex  justify-content-between'>
-                    <span className='fw-bold'>Drop Off Date :</span>
-                    <span className=' fw-bold'>{formatDate(bookingToView.dropOffDate)}</span>
+                    <span className='w-50 fw-bold'>Drop Off Date :</span>
+                    <span className='w-50 text-end  fw-bold'>{formatDate(bookingToView.dropOffDate)}</span>
                   </div>
                   <div className=' border-circle px-2 py-1 d-flex  justify-content-between'>
-                    <span className='fw-bold'>Drop Off Time :</span>
-                    <span className=' fw-bold'>{bookingToView.dropOffTime}</span>
+                    <span className='w-50 fw-bold'>Drop Off Time :</span>
+                    <span className='w-50 text-end  fw-bold'>{bookingToView.dropOffTime}</span>
                   </div>
                   <div className=' border-circle px-2 py-1 d-flex  justify-content-between'>
-                    <span className='fw-bold'>Drop Off Location :</span>
-                    <span className=' fw-bold'>{bookingToView.dropOffLocation}</span>
+                    <span className='w-50 fw-bold'>Drop Off Location :</span>
+                    <span className='w-50 text-end  fw-bold'>{bookingToView.dropOffLocation}</span>
                   </div>
                   <h4 className='text-center'>Prices</h4>
                   <div className=' border-circle px-2 py-1 d-flex  justify-content-between'>
-                    <span className='fw-bold'>Vehicle Price :</span>
-                    <span className=' fw-bold'>€{bookingToView.vehicle.price}</span>
+                    <span className='w-50 fw-bold'>Vehicle Price :</span>
+                    <span className='w-50 text-end  fw-bold'>€{bookingToView.vehicle.price}</span>
                   </div>
                   {bookingToView.addedExtras.map((extraObj) => {
                     return (
                       <div className=' border-circle px-2 py-1 d-flex  justify-content-between'>
-                        <span className='fw-bold'>{extraObj.extraName} :</span>
-                        <span className=' fw-bold'>€{extraObj.price} X {extraObj.quantity}</span>
+                        <span className='w-50 fw-bold'>{extraObj.extraName} :</span>
+                        <span className='w-50 text-end  fw-bold'>€{extraObj.price} X {extraObj.quantity}</span>
                       </div>
                     )
                   })}
                   <div className=' border-circle px-2 py-1 d-flex  justify-content-between'>
-                    <span className='fw-bold'>Promo Discount :</span>
-                    <span className=' fw-bold'>€{Math.round(bookingToView.vehicle.price / 100) * (bookingToView.promoCode?.discountPercent || 0)}</span>
+                    <span className='w-50 fw-bold'>Promo Discount :</span>
+                    <span className='w-50 text-end  fw-bold'>€{Math.round(bookingToView.vehicle.price / 100) * (bookingToView.promoCode?.discountPercent || 0)}</span>
                   </div>
                   <div className=' border-circle px-2 py-1 d-flex  justify-content-between'>
-                    <span className='fw-bold'>Total VAT added :</span>
-                    <span className=' fw-bold'>€{Math.round(bookingToView.vehicle.price / 100) * (bookingToView.vatValue)}</span>
+                    <span className='w-50 fw-bold'>Total VAT added :</span>
+                    <span className='w-50 text-end  fw-bold'>€{Math.round(bookingToView.vehicle.price / 100) * (bookingToView.vatValue)}</span>
                   </div>
                   <div className=' border-circle px-2 py-1 d-flex  justify-content-between'>
-                    <span className='fw-bold'>Grand Total :</span>
-                    <span className=' fw-bold'>€{bookingToView.netVatedTotal}</span>
+                    <span className='w-50 fw-bold'>Grand Total :</span>
+                    <span className='w-50 text-end  fw-bold'>€{bookingToView.netVatedTotal}</span>
                   </div>
 
                   {bookingToView.status === 'Not Confirmed' && (
@@ -187,71 +187,76 @@ export default function Reservations() {
         </div>
       )}
       <div className='my-5 mx-3'>
-        <div className='d-flex bg-secondary text-bold text-light border-circle py-2 px-2 justify-content-between'>
-          <div>
-            <span className='fs-5 fw-bold'>Car</span>
-          </div>
-          <div>
-            <span className='fs-5 fw-bold'>Booking Status</span>
-          </div>
-          <div>
-            <span className='fs-5 fw-bold'>Booking Date</span>
-          </div>
-          <div>
-            <span className='fs-5 fw-bold'>Action</span>
-          </div>
-        </div>
-
-        {loading && user ? (
-          <div className='d-flex justify-content-center my-3'>
-
-            <Spinner />
-          </div>
-        ) : (
-          <>
 
 
-            {bookings?.map((booking) => {
+        <div className='myTable'>
 
-              const date = new Date(booking.bookingDate); // Convert to Date object
-              const formattedDate = date.toLocaleDateString('en-GB', {
-                day: '2-digit',
-                month: '2-digit',
-                year: 'numeric',
-              });
-              return (
-                <div className='d-flex bg-light border-circle py-2 px-2 justify-content-between'>
-                  <div>
-                    <span>{booking.vehicle.name}</span>
+          <div className='underTable d-flex bg-secondary text-bold text-light border-circle py-2 px-2 justify-content-between'>
+            <div>
+              <span className='fs-5 fw-bold'>Car</span>
+            </div>
+            <div>
+              <span className='fs-5 fw-bold'>Booking Status</span>
+            </div>
+            <div>
+              <span className='fs-5 fw-bold'>Booking Date</span>
+            </div>
+            <div>
+              <span className='fs-5 fw-bold'>Action</span>
+            </div>
+          </div>
+
+          {loading && user ? (
+            <div className='underTable d-flex justify-content-center my-3'>
+
+              <Spinner />
+            </div>
+          ) : (
+            <>
+
+
+              {bookings?.map((booking) => {
+
+                const date = new Date(booking.bookingDate); // Convert to Date object
+                const formattedDate = date.toLocaleDateString('en-GB', {
+                  day: '2-digit',
+                  month: '2-digit',
+                  year: 'numeric',
+                });
+                return (
+                  <div className='underTable d-flex bg-light border-circle py-2 px-2 justify-content-between'>
+                    <div>
+                      <span>{booking.vehicle.name}</span>
+                    </div>
+                    <div>
+                      <span className={`fw-bold ${booking.status === 'Not Confirmed' && 'text-danger'} ${booking.status === 'Confirmed' && 'text-primary'} ${booking.status === 'Completed' && 'text-success'}`}>{booking.status}</span>
+                    </div>
+                    <div>
+                      <span>{formattedDate}</span>
+                    </div>
+                    <div>
+
+
+
+                      <button onClick={() => {
+                        setViewBooking(true);
+                        setBookingToView(booking);
+                      }} className='btn btn-outline-dark p-1'><BsEyeFill className='fs-5' />View</button>
+
+                    </div>
+
                   </div>
-                  <div>
-                    <span className={`fw-bold ${booking.status === 'Not Confirmed' && 'text-danger'} ${booking.status === 'Confirmed' && 'text-primary'} ${booking.status === 'Completed' && 'text-success'}`}>{booking.status}</span>
-                  </div>
-                  <div>
-                    <span>{formattedDate}</span>
-                  </div>
-                  <div>
+                )
+              })}
 
-
-
-                    <button onClick={() => {
-                      setViewBooking(true);
-                      setBookingToView(booking);
-                    }} className='btn btn-outline-dark p-1'><BsEyeFill className='fs-5' />View</button>
-
-                  </div>
-
+              {!bookings || bookings.length == 0 && (
+                <div className='underTable d-flex justify-content-center py-2'>
+                  <p>No Bookings Found!</p>
                 </div>
-              )
-            })}
-
-            {!bookings || bookings.length == 0 && (
-              <div className='d-flex justify-content-center py-2'>
-                <p>No Bookings Found!</p>
-              </div>
-            )}
-          </>
-        )}
+              )}
+            </>
+          )}
+        </div>
 
       </div>
       <Footer />

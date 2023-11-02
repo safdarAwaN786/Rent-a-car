@@ -820,7 +820,7 @@ export default function AdminProductsSection() {
                                     <div class="list-grid-product-wrap grid-group-wrapper">
                                         <div class="row g-4  mb-40">
 
-                                            {vehiclesList?.map((vehicleObj) => {
+                                            {vehiclesList?.sort((a, b) => a.price - b.price).map((vehicleObj) => {
                                                 return (
                                                     <div class={`${gridView ? 'col-lg-6 col-md-6 col-sm-12' : 'col-12'}  wow fadeInUp item`}>
                                                         <AdminProductCard reGetData={reGetData} vehicleData={vehicleObj} gridView={gridView} />

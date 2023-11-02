@@ -1162,6 +1162,19 @@ p {
 	z-index: -1;
 	transition: all .5s ease-out 0s
 }
+table {
+	min-width: 500px !important;
+	overflow-x: scroll !important;
+}
+.myTable{
+	min-width: 90vw !important;
+	overflow-x: scroll !important;
+}
+.underTable{
+	width: 600px !important;
+}
+
+
 
 .top-bar .search-area form .form-inner button:hover {
 	color: var(--white-color)
