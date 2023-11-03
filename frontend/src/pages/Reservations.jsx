@@ -15,6 +15,7 @@ import { BsEyeFill } from 'react-icons/bs'
 
 export default function Reservations() {
 
+  const [sendingEmail, setSendingEmail] = useState(false);
   const user = useSelector(state => state.auth.user);
   const [bookings, setBookings] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -166,12 +167,26 @@ export default function Reservations() {
 
                     <div className='border-circle px-2 py-2 d-flex  justify-content-center'>
                       <a onClick={() => {
+                        setSendingEmail(true);
                         axios.post(`/booking/send-confirmation-email/${bookingToView._id}`).then((res) => {
+                          setSendingEmail(false);
                           toast.success('Confirmation Email is Sended!')
                         }).catch(e => {
+                          setSendingEmail(false);
                           toast.error('Email not sended, Try Again')
                         })
-                      }} className='btn btn-primary'><CiLocationArrow1 className='fs-4' />Email</a>
+                      }} className='btn btn-primary'>
+                        {!sendingEmail && (
+
+
+                          <CiLocationArrow1 className='fs-4' />
+                        )}
+                        {sendingEmail ? (
+                          <Spinner animation="border" size="sm" />
+                        ) : (
+                          'Email'
+                        )}
+                      </a>
 
                     </div>
                   )}
