@@ -93,9 +93,14 @@ export default function ProductCard({ gridView, vehicleData }) {
                         if (loggedIn === true) {
                             console.log('correct');
                             dispatch(updateBookingInfo({ ...bookingData, vehicle: vehicleData._id, totalPrice: vehicleData.price, user :  user._id}))
-                            dispatch(selectVehicle(vehicleData))
+                            dispatch(selectVehicle(vehicleData));
+                            if(bookingSubmitted){
+
 
                             navigate('/complete-booking');
+                            } else {
+                                navigate('/');
+                            }
 
                         } else {
                             toast.warning("Please Log In or Sign Up!");
