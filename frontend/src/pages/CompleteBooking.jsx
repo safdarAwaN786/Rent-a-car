@@ -734,8 +734,8 @@ export default function CompleteBooking() {
                                                         // Adding a 3-second delay before navigating to '/'
                                                         setTimeout(() => {
                                                             dispatch(updateBookingInfo({}));
-                                                            navigate('/');
-                                                        }, 3000);
+                                                            navigate('/reservations');
+                                                        }, 5000);
 
                                                     }).catch((err) => {
                                                         setMakingBooking(false);
