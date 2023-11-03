@@ -29,7 +29,7 @@ const addBooking = async (req, res) => {
 
 
 
-    const booking = new Booking({ ...req.body, netVatedTotal: Math.round(vatedPrice), vatValue : vat[0].value });
+    const booking = new Booking({ ...req.body, netVatedTotal: Math.round(vatedPrice), vatValue: vat[0].value });
     const pickUpDate = new Date(booking?.pickUpDate);
     const dropOffDate = new Date(booking?.dropOffDate);
 
@@ -102,18 +102,18 @@ const addBooking = async (req, res) => {
               <tr>
                 <th>Pick up:</th>
                 <td>${booking.pickUpLocation} on ${booking.pickUpDate.toLocaleDateString('en-GB', {
-                  day: '2-digit',
-                  month: '2-digit',
-                  year: 'numeric',
-                })} | ${booking.pickUpTime} </td>
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+      })} | ${booking.pickUpTime} </td>
               </tr>
               <tr>
                 <th>Drop off:</th>
                 <td>${booking.dropOffLocation} on ${booking.dropOffDate.toLocaleDateString('en-GB', {
-                  day: '2-digit',
-                  month: '2-digit',
-                  year: 'numeric',
-                })} | ${booking.dropOffTime} </td>
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+      })} | ${booking.dropOffTime} </td>
               </tr>
               <tr>
                 <th>Payment Method:</th>
@@ -164,7 +164,18 @@ const addBooking = async (req, res) => {
               <td>€${Math.round(booking.netVatedTotal)}</td>
             </tr>
               </table >
-
+              <a href="http://localhost:3000/confirm-booking/${booking._id}">
+              <button style="background-color: #4CAF50; /* Green */
+                            border: none;
+                            color: white;
+                            padding: 15px 32px;
+                            text-align: center;
+                            text-decoration: none;
+                            display: inline-block;
+                            font-size: 16px;
+                            margin: 4px 2px;
+                            cursor: pointer;">Confirm Booking</button>
+            </a>
 
 
                 <h2>Important Information</h2>
@@ -334,10 +345,10 @@ const sendConfirmationEmail = async (req, res) => {
             <h2>Booking Confirmation</h2>
             
             <p>Date: ${booking.bookingDate.toLocaleDateString('en-GB', {
-              day: '2-digit',
-              month: '2-digit',
-              year: 'numeric',
-            })} </p>
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+      })} </p>
             
            
             
@@ -347,18 +358,18 @@ const sendConfirmationEmail = async (req, res) => {
               <tr>
                 <th>Pick up:</th>
                 <td>${booking.pickUpLocation} on ${booking.pickUpDate.toLocaleDateString('en-GB', {
-                  day: '2-digit',
-                  month: '2-digit',
-                  year: 'numeric',
-                })} | ${booking.pickUpTime} </td>
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+      })} | ${booking.pickUpTime} </td>
               </tr>
               <tr>
                 <th>Drop off:</th>
                 <td>${booking.dropOffLocation} on ${booking.dropOffDate.toLocaleDateString('en-GB', {
-                  day: '2-digit',
-                  month: '2-digit',
-                  year: 'numeric',
-                })} | ${booking.dropOffTime} </td>
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+      })} | ${booking.dropOffTime} </td>
               </tr>
               <tr>
                 <th>Payment Method:</th>
