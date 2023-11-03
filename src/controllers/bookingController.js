@@ -164,7 +164,7 @@ const addBooking = async (req, res) => {
               <td>€${Math.round(booking.netVatedTotal)}</td>
             </tr>
               </table >
-              <a href="http://localhost:3000/confirm-booking/${booking._id}">
+              <a href="https://my-car-app-mu.vercel.app/confirm-booking/${booking._id}">
               <button style="background-color: #4CAF50; /* Green */
                             border: none;
                             color: white;
@@ -198,6 +198,9 @@ const addBooking = async (req, res) => {
       if (error) {
         console.log(error);
       } else {
+        res.status(200).send({
+          status: true, message: "The Booking is added!", data: booking
+        });
         console.log('Email sent: ' + info.response);
       }
     });
@@ -205,9 +208,7 @@ const addBooking = async (req, res) => {
     await booking.save();
     console.log(booking);
 
-    res.status(200).send({
-      status: true, message: "The Booking is added!", data: booking
-    });
+
 
   } catch (error) {
     console.log(error)
@@ -421,7 +422,7 @@ const sendConfirmationEmail = async (req, res) => {
             </tr>
               </table >
 
-              <a href="http://localhost:3000/confirm-booking/${booking._id}">
+              <a href="https://my-car-app-mu.vercel.app/confirm-booking/${booking._id}">
       <button style="background-color: #4CAF50; /* Green */
                     border: none;
                     color: white;
