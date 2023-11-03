@@ -99,7 +99,7 @@ export default function ProductCard({ gridView, vehicleData }) {
 
                         } else {
                             toast.warning("Please Log In or Sign Up!");
-                            navigate('/');
+                           
                         }
                     }} class="text-decoration-none cursor-pointer view-btn2" >
                         <svg className='text-black' width="35" height="21" viewBox="0 0 35 21"
