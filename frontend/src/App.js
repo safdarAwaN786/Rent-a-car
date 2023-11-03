@@ -40,17 +40,9 @@ function App() {
   const bookingSubmitted = useSelector(state => state.booking.isBookingSubmitted);
   const selectedVehicle = useSelector(state => state.vehicle);
 
-  useEffect(()=>{
-    console.log(bookingData);
-  }, [bookingData])
 
-  useEffect(()=>{
-    console.log(selectedVehicle);
-  }, [selectedVehicle])
 
-  useEffect(()=>{
-    console.log(bookingSubmitted);
-  }, [bookingSubmitted])
+
 
   
 

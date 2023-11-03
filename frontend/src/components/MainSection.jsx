@@ -21,8 +21,8 @@ export default function MainSection() {
 
 
     const updateBookingData = (e) => {
-        
-        dispatch(updateBookingInfo({...bookingData, [e.target.name] : e.target.value}));
+
+        dispatch(updateBookingInfo({ ...bookingData, [e.target.name]: e.target.value }));
 
         // setBookingData({ ...bookingData, [e.target.name]: e.target.value })
     }
@@ -51,15 +51,18 @@ export default function MainSection() {
                             <div className='bg-white py-3'>
                                 <form onSubmit={(e) => {
                                     e.preventDefault();
-                                    if (loggedIn) {
-                                        dispatch(submitPreBooking());
-                                        
-                                        dispatch(updateBookingInfo({...bookingData, user : user._id}));                                       
-                                        navigate('/vehicle-guide')
+
+
+                                    if (!bookingData.pickUpLocation) {
+                                        toast.warning('Please Provide Pick Up Location!');
+                                    } else if (!bookingData.dropOffLocation) {
+                                        toast.warning('Please Provide Drop Off Location !');
                                     } else {
-                                        dispatch(clearPreSubmission());
-                                        toast.warning('Please LogIn or Sign Up!');
+
+                                        dispatch(submitPreBooking());
+                                        navigate('/vehicle-guide')
                                     }
+
                                 }}>
                                     <div class="d-flex flex-row flex-wrap">
                                         <div class="m-2">
@@ -70,12 +73,10 @@ export default function MainSection() {
                                                 <label for="pickup-location">Pick-up location</label>
                                                 {customPickUp ? (
                                                     <input value={bookingData?.pickUpLocation} onChange={(e) => {
-                                                        if (loggedIn) {
 
-                                                            updateBookingData(e);
-                                                        } else {
-                                                            toast.warning('Please LogIn or Sign Up!');
-                                                        }
+
+                                                        updateBookingData(e);
+
                                                     }} type='text' placeholder='Provide Your Location' className="form-control" name='pickUpLocation' required />
                                                 ) : (
 
@@ -83,17 +84,15 @@ export default function MainSection() {
                                                     <Select value={bookingData?.pickUpLocation} onChange={(value) => {
                                                         // selected is now defined in the scope of this function
 
-                                                        if (loggedIn) {
-                                                            if (value != 'Custom Location') {
-                                                                dispatch(updateBookingInfo({...bookingData, pickUpLocation : value}))
-                                                                
-                                                            } else {
-                                                                
-                                                                setCustomPickUp(true);
-                                                            }
+
+                                                        if (value != 'Custom Location') {
+                                                            dispatch(updateBookingInfo({ ...bookingData, pickUpLocation: value }))
+
                                                         } else {
-                                                            toast.warning('Please LogIn or Sign Up!');
+
+                                                            setCustomPickUp(true);
                                                         }
+
                                                     }} options={locations} required />
                                                 )}
                                             </div>
@@ -110,12 +109,10 @@ export default function MainSection() {
                                                     <label for="date-1696006456045" class="formbuilder-date-label">Pick-up
                                                         Date</label>
                                                     <input value={bookingData?.pickUpDate} onChange={(e) => {
-                                                        if (loggedIn) {
 
-                                                            updateBookingData(e);
-                                                        } else {
-                                                            toast.warning('Please LogIn or Sign Up!');
-                                                        }
+
+                                                        updateBookingData(e);
+
                                                     }} name='pickUpDate' type="date" class="form-control"
                                                         access="false" id="date-1696006456045" required />
                                                 </div>
@@ -128,12 +125,10 @@ export default function MainSection() {
                                                         Pick-up Time</label>
 
                                                     <input value={bookingData?.pickUpTime} onChange={(e) => {
-                                                        if (loggedIn) {
 
-                                                            updateBookingData(e);
-                                                        } else {
-                                                            toast.warning('Please LogIn or Sign Up!');
-                                                        }
+
+                                                        updateBookingData(e);
+
                                                     }} type="time" class="form-control" name="pickUpTime"
                                                         access="false" id="date-1696006456045" required />
                                                 </div>
@@ -147,12 +142,10 @@ export default function MainSection() {
                                                 <label for="pickup-location">Drop-Off location</label>
                                                 {customDropOff ? (
                                                     <input value={bookingData?.dropOffLocation} onChange={(e) => {
-                                                        if (loggedIn) {
 
-                                                            updateBookingData(e);
-                                                        } else {
-                                                            toast.warning('Please LogIn or Sign Up!');
-                                                        }
+
+                                                        updateBookingData(e);
+
                                                     }} type='text' placeholder='Provide Your Location' className="form-control" name='dropOffLocation' required />
 
                                                 ) : (
@@ -160,17 +153,15 @@ export default function MainSection() {
                                                     <Select value={bookingData?.dropOffLocation} onChange={(value) => {
                                                         // selected is now defined in the scope of this function
 
-                                                        if (loggedIn) {
-                                                            if (value != 'Custom Location') {
-                                                                dispatch(updateBookingInfo({...bookingData, dropOffLocation : value}));
-                                                                
-                                                            } else {
-                                                                
-                                                                setCustomDropOff(true);
-                                                            }
+
+                                                        if (value != 'Custom Location') {
+                                                            dispatch(updateBookingInfo({ ...bookingData, dropOffLocation: value }));
+
                                                         } else {
-                                                            toast.warning('Please LogIn or Sign Up!');
+
+                                                            setCustomDropOff(true);
                                                         }
+
                                                     }} options={locations} required />
                                                 )}
                                             </div>
@@ -181,12 +172,10 @@ export default function MainSection() {
                                                     <label for="date-1696006456045" class="formbuilder-date-label">Drop-off
                                                         date</label>
                                                     <input value={bookingData?.dropOffDate} onChange={(e) => {
-                                                        if (loggedIn) {
 
-                                                            updateBookingData(e);
-                                                        } else {
-                                                            toast.warning('Please LogIn or Sign Up!');
-                                                        }
+
+                                                        updateBookingData(e);
+
                                                     }} type="date" class="form-control" name="dropOffDate"
                                                         access="false" id="date-1696006456045" required />
                                                 </div>
@@ -198,12 +187,10 @@ export default function MainSection() {
                                                     <label class="formester-label">
                                                         Drop-off Time</label>
                                                     <input value={bookingData?.dropOffTime} onChange={(e) => {
-                                                        if (loggedIn) {
 
-                                                            updateBookingData(e);
-                                                        } else {
-                                                            toast.warning('Please LogIn or Sign Up!');
-                                                        }
+
+                                                        updateBookingData(e);
+
                                                     }} type="time" class="form-control" name="dropOffTime"
                                                         access="false" id="date-1696006456045" required />
                                                 </div>

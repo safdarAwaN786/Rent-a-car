@@ -13,9 +13,11 @@ import { toast } from 'react-toastify'
 import { useDispatch, useSelector } from 'react-redux'
 import { selectVehicle, updateBookingInfo } from '../redux/slices/bookingSlices'
 
-export default function ProductCard({gridView, vehicleData }) {
+export default function ProductCard({ gridView, vehicleData }) {
 
     const bookingSubmitted = useSelector(state => state.booking.isBookingSubmitted);
+    const loggedIn = useSelector(state => state.auth.loggedIn);
+    const user = useSelector(state => state.auth.user);
     const navigate = useNavigate();
     const bookingData = useSelector(state => state.booking.bookingData);
     const dispatch = useDispatch()
@@ -87,14 +89,14 @@ export default function ProductCard({gridView, vehicleData }) {
                 </ul>
 
                 <div class="content-btm">
-                    <a onClick={()=>{
-                        if(bookingSubmitted === true){
+                    <a onClick={() => {
+                        if (loggedIn === true) {
                             console.log('correct');
-                            dispatch(updateBookingInfo({...bookingData, vehicle : vehicleData._id, totalPrice : vehicleData.price}))
-                        dispatch(selectVehicle(vehicleData))
-                        
-                        navigate('/complete-booking');
-                      
+                            dispatch(updateBookingInfo({ ...bookingData, vehicle: vehicleData._id, totalPrice: vehicleData.price, user :  user._id}))
+                            dispatch(selectVehicle(vehicleData))
+
+                            navigate('/complete-booking');
+
                         } else {
                             toast.warning("Please Log In or Sign Up!");
                             navigate('/');

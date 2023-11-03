@@ -80,7 +80,7 @@ export default function Navbar() {
         }
     }, []);
 
-   
+
 
 
     const [signingUp, setSigningUp] = useState(false);
@@ -107,7 +107,7 @@ export default function Navbar() {
                     signUpCloseButtonRef.current.click();
                 }
 
-                window.location.reload()
+               
             })
             .catch(error => {
                 setSigningUp(false);
@@ -146,7 +146,7 @@ export default function Navbar() {
                 if (loginCloseButtonRef.current) {
                     loginCloseButtonRef.current.click();
                 }
-                window.location.reload()
+                
             })
             .catch(error => {
                 setLoggingIn(false);
@@ -168,15 +168,21 @@ export default function Navbar() {
         dispatch(logOutUser())
         toast.success("Logged Out Successfully!");
         navigate('/');
-        
+
     };
 
 
     const updateUserData = (e) => {
         setUserDataToSend({ ...userDataToSend, [e.target.name]: e.target.value })
     }
-
     const navigate = useNavigate()
+
+    useEffect(() => {
+        if (user?.IsAdmin) {
+            navigate('/admin-vehicles');
+        }
+    }, [user])
+
 
     return (
         <>
