@@ -79,6 +79,28 @@ export default function Navbar() {
                 .catch(error => console.error('Error fetching user data:', error));
         }
     }, []);
+    // Check if the user is logged in
+    useEffect(() => {
+        const userToken = Cookies.get('userToken');
+
+
+        if (userToken) {
+            console.log(userToken);
+            // Make a request to the backend to verify the user token and get user information
+            axios.get('/user/verify-user', { headers: { Authorization: `Bearer ${userToken}` } })
+                .then(response => {
+                    dispatch(logInUser({
+                        loggedIn: true,
+                        user: response.data
+                    }))
+
+                    if (response.data.IsAdmin) {
+                        navigate('/admin-vehicles')
+                    }
+                })
+                .catch(error => console.error('Error fetching user data:', error));
+        }
+    }, [loggedIn]);
 
 
 
@@ -178,6 +200,7 @@ export default function Navbar() {
     const navigate = useNavigate()
 
     useEffect(() => {
+        console.log(user);
         if (user?.IsAdmin) {
             navigate('/admin-vehicles');
         }

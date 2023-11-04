@@ -48,7 +48,7 @@ export default function MainSection() {
                             <h1 className='px-2'>Start Your Journey 'Your Way'!</h1>
                             <p className='px-2'>Drive into Unforgettable Experiences with 'Your Way' Car Hire - Your Companion for Reliable and
                                 Exciting Journeys Across the Island</p>
-                            <div className='bg-white py-3'>
+                            <div className='bg-white py-3 mx-3 border-circle'>
                                 <form onSubmit={(e) => {
                                     e.preventDefault();
 

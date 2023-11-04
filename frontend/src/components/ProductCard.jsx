@@ -90,7 +90,7 @@ export default function ProductCard({ gridView, vehicleData }) {
 
                 <div class="content-btm">
                     <a onClick={() => {
-                        if (loggedIn === true) {
+                        if (loggedIn === true && user) {
                             console.log('correct');
                             dispatch(updateBookingInfo({ ...bookingData, vehicle: vehicleData._id, totalPrice: vehicleData.price, user :  user._id}))
                             dispatch(selectVehicle(vehicleData));
