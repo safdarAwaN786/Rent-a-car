@@ -335,7 +335,8 @@ export default function AdminProductCard({ gridView, vehicleData, reGetData }) {
                     </div>
                 </div>
                 <div class="product-content">
-                    <h5><a className='text-decoration-none cursor-pointer' >{vehicleData?.name}</a></h5>
+                    <p className='fs-5 mb-0'>Group - <b>{vehicleData?.group}</b></p>
+                    <h5><a className='text-decoration-none cursor-pointer fs-5' >{vehicleData?.name}</a> | <span>or similar</span></h5>
                     <div class="price-location">
                         <div class="price">
                             <strong>€{vehicleData?.price}</strong>

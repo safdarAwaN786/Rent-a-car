@@ -55,10 +55,9 @@ export default function CompleteBooking() {
         console.log(numberOfDays);
         setDaysNumber(numberOfDays)
 
-        dispatch(updateBookingInfo({ ...bookingData, totalPricePerDay: Math.round(bookingData?.totalPricePerDay), totalPrice: Math.round(bookingData?.totalPricePerDay * numberOfDays) }))
 
 
-    }, [bookingData?.totalPricePerDay])
+    }, [])
 
     const [promoCodeObj, setPromoCodeObj] = useState(null);
 
@@ -68,23 +67,35 @@ export default function CompleteBooking() {
 
         if (promoCodeObj) {
 
-            let totalPricePerDay = bookingData.totalPricePerDay;
+            let basicPrice = bookingData.basicPrice;
 
 
-            totalPricePerDay = totalPricePerDay - ((selectedVehicle.price / 100) * promoCodeObj.discountPercent)
-            dispatch(updateBookingInfo({ ...bookingData, promoCode: promoCodeObj, totalPricePerDay: Math.round(totalPricePerDay) }))
+            basicPrice = basicPrice - ((selectedVehicle.price / 100) * promoCodeObj.discountPercent)
+            dispatch(updateBookingInfo({ ...bookingData, promoCode: promoCodeObj, basicPrice: Math.round(basicPrice) }))
         } else {
-            let totalPricePerDay = selectedVehicle.price
+            let basicPrice = selectedVehicle.price * daysNumber
 
             for (let i = 0; i < bookingData?.addedExtras?.length; i++) {
                 const extraObj = bookingData.addedExtras[i];
-                totalPricePerDay += extraObj.price * extraObj.quantity;
+                basicPrice += extraObj.price * extraObj.quantity;
             }
 
-            dispatch(updateBookingInfo({ ...bookingData, totalPricePerDay: Math.round(totalPricePerDay), promoCode: null }));
+            dispatch(updateBookingInfo({ ...bookingData, basicPrice: Math.round(basicPrice), promoCode: null }));
         }
 
     }, [promoCodeObj])
+
+
+    useEffect(() => {
+
+        let totalPrice = bookingData?.basicPrice;
+        for (let i = 0; i < bookingData?.addedExtras?.length; i++) {
+            const extraObj = bookingData.addedExtras[i];
+            totalPrice += extraObj.price * extraObj.quantity;
+        }
+
+        dispatch(updateBookingInfo({ ...bookingData, totalPrice: Math.round(totalPrice) }));
+    }, [bookingData?.basicPrice])
 
 
 
@@ -233,23 +244,14 @@ export default function CompleteBooking() {
 
                                                             }
 
-                                                            let totalPricePerDay;
-
-                                                            if (promoCodeObj) {
-                                                                totalPricePerDay = selectedVehicle.price - ((selectedVehicle.price / 100) * promoCodeObj.discountPercent)
-                                                            } else {
-                                                                totalPricePerDay = selectedVehicle.price;
-                                                            }
-
+                                                            let totalPrice = bookingData?.basicPrice;
 
                                                             for (let i = 0; i < updatedExtras.length; i++) {
                                                                 const extraObj = updatedExtras[i];
-                                                                totalPricePerDay += extraObj.price * extraObj.quantity;
+                                                                totalPrice += extraObj.price * extraObj.quantity;
                                                             }
 
-
-
-                                                            dispatch(updateBookingInfo({ ...bookingData, addedExtras: updatedExtras, totalPricePerDay }))
+                                                            dispatch(updateBookingInfo({ ...bookingData, addedExtras: updatedExtras, totalPrice }))
 
 
 
@@ -289,23 +291,14 @@ export default function CompleteBooking() {
 
                                                             }
 
-                                                            let totalPricePerDay;
-
-                                                            if (promoCodeObj) {
-                                                                totalPricePerDay = selectedVehicle.price - ((selectedVehicle.price / 100) * promoCodeObj.discountPercent)
-                                                            } else {
-                                                                totalPricePerDay = selectedVehicle.price;
-                                                            }
-
+                                                            let totalPrice = bookingData?.basicPrice;
 
                                                             for (let i = 0; i < updatedExtras.length; i++) {
                                                                 const extraObj = updatedExtras[i];
-                                                                totalPricePerDay += extraObj.price * extraObj.quantity;
+                                                                totalPrice += extraObj.price * extraObj.quantity;
                                                             }
 
-
-
-                                                            dispatch(updateBookingInfo({ ...bookingData, addedExtras: updatedExtras, totalPricePerDay }))
+                                                            dispatch(updateBookingInfo({ ...bookingData, addedExtras: updatedExtras, totalPrice }))
                                                         }} type="checkbox" />
                                                         <h6>Tyres, Windscreen, Underbody</h6>
 
@@ -336,23 +329,14 @@ export default function CompleteBooking() {
                                                                 const extraFound = updatedExtras.find((extraObj) => extraObj.extraName === 'GPS');
                                                                 updatedExtras = updatedExtras.filter((extraObj) => extraObj !== extraFound);
                                                             }
-                                                            let totalPricePerDay;
-
-                                                            if (promoCodeObj) {
-                                                                totalPricePerDay = selectedVehicle.price - ((selectedVehicle.price / 100) * promoCodeObj.discountPercent)
-                                                            } else {
-                                                                totalPricePerDay = selectedVehicle.price;
-                                                            }
-
+                                                            let totalPrice = bookingData?.basicPrice;
 
                                                             for (let i = 0; i < updatedExtras.length; i++) {
                                                                 const extraObj = updatedExtras[i];
-                                                                totalPricePerDay += extraObj.price * extraObj.quantity;
+                                                                totalPrice += extraObj.price * extraObj.quantity;
                                                             }
 
-
-
-                                                            dispatch(updateBookingInfo({ ...bookingData, addedExtras: updatedExtras, totalPricePerDay }))
+                                                            dispatch(updateBookingInfo({ ...bookingData, addedExtras: updatedExtras, totalPrice }))
                                                         }} type="checkbox" />
                                                         <h6>GPS</h6>
                                                     </div>
@@ -392,23 +376,14 @@ export default function CompleteBooking() {
                                                                 const extraFound = updatedExtras.find((extraObj) => extraObj.extraName === 'Baby Seat');
                                                                 updatedExtras = updatedExtras.filter((extraObj) => extraObj !== extraFound);
                                                             }
-                                                            let totalPricePerDay;
-
-                                                            if (promoCodeObj) {
-                                                                totalPricePerDay = selectedVehicle.price - ((selectedVehicle.price / 100) * promoCodeObj.discountPercent)
-                                                            } else {
-                                                                totalPricePerDay = selectedVehicle.price;
-                                                            }
-
+                                                            let totalPrice = bookingData?.basicPrice;
 
                                                             for (let i = 0; i < updatedExtras.length; i++) {
                                                                 const extraObj = updatedExtras[i];
-                                                                totalPricePerDay += extraObj.price * extraObj.quantity;
+                                                                totalPrice += extraObj.price * extraObj.quantity;
                                                             }
 
-
-
-                                                            dispatch(updateBookingInfo({ ...bookingData, addedExtras: updatedExtras, totalPricePerDay }))
+                                                            dispatch(updateBookingInfo({ ...bookingData, addedExtras: updatedExtras, totalPrice }))
                                                         }} type="checkbox" />
                                                         <h6>Baby Seat</h6>
                                                     </div>
@@ -436,23 +411,14 @@ export default function CompleteBooking() {
                                                                 const extraFound = updatedExtras.find((extraObj) => extraObj.extraName === 'Booster Seat');
                                                                 updatedExtras = updatedExtras.filter((extraObj) => extraObj !== extraFound);
                                                             }
-                                                            let totalPricePerDay;
-
-                                                            if (promoCodeObj) {
-                                                                totalPricePerDay = selectedVehicle.price - ((selectedVehicle.price / 100) * promoCodeObj.discountPercent)
-                                                            } else {
-                                                                totalPricePerDay = selectedVehicle.price;
-                                                            }
-
+                                                            let totalPrice = bookingData?.basicPrice;
 
                                                             for (let i = 0; i < updatedExtras.length; i++) {
                                                                 const extraObj = updatedExtras[i];
-                                                                totalPricePerDay += extraObj.price * extraObj.quantity;
+                                                                totalPrice += extraObj.price * extraObj.quantity;
                                                             }
 
-
-
-                                                            dispatch(updateBookingInfo({ ...bookingData, addedExtras: updatedExtras, totalPricePerDay }))
+                                                            dispatch(updateBookingInfo({ ...bookingData, addedExtras: updatedExtras, totalPrice }))
                                                         }} type="checkbox" />
                                                         <h6>Booster Seat</h6>
                                                     </div>
@@ -479,23 +445,14 @@ export default function CompleteBooking() {
                                                                 const extraFound = updatedExtras.find((extraObj) => extraObj.extraName === 'Roof Rack');
                                                                 updatedExtras = updatedExtras.filter((extraObj) => extraObj !== extraFound);
                                                             }
-                                                            let totalPricePerDay;
-
-                                                            if (promoCodeObj) {
-                                                                totalPricePerDay = selectedVehicle.price - ((selectedVehicle.price / 100) * promoCodeObj.discountPercent)
-                                                            } else {
-                                                                totalPricePerDay = selectedVehicle.price;
-                                                            }
-
+                                                            let totalPrice = bookingData?.basicPrice;
 
                                                             for (let i = 0; i < updatedExtras.length; i++) {
                                                                 const extraObj = updatedExtras[i];
-                                                                totalPricePerDay += extraObj.price * extraObj.quantity;
+                                                                totalPrice += extraObj.price * extraObj.quantity;
                                                             }
 
-
-
-                                                            dispatch(updateBookingInfo({ ...bookingData, addedExtras: updatedExtras, totalPricePerDay }))
+                                                            dispatch(updateBookingInfo({ ...bookingData, addedExtras: updatedExtras, totalPrice }))
                                                         }} type="checkbox" />
                                                         <h6>Roof Rack</h6>
                                                     </div>
@@ -531,23 +488,14 @@ export default function CompleteBooking() {
                                                                 const extraFound = updatedExtras.find((extraObj) => extraObj.extraName === 'Ski Rack');
                                                                 updatedExtras = updatedExtras.filter((extraObj) => extraObj !== extraFound);
                                                             }
-                                                            let totalPricePerDay;
-
-                                                            if (promoCodeObj) {
-                                                                totalPricePerDay = selectedVehicle.price - ((selectedVehicle.price / 100) * promoCodeObj.discountPercent)
-                                                            } else {
-                                                                totalPricePerDay = selectedVehicle.price;
-                                                            }
-
+                                                            let totalPrice = bookingData?.basicPrice;
 
                                                             for (let i = 0; i < updatedExtras.length; i++) {
                                                                 const extraObj = updatedExtras[i];
-                                                                totalPricePerDay += extraObj.price * extraObj.quantity;
+                                                                totalPrice += extraObj.price * extraObj.quantity;
                                                             }
 
-
-
-                                                            dispatch(updateBookingInfo({ ...bookingData, addedExtras: updatedExtras, totalPricePerDay }))
+                                                            dispatch(updateBookingInfo({ ...bookingData, addedExtras: updatedExtras, totalPrice }))
                                                         }} type="checkbox" />
                                                         <h6>Ski Rack</h6>
                                                     </div>
@@ -578,7 +526,7 @@ export default function CompleteBooking() {
 
                                                     </div>
                                                     <div class="col-6">
-                                                        <span><strong>€{selectedVehicle?.price}</strong></span>
+                                                        <span>€{Math.round(bookingData?.basicPrice / daysNumber)} X {daysNumber}days = <b>{ }</b><strong>€{Math.round(bookingData?.basicPrice)}</strong></span>
                                                     </div>
 
                                                 </div>
@@ -669,23 +617,14 @@ export default function CompleteBooking() {
                                                                                         : extraItem
                                                                                 );
 
-                                                                                let totalPricePerDay;
-
-                                                                                if (promoCodeObj) {
-                                                                                    totalPricePerDay = selectedVehicle.price - ((selectedVehicle.price / 100) * promoCodeObj.discountPercent)
-                                                                                } else {
-                                                                                    totalPricePerDay = selectedVehicle.price;
-                                                                                }
-
+                                                                                let totalPrice = bookingData?.basicPrice;
 
                                                                                 for (let i = 0; i < updatedExtras.length; i++) {
                                                                                     const extraObj = updatedExtras[i];
-                                                                                    totalPricePerDay += extraObj.price * extraObj.quantity;
+                                                                                    totalPrice += extraObj.price * extraObj.quantity;
                                                                                 }
 
-
-
-                                                                                dispatch(updateBookingInfo({ ...bookingData, addedExtras: updatedExtras, totalPricePerDay }))
+                                                                                dispatch(updateBookingInfo({ ...bookingData, addedExtras: updatedExtras, totalPrice }))
 
                                                                             }} options={[
                                                                                 { value: 1, label: 1 },
@@ -714,7 +653,7 @@ export default function CompleteBooking() {
 
                                                         </div>
                                                         <div class="col-6">
-                                                            <span><span className='mx-2'>€ {bookingData?.totalPricePerDay}</span> × <span>{daysNumber}days</span> = <strong>€ {bookingData?.totalPrice}</strong> </span>
+                                                            <span><strong>€ {bookingData?.totalPrice}</strong> </span>
 
                                                         </div>
 
@@ -729,7 +668,7 @@ export default function CompleteBooking() {
                                                 <button onClick={() => {
                                                     setMakingBooking(true);
                                                     axios.post('/booking/add-booking', bookingData).then((res) => {
-                                                        toast.success('Booking Made Successfully, Kindly Check your Email for Booking Confirmation!');
+                                                        toast.success('Booking Made Successfully!');
                                                         setMakingBooking(false);
                                                         // Adding a 3-second delay before navigating to '/'
                                                         setTimeout(() => {

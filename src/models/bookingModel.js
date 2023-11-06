@@ -48,7 +48,7 @@ const bookingSchema = new mongoose.Schema({
         default : 'Not Confirmed',
         enum : ['Not Confirmed', 'Confirmed', 'Completed']
     },
-    totalPricePerDay: {
+    basicPrice: {
         type: Number,
         required: true
     },

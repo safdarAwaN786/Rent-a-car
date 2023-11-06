@@ -343,7 +343,7 @@ export default function AdminProductsSection() {
                                             data.append('AC', AC);
 
 
-                                            event.target.reset();
+                                            
 
 
 
@@ -446,7 +446,7 @@ export default function AdminProductsSection() {
                                                 <label className='mt-2'>Vehicle Type :</label>
                                                 <Select name='vehicleType' styles={customStyles} options={vehicleCategories} />
                                                 <label className='mt-2'>Group :</label>
-                                                <Select name='group' options={groups} />
+                                                <input className='p-1 border border-secondary border-circle mb-1' name='group' type='text' required />
 
 
                                                 <div className='d-flex justify-content-center my-4'>

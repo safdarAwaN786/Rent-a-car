@@ -111,7 +111,7 @@ export default function Reservations() {
                   </div>
                   <div className=' border-circle px-2 py-1 d-flex  justify-content-between'>
                     <span className='w-50 fw-bold'>Current Status :</span>
-                    <span className={`w-50 text-end fw-bold ${bookingToView.status === 'Not Confirmed' && 'text-danger'} ${bookingToView.status === 'Confirmed' && 'text-primary'} ${bookingToView.status === 'Completed' && 'text-success'}`}>{bookingToView.status}</span>
+                    <span className={`w-50 text-end fw-bold ${bookingToView.status === 'Not Confirmed' && 'text-danger'} ${bookingToView.status === 'Confirmed' && 'text-success'} ${bookingToView.status === 'Completed' && 'text-success'}`}>{bookingToView.status}</span>
                   </div>
                   <div className=' border-circle px-2 py-1 d-flex  justify-content-between'>
                     <span className='w-50 fw-bold'>Pick Up Date :</span>
@@ -163,33 +163,7 @@ export default function Reservations() {
                     <span className='w-50 text-end  fw-bold'>€{bookingToView.netVatedTotal}</span>
                   </div>
 
-                  {bookingToView.status === 'Not Confirmed' && (
-
-                    <div className='border-circle px-2 py-2 d-flex  justify-content-center'>
-                      <a onClick={() => {
-                        setSendingEmail(true);
-                        axios.post(`/booking/send-confirmation-email/${bookingToView._id}`).then((res) => {
-                          setSendingEmail(false);
-                          toast.success('Confirmation Email is Sended!')
-                        }).catch(e => {
-                          setSendingEmail(false);
-                          toast.error('Email not sended, Try Again')
-                        })
-                      }} className='btn btn-primary'>
-                        {!sendingEmail && (
-
-
-                          <CiLocationArrow1 className='fs-4' />
-                        )}
-                        {sendingEmail ? (
-                          <Spinner animation="border" size="sm" />
-                        ) : (
-                          'Email'
-                        )}
-                      </a>
-
-                    </div>
-                  )}
+                  
 
 
                 </div>
@@ -239,12 +213,12 @@ export default function Reservations() {
                   year: 'numeric',
                 });
                 return (
-                  <div className='underTable d-flex bg-light border-circle py-2 px-2 justify-content-between'>
+                  <div className='underTable d-flex bg-light border-circle py-2 px-2 fw-bold justify-content-between'>
                     <div>
                       <span>{booking.vehicle.name}</span>
                     </div>
                     <div>
-                      <span className={`fw-bold ${booking.status === 'Not Confirmed' && 'text-danger'} ${booking.status === 'Confirmed' && 'text-primary'} ${booking.status === 'Completed' && 'text-success'}`}>{booking.status}</span>
+                      <span className={`fw-bold ${booking.status === 'Not Confirmed' && 'text-danger'} ${booking.status === 'Confirmed' && 'text-success'} ${booking.status === 'Completed' && 'text-success'}`}>{booking.status}</span>
                     </div>
                     <div>
                       <span>{formattedDate}</span>

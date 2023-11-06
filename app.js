@@ -36,6 +36,7 @@ const bookingRoutes = require('./src/routes/bookingRoutes'); // Adjust the path 
 
 
 
+
 // Use the user routes
 app.use('/user', userRoutes); // Assuming user routes are prefixed with '/user'
 
@@ -44,6 +45,7 @@ app.use('/vehicle', vehicleRoutes); // Assuming user routes are prefixed with '/
 app.use('/extras', extrasRoutes);
 app.use('/promo-code', promoCodeRoutes);
 app.use('/booking', bookingRoutes);
+
 
 
 

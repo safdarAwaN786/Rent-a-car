@@ -37,7 +37,8 @@ export default function ProductCard({ gridView, vehicleData }) {
                 </div>
             </div>
             <div class="product-content">
-                <h5><a className='text-decoration-none cursor-pointer' >{vehicleData?.name}</a></h5>
+                <p><b>Group - </b><h5>{vehicleData?.group}</h5></p>
+                <h5><a className='text-decoration-none cursor-pointer' >{vehicleData?.name} | <b>or similar</b></a></h5>
                 <div class="price-location">
                     <div class="price">
                         <strong>€{vehicleData?.price}</strong>
@@ -91,20 +92,29 @@ export default function ProductCard({ gridView, vehicleData }) {
                 <div class="content-btm">
                     <a onClick={() => {
                         if (loggedIn === true && user) {
-                            console.log('correct');
-                            dispatch(updateBookingInfo({ ...bookingData, vehicle: vehicleData._id, totalPrice: vehicleData.price, user :  user._id}))
-                            dispatch(selectVehicle(vehicleData));
-                            if(bookingSubmitted){
 
+                            if (bookingSubmitted) {
+                                const pickUpDate = new Date(bookingData?.pickUpDate);
+                                const dropOffDate = new Date(bookingData?.dropOffDate);
 
-                            navigate('/complete-booking');
+                                // To calculate the time difference
+                                const timeDiff = Math.abs(dropOffDate.getTime() - pickUpDate.getTime());
+                                const numberOfDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
+                                console.log(numberOfDays);
+                                console.log('correct');
+                                dispatch(updateBookingInfo({ ...bookingData, vehicle: vehicleData._id, basicPrice: vehicleData.price * numberOfDays, user: user._id }))
+                                dispatch(selectVehicle(vehicleData));
+
+                                navigate('/complete-booking');
                             } else {
+                                dispatch(updateBookingInfo({ ...bookingData,  user: user._id }))
+                                dispatch(selectVehicle(vehicleData));
                                 navigate('/');
                             }
 
                         } else {
                             toast.warning("Please Log In or Sign Up!");
-                           
+
                         }
                     }} class="text-decoration-none cursor-pointer view-btn2" >
                         <svg className='text-black' width="35" height="21" viewBox="0 0 35 21"

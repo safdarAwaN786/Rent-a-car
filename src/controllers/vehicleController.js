@@ -1,6 +1,8 @@
 const Vehicle = require('../models/vehicleModel');
 require('dotenv').config()
 const cloudinary = require('cloudinary').v2;
+const Extra = require('../models/extrasModel');
+
 
 
 // * Cloudinary Setup 
@@ -57,7 +59,51 @@ const addVehicle = async (req, res) => {
       imageUrl: imageUrl
     });
 
-    console.log(vehicle);
+    let extra = await Extra.findOne();
+    console.log(extra);
+
+    const SCDWObj = extra.Extras.find(obj => obj.extraName === 'Super Collision Damage Waiver (SCDW)');
+    const TyresObj = extra.Extras.find(obj => obj.extraName === 'Tyres, Windscreen, Underbody');
+    const GPSObj = extra.Extras.find(obj => obj.extraName === 'GPS');
+    console.log(SCDWObj);
+    console.log(TyresObj);
+    console.log(GPSObj);
+    const foundGroup = SCDWObj.priceOfExtra.find(obj => obj.groupName === req.body.group);
+    console.log(foundGroup);
+
+    if (foundGroup) {
+      console.log('Group Exist');
+      // console.log(SCDWObj.priceOfExtra);
+      // console.log(TyresObj.priceOfExtra);
+      // console.log(GPSObj.priceOfExtra);
+    } else {
+      SCDWObj.priceOfExtra.push({
+        groupName: req.body.group,
+        price: 20,
+        maxQuantity: 1
+      });
+      TyresObj.priceOfExtra.push({
+        groupName: req.body.group,
+        price: 20,
+        maxQuantity: 1
+      });
+      GPSObj.priceOfExtra.push({
+        groupName: req.body.group,
+        price: 20,
+        maxQuantity: 1
+      });
+      console.log('Adding Group');
+      console.log(extra.Extras[0].priceOfExtra);
+
+      await Extra.findByIdAndUpdate(extra._id, extra, {
+        new: true,
+  
+      });
+    }
+
+
+  
+    // console.log(vehicle);
 
 
     await vehicle.save()
@@ -71,6 +117,7 @@ const addVehicle = async (req, res) => {
 
 
   } catch (error) {
+    console.log(error);
     res.status(400).send({ status: false, message: error.message });
 
   }
@@ -97,7 +144,7 @@ const editVehicle = async (req, res) => {
 
     const updatedVehicle = await Vehicle.findByIdAndUpdate(req.params.vehicleId, updateFields, {
       new: true,
-      
+
     });
 
     if (!updatedVehicle) {
@@ -120,11 +167,11 @@ const editVehicle = async (req, res) => {
 
 const deleteVehicle = async (req, res) => {
 
-  
-  try {
-    
 
-  
+  try {
+
+
+
     const deletedVehicle = await Vehicle.findByIdAndDelete(req.params.vehicleId);
 
     console.log('Deleted successfully!');

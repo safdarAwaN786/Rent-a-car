@@ -55,7 +55,8 @@ export default function AdminExtras() {
         }).catch((e) => {
             toast.error('Error Slow Internet, Please Refresh!')
 
-        })
+        });
+        
     }, [])
 
 

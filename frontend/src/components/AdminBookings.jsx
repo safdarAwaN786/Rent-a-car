@@ -12,6 +12,7 @@ export default function AdminBookings() {
   const [viewBooking, setViewBooking] = useState(false);
   const [bookingToView, setBookingToView] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [confirming, setConfirming] = useState(false);
 
   const formatDate = (date) => {
 
@@ -97,7 +98,7 @@ export default function AdminBookings() {
                       </div>
                       <div className=' border-circle px-2 py-1 d-flex  justify-content-between'>
                         <span className='fw-bold'>Current Status :</span>
-                        <span className={`fw-bold ${bookingToView.status === 'Not Confirmed' && 'text-danger'} ${bookingToView.status === 'Confirmed' && 'text-primary'} ${bookingToView.status === 'Completed' && 'text-success'}`}>{bookingToView.status}</span>
+                        <span className={`fw-bold ${bookingToView.status === 'Not Confirmed' && 'text-danger'} ${bookingToView.status === 'Confirmed' && 'text-success'} ${bookingToView.status === 'Completed' && 'text-success'}`}>{bookingToView.status}</span>
                       </div>
                       <div className=' border-circle px-2 py-1 d-flex  justify-content-between'>
                         <span className='fw-bold'>Pick Up Date :</span>
@@ -152,18 +153,27 @@ export default function AdminBookings() {
 
 
                       <div className='border-circle px-2 py-2 d-flex  justify-content-center'>
-                        {bookingToView.status === 'Confirmed' && (
+                        {bookingToView.status !== 'Confirmed' && (
                           <a onClick={() => {
-                            axios.post(`/booking/complete-booking/${bookingToView._id}`).then((res) => {
+                            setConfirming(true);
+                            axios.post(`/booking/confirm-booking/${bookingToView._id}`).then((res) => {
                               updateData();
                               setLoading(true);
+                              setConfirming(false);
                               setViewBooking(false);
                               setBookingToView(null);
-                              toast.success('Booking is Completed!')
+                              toast.success('Booking is Confirmed!')
                             }).catch(e => {
-                              toast.error('Booking not Completed, Try Again')
+                              setConfirming(false)
+                              toast.error('Booking not Confirmed, Try Again')
                             })
-                          }} className='btn btn-success'>Complete</a>
+                          }} className='btn btn-success'>
+                          {confirming ? (
+                            <Spinner size='sm' />
+                          ) : (
+                            'Confirm'
+                          )}
+                          </a>
                         )}
                         <a onClick={() => {
                           axios.delete(`/booking/delete-booking/${bookingToView._id}`).then((res) => {
@@ -209,8 +219,8 @@ export default function AdminBookings() {
               });
               return (
                 <div className=' d-flex bg-light p-2 fw-bold justify-content-between'>
-                  <span>{index + 1}. {booking.vehicle.name}</span>
-                  <span className={`${booking.status === 'Not Confirmed' && 'text-danger'} ${booking.status === 'Confirmed' && 'text-primary'} ${booking.status === 'Completed' && 'text-success'}`}>{booking.status}</span>
+                  <span>{index + 1}. {booking.vehicle?.name}</span>
+                  <span className={`${booking.status === 'Not Confirmed' && 'text-danger'} ${booking.status === 'Confirmed' && 'text-success'} ${booking.status === 'Completed' && 'text-success'}`}>{booking.status}</span>
                   <span>{formattedDate}</span>
                   <span><button onClick={() => {
                     setViewBooking(true);

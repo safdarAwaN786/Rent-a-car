@@ -52,7 +52,7 @@ const vehicleSchema = new mongoose.Schema({
    },
    group : {
     type: String,
-    enum : ['A3', 'A4', 'A5', 'B3', 'B4', 'C2', 'C4', 'C6', 'C8', 'D1', 'D4', 'D7', 'D8',]
+    required : true
    },
    imageUrl : {
     type: String

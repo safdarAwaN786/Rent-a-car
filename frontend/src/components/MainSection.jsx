@@ -42,13 +42,13 @@ export default function MainSection() {
         <>
             <div class="banner-section2">
                 <div class="">
-                    <div class="">
+                    <div class=" mx-5">
                         <div class="banner-content">
                             {/* <!-- <h1>Explore Cyprus</h1> --> */}
                             <h1 className='px-2'>Start Your Journey 'Your Way'!</h1>
                             <p className='px-2'>Drive into Unforgettable Experiences with 'Your Way' Car Hire - Your Companion for Reliable and
                                 Exciting Journeys Across the Island</p>
-                            <div className='bg-white py-3 mx-3 border-circle'>
+                            <div className='bg-white py-3 me-3 w-100 border-circle'>
                                 <form onSubmit={(e) => {
                                     e.preventDefault();
 

@@ -19,7 +19,7 @@ import Admin from './pages/Admin';
 import CompleteBooking from './pages/CompleteBooking';
 import { useDispatch, useSelector } from 'react-redux';
 import { logInUser } from './redux/slices/authSlice';
-import ConfirmBookingNotify from './pages/ConfirmBookingNotify';
+
 
 
 
@@ -45,7 +45,9 @@ function App() {
   }, [bookingData])
 
 
-
+useEffect(()=>{
+  console.log(selectedVehicle);
+}, [selectedVehicle])
   
 
 
@@ -99,7 +101,7 @@ function App() {
           <Route path="/admin-bookings" element={<Admin tab={'Bookings'}  />} />
 
           <Route path="/complete-booking" element={<CompleteBooking     />} />
-          <Route path="/confirm-booking/:bookingId" element={<ConfirmBookingNotify     />} />
+         
 
           {/* <Route component={NotFound} /> */}
 
