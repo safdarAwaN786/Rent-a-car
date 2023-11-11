@@ -150,7 +150,7 @@ const forgotPassword = async (req, res) => {
                 <p>Hello ${user.firstName},</p>
                 <p>We received a request to reset your password.</strong></p>
                 <p>Click the button below to reset your password:</p>
-                <a href="http://localhost:3000/reset-password/${user._id}" style="display: inline-block; padding: 10px 20px; background-color: #007BFF; color: #ffffff; text-decoration: none; border-radius: 5px;">Reset Password</a>
+                <a href="https://rent-a-car-1nsj.onrender.com/${user._id}" style="display: inline-block; padding: 10px 20px; background-color: #007BFF; color: #ffffff; text-decoration: none; border-radius: 5px;">Reset Password</a>
                 <p>If you did not request a password reset, please ignore this email.</p>
                 <p>Best regards,<br>Your Way Car Hire</p>
             `
