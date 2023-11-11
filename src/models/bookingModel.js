@@ -8,9 +8,9 @@ const bookingSchema = new mongoose.Schema({
         ref: 'User',
         requied: true
     },
-    vehicle: {
+    group: {
         type: Schema.Types.ObjectId,
-        ref: 'vehicle'
+        ref: 'Group'
     },
     pickUpLocation: {
         type: String,
@@ -42,6 +42,14 @@ const bookingSchema = new mongoose.Schema({
     promoCode: {
         type: Object
     },
+    currentSeason: {
+        type: String,
+        required: true
+     },
+     daysText: {
+        type: String,
+        required: true
+     },
     status : {
         type : String,
         required : true,

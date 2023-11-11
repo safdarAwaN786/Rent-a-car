@@ -26,24 +26,24 @@ export default function AdminBookings() {
   }
 
   useEffect(() => {
-    axios.get('/booking/get-all-bookings').then((res) => {
+    axios.get('/get-all-bookings').then((res) => {
       setLoading(false);
       setAllBookings(res.data.data);
       console.log(res.data);
     }).catch((e) => {
-      toast.error('Server Error, Try Reload !');
+      updateData();
       console.log(e);
     })
   }, []);
 
 
   const updateData = () => {
-    axios.get('/booking/get-all-bookings').then((res) => {
+    axios.get('/get-all-bookings').then((res) => {
       setLoading(false);
       setAllBookings(res.data.data);
       console.log(res.data);
     }).catch((e) => {
-      toast.error('Server Error, Try Reload !');
+      updateData();
       console.log(e);
     })
   }
@@ -56,7 +56,7 @@ export default function AdminBookings() {
       ) : (
         <div className='p-3'>
 
-          <h3 className='text-center'>Current Bookings</h3>
+          <h3 className='text-center'>All Bookings</h3>
 
           {viewBooking && (
             <div className='addProductBox justify-content-center pt-5  '>
@@ -75,174 +75,218 @@ export default function AdminBookings() {
 
                   <h1 className='text-center fs-4'>Booking Information</h1>
 
-                  <form className='p-1' encType='multipart/form-data' onSubmit={(event) => {
-                    event.preventDefault();
-                  }}>
-                    <div className='d-flex flex-column'>
+                  <table class="table infoTable table-striped table-bordered">
 
-                      <div className=' border-circle px-2 py-1 d-flex  justify-content-between'>
-                        <span className='fw-bold'>User Name :</span>
-                        <span className=' fw-bold'>{bookingToView.user.firstName} {bookingToView.user.lastName}</span>
-                      </div>
-                      <div className=' border-circle px-2 py-1 d-flex  justify-content-between'>
-                        <span className='fw-bold'>User Email :</span>
-                        <span className=' fw-bold'>{bookingToView.user.email}</span>
-                      </div>
-                      <div className=' border-circle px-2 py-1 d-flex  justify-content-between'>
-                        <span className='fw-bold'>Booked Vehicle :</span>
-                        <span className=' fw-bold'>{bookingToView.vehicle.name}</span>
-                      </div>
-                      <div className=' border-circle px-2 py-1 d-flex  justify-content-between'>
-                        <span className='fw-bold'>Booking Date :</span>
-                        <span className=' fw-bold'>{formatDate(bookingToView.bookingDate)}</span>
-                      </div>
-                      <div className=' border-circle px-2 py-1 d-flex  justify-content-between'>
-                        <span className='fw-bold'>Current Status :</span>
-                        <span className={`fw-bold ${bookingToView.status === 'Not Confirmed' && 'text-danger'} ${bookingToView.status === 'Confirmed' && 'text-success'} ${bookingToView.status === 'Completed' && 'text-success'}`}>{bookingToView.status}</span>
-                      </div>
-                      <div className=' border-circle px-2 py-1 d-flex  justify-content-between'>
-                        <span className='fw-bold'>Pick Up Date :</span>
-                        <span className=' fw-bold'>{formatDate(bookingToView.pickUpDate)}</span>
-                      </div>
-                      <div className=' border-circle px-2 py-1 d-flex  justify-content-between'>
-                        <span className='fw-bold'>Pick Up Time :</span>
-                        <span className=' fw-bold'>{bookingToView.pickUpTime}</span>
-                      </div>
-                      <div className=' border-circle px-2 py-1 d-flex  justify-content-between'>
-                        <span className='fw-bold'>Pick Up Location :</span>
-                        <span className=' fw-bold'>{bookingToView.pickUpLocation}</span>
-                      </div>
-                      <div className=' border-circle px-2 py-1 d-flex  justify-content-between'>
-                        <span className='fw-bold'>Drop Off Date :</span>
-                        <span className=' fw-bold'>{formatDate(bookingToView.dropOffDate)}</span>
-                      </div>
-                      <div className=' border-circle px-2 py-1 d-flex  justify-content-between'>
-                        <span className='fw-bold'>Drop Off Time :</span>
-                        <span className=' fw-bold'>{bookingToView.dropOffTime}</span>
-                      </div>
-                      <div className=' border-circle px-2 py-1 d-flex  justify-content-between'>
-                        <span className='fw-bold'>Drop Off Location :</span>
-                        <span className=' fw-bold'>{bookingToView.dropOffLocation}</span>
-                      </div>
-                      <h4 className='text-center'>Prices</h4>
-                      <div className=' border-circle px-2 py-1 d-flex  justify-content-between'>
-                        <span className='fw-bold'>Vehicle Price :</span>
-                        <span className=' fw-bold'>€{bookingToView.vehicle.price}</span>
-                      </div>
+                    <tbody>
+
+                      <tr>
+                        <th>User Name</th>
+                        <td>{bookingToView.user.firstName} {bookingToView.user.lastName}</td>
+                      </tr>
+                      <tr>
+                        <th>User Email</th>
+                        <td>{bookingToView.user.email} {bookingToView.user.lastName}</td>
+                      </tr>
+                      <tr>
+                        <th>Booked Group</th>
+                        <td>{bookingToView.group?.groupName}</td>
+                      </tr>
+                      <tr>
+                        <th>Booked Vehicle</th>
+                        <td>{bookingToView.group?.vehicleName}</td>
+                      </tr>
+                      <tr>
+                        <th>Booking Date</th>
+                        <td>{formatDate(bookingToView.bookingDate)}</td>
+                      </tr>
+                      <tr>
+                        <th>Current Status</th>
+                        <td className={`fw-bold ${bookingToView.status === 'Not Confirmed' && 'text-danger'} ${bookingToView.status === 'Confirmed' && 'text-success'} ${bookingToView.status === 'Completed' && 'text-success'}`}>{bookingToView.status}</td>
+                      </tr>
+                      <tr>
+                        <th>Pick Up Date</th>
+                        <td>{formatDate(bookingToView.pickUpDate)}</td>
+                      </tr>
+                      <tr>
+                        <th>Pick Up Time</th>
+                        <td>{bookingToView.pickUpTime}</td>
+                      </tr>
+                      <tr>
+                        <th>Pick Up Location</th>
+                        <td>{bookingToView.pickUpLocation}</td>
+                      </tr>
+                      <tr>
+                        <th>Drop Off Date</th>
+                        <td>{formatDate(bookingToView.dropOffDate)}</td>
+                      </tr>
+                      <tr>
+                        <th>Drop Off Time</th>
+                        <td>{bookingToView.dropOffTime}</td>
+                      </tr>
+                      <tr>
+                        <th>Drop Off Location</th>
+                        <td>{bookingToView.dropOffLocation}</td>
+                      </tr>
+                      <tr>
+                        <th><h4 className='text-center'>Prices</h4></th>
+                      </tr>
+                      <tr>
+                        <th>Vehicle Price</th>
+                        <td>€{bookingToView.group[bookingToView.currentSeason][bookingToView.daysText]}</td>
+                      </tr>
                       {bookingToView.addedExtras.map((extraObj) => {
                         return (
-                          <div className=' border-circle px-2 py-1 d-flex  justify-content-between'>
-                            <span className='fw-bold'>{extraObj.extraName} :</span>
-                            <span className=' fw-bold'>€{extraObj.price} X {extraObj.quantity}</span>
-                          </div>
+                          <tr>
+                            <th>{extraObj.extraName} </th>
+                            <td>€{extraObj.price} X {extraObj.quantity}</td>
+                          </tr>
                         )
-                      })}
-                      <div className=' border-circle px-2 py-1 d-flex  justify-content-between'>
-                        <span className='fw-bold'>Promo Discount :</span>
-                        <span className=' fw-bold'>€{Math.round(bookingToView.vehicle.price / 100) * (bookingToView.promoCode?.discountPercent || 0)}</span>
-                      </div>
-                      <div className=' border-circle px-2 py-1 d-flex  justify-content-between'>
-                        <span className='fw-bold'>Total VAT added :</span>
-                        <span className=' fw-bold'>€{Math.round(bookingToView.vehicle.price / 100) * (bookingToView.vatValue)}</span>
-                      </div>
-                      <div className=' border-circle px-2 py-1 d-flex  justify-content-between'>
-                        <span className='fw-bold'>Grand Total :</span>
-                        <span className=' fw-bold'>€{bookingToView.netVatedTotal}</span>
-                      </div>
+                      }
+                      )}
+                      <tr>
+                        <th>Promo Discount</th>
+                        <td>€{Math.round(bookingToView.group[bookingToView.currentSeason][bookingToView.daysText] / 100) * (bookingToView.promoCode?.discountPercent || 0)}</td>
+                      </tr>
+                      <tr>
+                        <th>Total VAT added</th>
+                        <td>€{Math.round(bookingToView.group[bookingToView.currentSeason][bookingToView.daysText] / 100) * (bookingToView.vatValue)}</td>
+                      </tr>
+                      <tr>
+                        <th>Grand Total</th>
+                        <td>€{bookingToView.netVatedTotal}</td>
+                      </tr>
 
+                    </tbody>
+                  </table>
 
-
-                      <div className='border-circle px-2 py-2 d-flex  justify-content-center'>
-                        {bookingToView.status !== 'Confirmed' && (
-                          <a onClick={() => {
-                            setConfirming(true);
-                            axios.post(`/booking/confirm-booking/${bookingToView._id}`).then((res) => {
-                              updateData();
-                              setLoading(true);
-                              setConfirming(false);
-                              setViewBooking(false);
-                              setBookingToView(null);
-                              toast.success('Booking is Confirmed!')
-                            }).catch(e => {
-                              setConfirming(false)
-                              toast.error('Booking not Confirmed, Try Again')
-                            })
-                          }} className='btn btn-success'>
-                          {confirming ? (
-                            <Spinner size='sm' />
-                          ) : (
-                            'Confirm'
-                          )}
-                          </a>
+                  <div className='border-circle px-2 py-2 d-flex  justify-content-center'>
+                    {bookingToView.status !== 'Confirmed' && (
+                      <a onClick={() => {
+                        setConfirming(true);
+                        axios.post(`/confirm-booking/${bookingToView._id}`).then((res) => {
+                          updateData();
+                          setLoading(true);
+                          setConfirming(false);
+                          setViewBooking(false);
+                          setBookingToView(null);
+                          toast.success('Booking is Confirmed!')
+                        }).catch(e => {
+                          setConfirming(false)
+                          toast.error('Booking not Confirmed, Try Again')
+                        })
+                      }} className='btn btn-success'>
+                        {confirming ? (
+                          <Spinner size='sm' />
+                        ) : (
+                          'Confirm'
                         )}
-                        <a onClick={() => {
-                          axios.delete(`/booking/delete-booking/${bookingToView._id}`).then((res) => {
-                            setLoading(true);
-                            updateData()
-                            setViewBooking(false);
-                            setBookingToView(null);
-                            toast.success('Booking is Deleted!')
-                          }).catch(e => {
-                            toast.error('Booking not Deleted, Try Again')
-                          })
-                        }} className='btn btn-dark mx-1 p-1 px-2'><MdDelete className='fs-4' /></a>
-                      </div>
-
-
-
-                    </div>
-                  </form>
-
+                      </a>
+                    )}
+                    <a onClick={() => {
+                      axios.delete(`/delete-booking/${bookingToView._id}`).then((res) => {
+                        setLoading(true);
+                        updateData()
+                        setViewBooking(false);
+                        setBookingToView(null);
+                        toast.success('Booking is Deleted!')
+                      }).catch(e => {
+                        toast.error('Booking not Deleted, Try Again')
+                      })
+                    }} className='btn btn-dark mx-1 p-1 px-2'><MdDelete className='fs-4' /></a>
+                  </div>
                 </div>
-
-
               </div>
             </div>
           )}
-          <div className='myTable'>
 
 
-            <div className=' d-flex bg-secondary text-white p-2 fw-bold justify-content-between'>
-              <span>#. Vehicle</span>
-              <span>Status</span>
-              <span>Booing Date</span>
-              <span>Action</span>
-            </div>
 
-            {allBookings?.filter(booking => booking.status !== 'Completed').map((booking, index) => {
 
-              const date = new Date(booking.bookingDate); // Convert to Date object
-              const formattedDate = date.toLocaleDateString('en-GB', {
-                day: '2-digit',
-                month: '2-digit',
-                year: 'numeric',
-              });
-              return (
-                <div className=' d-flex bg-light p-2 fw-bold justify-content-between'>
-                  <span>{index + 1}. {booking.vehicle?.name}</span>
-                  <span className={`${booking.status === 'Not Confirmed' && 'text-danger'} ${booking.status === 'Confirmed' && 'text-success'} ${booking.status === 'Completed' && 'text-success'}`}>{booking.status}</span>
-                  <span>{formattedDate}</span>
-                  <span><button onClick={() => {
-                    setViewBooking(true);
-                    setBookingToView(booking);
-                  }} className='btn btn-outline-dark px-1'><BsEyeFill className='fs-5' />View
-                    {/* <button className='btn btn-outline-success mx-1' onClick={()=>{
-                axios.post(`/booking/send-confirmation-email/${booking._id}`).then((res) => {
-                        toast.success('Booking is Completed!')
-                      }).catch(e => {
-                        toast.error('Booking not Completed, Try Again')
-                      })
-              }}>Complete</button> */}
-                  </button></span>
-                </div>
-              )
-            })}
+          <div className='table-Cover'>
+
+
+            <table class="table table-striped table-bordered">
+              <thead>
+                <tr>
+
+                  <th scope="col"># Vehicle</th>
+
+                  <th scope="col">Status</th>
+                  <th scope="col">Booking Date</th>
+                  <th scope="col">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+
+                {allBookings?.filter(booking => booking.status !== 'Completed').map((booking, index) => {
+
+                  const date = new Date(booking.bookingDate); // Convert to Date object
+                  const formattedDate = date.toLocaleDateString('en-GB', {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric',
+                  });
+                  return (
+                    <tr>
+                      <th scope="row">{index + 1}. {booking.group?.vehicleName}</th>
+                      <td scope='row' className={`${booking.status === 'Not Confirmed' && 'text-danger'} ${booking.status === 'Confirmed' && 'text-success'} `}>{booking.status}</td>
+                      <td scope="row">{formattedDate}</td>
+                      <td><button onClick={() => {
+                        setViewBooking(true);
+                        setBookingToView(booking);
+                      }} className='btn btn-outline-dark px-1'><BsEyeFill className='fs-5' />View</button></td>
+
+
+
+
+                    </tr>
+                  )
+                })}
+                {allBookings?.filter(booking => booking.status === 'Completed').map((booking, index) => {
+
+                  const date = new Date(booking.bookingDate); // Convert to Date object
+                  const formattedDate = date.toLocaleDateString('en-GB', {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric',
+                  });
+                  return (
+                    <tr>
+                      <th scope="row">{index + 1}. {booking.group?.vehicleName}</th>
+                      <td scope='row' className={`${booking.status === 'Not Confirmed' && 'text-danger'} ${booking.status === 'Confirmed' && 'text-success'} `}>{booking.status}</td>
+                      <td scope="row">{formattedDate}</td>
+                      <td><button onClick={() => {
+                        setViewBooking(true);
+                        setBookingToView(booking);
+                      }} className='btn btn-outline-dark px-1'><BsEyeFill className='fs-5' />View</button></td>
+
+
+
+
+                    </tr>
+                  )
+                })}
+
+
+
+
+
+              </tbody>
+            </table>
+
+
+
+
+            {!allBookings || allBookings.length === 0 && (
+              <div className='d-flex justify-content-center py-2'>
+                <p>No Bookings Found!</p>
+              </div>
+            )}
           </div>
-          {!allBookings || allBookings.length === 0 && (
-            <div className='d-flex justify-content-center py-2'>
-              <p>No Bookings Found!</p>
-            </div>
-          )}
+
+         
+          
+
 
         </div>
       )}

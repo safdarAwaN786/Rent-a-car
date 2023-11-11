@@ -27,27 +27,50 @@ const addCode = async (req, res) => {
 }
 
 
+const updatePromoCode = async (req, res) => {
+
+    try {
+
+
+
+        const updatedCode = await PromoCode.findByIdAndUpdate(req.body._id, req.body, {
+            new: true,
+        });
+
+
+        console.log(updatedCode);
+
+        res.status(200).send({
+            status: true, message: "The Extra is Updated!", data: updatedCode
+
+        });
+    } catch (error) {
+        res.status(400).send({ status: false, message: error.message });
+    }
+}
+
+
 const deleteCode = async (req, res) => {
 
-  
+
     try {
-      
-  
-    
-      const deletedCode = await PromoCode.findByIdAndDelete(req.params.codeId);
-  
-      console.log('Deleted successfully!');
-      return res.status(200).send({
-        status: true,
-        message: 'The Code is Deleted!',
-        data: deletedCode
-      });
+
+
+
+        const deletedCode = await PromoCode.findByIdAndDelete(req.params.codeId);
+
+        console.log('Deleted successfully!');
+        return res.status(200).send({
+            status: true,
+            message: 'The Code is Deleted!',
+            data: deletedCode
+        });
     } catch (error) {
-      console.error('Error Deleting code:', error);
-      return res.status(500).send({ status: false, message: 'Internal server error' });
+        console.error('Error Deleting code:', error);
+        return res.status(500).send({ status: false, message: 'Internal server error' });
     }
-  };
-  
+};
+
 
 const getCode = async (req, res) => {
     try {
@@ -55,10 +78,10 @@ const getCode = async (req, res) => {
         const requiredCode = await PromoCode.findOne({ code: req.params.codeName })
         console.log(requiredCode);
 
-        if(requiredCode){
+        if (requiredCode) {
 
             console.log('Code Found..');
-            
+
             res.status(200).send({ status: true, message: "The Code is found!", data: requiredCode });
         } else {
             res.status(201).send({ status: false, message: "The Code does not Exist!", });
@@ -87,4 +110,4 @@ const getCodes = async (req, res) => {
 
 
 
-module.exports = { addCode, getCode, getCodes, deleteCode }
+module.exports = { addCode, getCode, getCodes, deleteCode, updatePromoCode }

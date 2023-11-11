@@ -1163,17 +1163,23 @@ p {
 	transition: all .5s ease-out 0s
 }
 table {
-	min-width: 500px !important;
-	overflow-x: scroll !important;
+	min-width: 700px !important;
+
 }
 .myTable{
 	min-width: 90vw !important;
 	overflow-x: scroll !important;
 }
+.editor {
+	height: 500px !important;
+}
 .underTable{
 	min-width: 600px !important;
 }
+.infoTable{
+	min-width: 100% !important;
 
+}
 
 
 .top-bar .search-area form .form-inner button:hover {
@@ -11688,13 +11694,21 @@ header.style-6 .main-menu .hotline-area .content h6 a {
 	margin-bottom: 15px
 }
 
+.table-Cover{
+	overflow-x: scroll;
+}
+
 .admin-sidebar-li:hover {
 	background-color: white !important;
-
 }
 .admin-sidebar-li:hover a {
 	color: black !important;
-
+}
+.admin-sidebar-li:hover .dropIcon {
+	color: black !important;
+}
+.sidebar-li:hover .dropResponsive {
+	color: white !important;
 }
 .admin-sidebar {
 	position: fixed;
@@ -16434,11 +16448,7 @@ footer.style-3 .footer-btm .social-area ul li a:hover {
 	position: relative
 }
 
-.how-it-work-section.style-3 .work-process-group .single-work-process .steps {
-	position: absolute;
-	right: -51px;
-	top: 20px
-}
+
 
 @media(max-width:1399px) {
 	.how-it-work-section.style-3 .work-process-group .single-work-process .steps {

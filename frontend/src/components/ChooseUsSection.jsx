@@ -5,11 +5,13 @@ import warrantyImg from '../assets/img/home1/icon/warranty.svg'
 import assistanceImg from '../assets/img/home1/icon/hotline-icon.svg'
 import mileageImg from '../assets/img/home1/icon/guarantee.svg'
 import driverImg from '../assets/img/home1/icon/happy-customar.svg'
+import { useSelector } from 'react-redux'
 
 
 
 export default function ChooseUsSection() {
 
+    const landingPageContent = useSelector(state => state.webContent?.landingPage);
 
     return (
         <>
@@ -24,7 +26,7 @@ export default function ChooseUsSection() {
                         </div>
                     </div>
                     <div class="row mb-50 g-4 ">
-                        <div class="col-lg-4 col-sm-6 col-12 wow fadeInUp" >
+                        {/* <div class="col-lg-4 col-sm-6 col-12 wow fadeInUp" >
                             <div class="choose-card">
                                 <div class="choose-top">
                                     <div class="choose-icon">
@@ -34,19 +36,23 @@ export default function ChooseUsSection() {
                                 </div>
                                 <p>Get the best value for your money.</p>
                             </div>
-                        </div>
-                        <div class="col-lg-4 col-sm-6 col-12 wow fadeInUp" data-wow-delay="300ms">
-                            <div class="choose-card">
-                                <div class="choose-top">
-                                    <div class="choose-icon">
-                                        <img src={carImg} alt />
+                        </div> */}
+                        {landingPageContent?.chooseUs?.map((chooseObj, index) => {
+                            return (
+                                <div class="col-lg-4 col-sm-6 col-12 wow fadeInUp" data-wow-delay="300ms">
+                                    <div class="choose-card">
+                                        <div class="choose-top">
+                                            <div class="choose-icon">
+                                                <img src={chooseObj.iconUrl} alt />
+                                            </div>
+                                            <h5>{chooseObj.heading}</h5>
+                                        </div>
+                                        <p>{chooseObj.text}</p>
                                     </div>
-                                    <h5><span>Quality </span> Cars</h5>
                                 </div>
-                                <p>Drive in style and comfort.</p>
-                            </div>
-                        </div>
-                        <div class="col-lg-4 col-sm-6 col-12 wow fadeInUp" data-wow-delay="400ms">
+                            )
+                        })}
+                        {/* <div class="col-lg-4 col-sm-6 col-12 wow fadeInUp" data-wow-delay="400ms">
                             <div class="choose-card">
                                 <div class="choose-top">
                                     <div class="choose-icon">
@@ -90,7 +96,7 @@ export default function ChooseUsSection() {
                                 </div>
                                 <p>Share the wheel, at no extra cost.</p>
                             </div>
-                        </div>
+                        </div> */}
                     </div>
 
                 </div>

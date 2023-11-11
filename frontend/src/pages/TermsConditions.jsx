@@ -1,8 +1,27 @@
 import React from 'react'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
+import { useSelector } from 'react-redux';
+
 
 export default function TermsConditions() {
+
+  const formatDate = (date) => {
+    const newDate = new Date(date);
+    if (isNaN(newDate)) {
+        // If the date is not valid, return an empty string or handle it accordingly
+        return "";
+    }
+    
+    const formattedDate = newDate.toLocaleDateString('en-GB', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+    });
+    return formattedDate;
+};
+
+  const termsConditionsContent = useSelector(state => state.webContent?.termsConditionsPage);
   return (
     <>
     <Navbar   />
@@ -12,16 +31,13 @@ export default function TermsConditions() {
             <div class="col-lg-12 ">
               <div class="update-date mb-30">
                 <h6><i class="bi bi-caret-right-fill"></i> Last Updated</h6>
-                <p>7 Oct, 2023</p>
+                <p>{formatDate(termsConditionsContent?.lastUpdated)}</p>
               </div>
             </div>
             <div class="col-lg-12 mb-40">
-              <div class="return-and-exchange">
-                <h4>Terms & Conditions for "Your Way" Car Rentals, Cyprus</h4>
-                {/* <!-- <p>The refund policy for car dealers can vary from dealership to dealership. It's essential to
-                  understand that purchasing a car is a significant transaction, and refund policies may be
-                  different compared to other retail items. Here are some general points to consider regarding
-                  refund policies for car dealerships:</p> --> */}
+              <div class="return-and-exchange" dangerouslySetInnerHTML={{ __html:  termsConditionsContent?.pageContent}}>
+                {/* <h4>Terms & Conditions for "Your Way" Car Rentals, Cyprus</h4>
+                
                 <ul>
                   <h5>Inclusive Rental Rates:</h5>
 
@@ -134,7 +150,7 @@ export default function TermsConditions() {
 
                 </ul>
                 <p><strong>Thank you for choosing "Your Way" Car Rentals. We wish you a pleasant journey across
-                  Cyprus!</strong></p>
+                  Cyprus!</strong></p> */}
 
               </div>
             </div>

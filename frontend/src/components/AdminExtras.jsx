@@ -16,9 +16,6 @@ export default function AdminExtras() {
 
     const [extrasObj, setExtrasObj] = useState(null);
 
-    // const allExtrasArr = ['Super Collision Damage Waiver (SCDW)', 'Tyres, Windscreen, Underbody', 'GPS', 'Baby Seat', 'Booster Seat', 'Roof Rack', 'Ski Rack'];
-
-    // const allGroups = ['A3', 'A4', 'A5', 'B3', 'B4', 'C2', 'C4', 'C6', 'C8', 'D1', 'D4', 'D7', 'D8'];
 
     const [extrasArr, setExtrasArr] = useState([]);
 
@@ -32,31 +29,33 @@ export default function AdminExtras() {
 
 
     const updateExtras = () => {
-        axios.get('/extras/read-extras').then((response) => {
+        axios.get('/read-extras').then((response) => {
             console.log(response.data);
             setExtrasObj(response.data.data)
-            setExtrasArr(response.data.data[0].Extras);
+            setExtrasArr(response.data.data.Extras);
 
         }).catch((e) => {
-            toast.error('Error Slow Internet, Please Refresh!')
+            console.log(e);
+            toast.error('Error , Please Refresh!')
         })
     }
 
 
 
     useEffect(() => {
-        axios.get('/extras/read-extras').then((response) => {
+        axios.get('/read-extras').then((response) => {
 
             setLoading(false);
             console.log(response.data);
             setExtrasObj(response.data.data);
-            setExtrasArr(response.data.data[0].Extras);
+            setExtrasArr(response.data.data.Extras);
 
         }).catch((e) => {
-            toast.error('Error Slow Internet, Please Refresh!')
+            updateExtras();
+            
 
         });
-        
+
     }, [])
 
 
@@ -101,9 +100,9 @@ export default function AdminExtras() {
                                         // setAddProduct(false);
 
 
-                                        
 
-                                        axios.post('/extras/update-extra', { _id: extrasObj[0]._id, Extras: extrasArr })
+
+                                        axios.post('/update-extra', { _id: extrasObj[0]._id, Extras: extrasArr })
                                             .then(response => {
                                                 setEditingPrices(false);
 
@@ -140,7 +139,7 @@ export default function AdminExtras() {
                                                             <label class="form-check-label" >{extraPriceObj.groupName} :</label>
                                                             <div>
 
-                                                               <span> Price(€) : </span>
+                                                                <span> Price(€) : </span>
                                                                 <input value={extraPriceObj.price} onChange={(e) => {
                                                                     const updatedExtras = [...extrasArr];
 
@@ -169,23 +168,23 @@ export default function AdminExtras() {
                                                     <label class="form-check-label" >All Groups :</label>
                                                     <div>
 
-                                               <span> Price(€) :</span> 
-                                                    <input value={extraToEdit.priceOfExtra} onChange={(e) => {
+                                                        <span> Price(€) :</span>
+                                                        <input value={extraToEdit.priceOfExtra} onChange={(e) => {
 
-                                                        const updatedExtras = [...extrasArr];
+                                                            const updatedExtras = [...extrasArr];
 
-                                                        const foundExtra = updatedExtras.find((extra) => extra.extraName === extraToEdit.extraName);
+                                                            const foundExtra = updatedExtras.find((extra) => extra.extraName === extraToEdit.extraName);
 
 
-                                                        if (foundExtra) {
-                                                            foundExtra.priceOfExtra = e.target.value
-                                                        }
-                                                        setExtraToEdit(foundExtra)
+                                                            if (foundExtra) {
+                                                                foundExtra.priceOfExtra = e.target.value
+                                                            }
+                                                            setExtraToEdit(foundExtra)
 
-                                                       
 
-                                                        setExtrasArr(updatedExtras)
-                                                    }} type='number' className='p-1 mx-2 border border-secondary border-circle mb-1' required />
+
+                                                            setExtrasArr(updatedExtras)
+                                                        }} type='number' className='p-1 mx-2 border border-secondary border-circle mb-1' required />
                                                     </div>
                                                 </div>
 
@@ -220,120 +219,122 @@ export default function AdminExtras() {
                     {viewPrices && (
 
 
-                            <div className='addProductBox justify-content-center pt-5  '>
-                                <div className='formBox border-circle  mt-5 pt-4 '>
+                        <div className='addProductBox justify-content-center pt-5  '>
+                            <div className='formBox border-circle  mt-5 pt-4 '>
 
 
-                                    <div data-aos="fade-down" className=' mb-3 myBox mx-auto border-circle p-3'>
-                                        <div className='d-flex justify-content-end'>
+                                <div data-aos="fade-down" className=' mb-3 myBox mx-auto border-circle p-3'>
+                                    <div className='d-flex justify-content-end'>
 
-                                            <AiOutlineCloseSquare className='cursor-pointer fs-4' onClick={() => {
-                                                setViewPrices(false);
-                                                setExtraToEdit(null);
-                                            }} />
-                                        </div>
-
-
-                                        <h1 className='text-center fs-4'>Prices for : {extraToEdit.extraName}</h1>
-
-                                        <form encType='multipart/form-data' onSubmit={(event) => {
-                                            event.preventDefault();
-
-
-
-
-                                        }}>
-                                            <div className='d-flex flex-column'>
-                                                <div className='d-flex justify-content-end'>
-                                                    <p>Max. Quantity : {extraToEdit?.maxQuantity}</p>
-                                                </div>
-
-                                                {(extraToEdit.extraName === 'Super Collision Damage Waiver (SCDW)' || extraToEdit.extraName === 'Tyres, Windscreen, Underbody' || extraToEdit.extraName === 'GPS') ? (
-                                                    <>                                                    {extraToEdit.priceOfExtra.map((extraPriceObj, index) => {
-                                                        return (
-                                                            <div className='extraBox my-2 border-circle p-2 d-flex  justify-content-between'>
-
-
-                                                                <label class="form-check-label" >{extraPriceObj.groupName} :</label>
-
-                                                                <input value={extraPriceObj.price} onChange={(e) => {
-                                                                    const updatedExtras = [...extrasArr];
-
-                                                                    updateExtras.find({ extraName: extraToEdit.extraName }).priceOfExtra.find({ groupName: extraPriceObj.groupName }).price = e.target.value
-
-                                                                    setExtrasArr(updatedExtras)
-                                                                }} type='number' className='p-1 mx-2 border border-secondary border-circle mb-1' required readOnly />
-                                                            </div>
-                                                        )
-                                                    })}
-                                                    </>
-                                                ) : (
-                                                    <div className='extraBox my-2 border-circle p-2 d-flex  justify-content-between'>
-
-
-                                                        <label class="form-check-label" >All Groups :</label>
-
-                                                        <input value={extraToEdit.priceOfExtra} onChange={(e) => {
-                                                            const updatedExtras = [...extrasArr];
-                                                            updatedExtras.find({ extraName: extraToEdit.extraName }).priceOfExtra = e.target.value
-
-                                                            setExtrasArr(updatedExtras)
-                                                        }} type='number' className='p-1 mx-2 border border-secondary border-circle mb-1' required readOnly />
-                                                    </div>
-
-                                                )}
-
-
-
-
-
-                                            </div>
-                                        </form>
-
+                                        <AiOutlineCloseSquare className='cursor-pointer fs-4' onClick={() => {
+                                            setViewPrices(false);
+                                            setExtraToEdit(null);
+                                        }} />
                                     </div>
 
 
+                                    <h1 className='text-center fs-4'>Prices for : {extraToEdit.extraName}</h1>
+
+                                    <form encType='multipart/form-data' onSubmit={(event) => {
+                                        event.preventDefault();
+
+
+
+
+                                    }}>
+                                        <div className='d-flex flex-column'>
+                                            <div className='d-flex justify-content-end'>
+                                                <p>Max. Quantity : {extraToEdit?.maxQuantity}</p>
+                                            </div>
+
+                                            {(extraToEdit.extraName === 'Super Collision Damage Waiver (SCDW)' || extraToEdit.extraName === 'Tyres, Windscreen, Underbody' || extraToEdit.extraName === 'GPS') ? (
+                                                <>                                                    {extraToEdit.priceOfExtra.map((extraPriceObj, index) => {
+                                                    return (
+                                                        <div className='extraBox my-2 border-circle p-2 d-flex  justify-content-between'>
+
+
+                                                            <label class="form-check-label" >{extraPriceObj.groupName} :</label>
+
+                                                            <input value={extraPriceObj.price} onChange={(e) => {
+                                                                const updatedExtras = [...extrasArr];
+
+                                                                updateExtras.find({ extraName: extraToEdit.extraName }).priceOfExtra.find({ groupName: extraPriceObj.groupName }).price = e.target.value
+
+                                                                setExtrasArr(updatedExtras)
+                                                            }} type='number' className='p-1 mx-2 border border-secondary border-circle mb-1' required readOnly />
+                                                        </div>
+                                                    )
+                                                })}
+                                                </>
+                                            ) : (
+                                                <div className='extraBox my-2 border-circle p-2 d-flex  justify-content-between'>
+
+
+                                                    <label class="form-check-label" >All Groups :</label>
+
+                                                    <input value={extraToEdit.priceOfExtra} onChange={(e) => {
+                                                        const updatedExtras = [...extrasArr];
+                                                        updatedExtras.find({ extraName: extraToEdit.extraName }).priceOfExtra = e.target.value
+
+                                                        setExtrasArr(updatedExtras)
+                                                    }} type='number' className='p-1 mx-2 border border-secondary border-circle mb-1' required readOnly />
+                                                </div>
+
+                                            )}
+
+
+
+
+
+                                        </div>
+                                    </form>
+
                                 </div>
+
+
                             </div>
+                        </div>
                     )}
 
 
 
 
-
-                    <table class="table table-striped">
-                        <thead>
-                            <tr>
-
-                                <th scope="col"># Extra</th>
-
-                                <th scope="col">Price</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-
-                            {extrasArr?.map((extraObj, index) => {
-                                return (
-                                    <tr>
-                                        <th scope="row">{index + 1}. {extraObj.extraName}</th>
-
-                                        <td><AiOutlineEdit onClick={() => {
-                                            setEditPrices(true);
-                                            setExtraToEdit(extraObj);
-                                        }} className='fs-5 cursor-pointer' /> <AiOutlineEye className='fs-5 cursor-pointer' onClick={() => {
-                                            setViewPrices(true);
-
-                                            setExtraToEdit(extraObj);
-                                        }} /></td>
-
-                                    </tr>
-                                )
-                            })}
+                    <div className='table-Cover'>
 
 
-                        </tbody>
-                    </table>
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
 
+                                    <th scope="col"># Extra</th>
+
+                                    <th scope="col">Price</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                                {extrasArr?.map((extraObj, index) => {
+                                    return (
+                                        <tr>
+                                            <th scope="row">{index + 1}. {extraObj.extraName}</th>
+
+                                            <td><AiOutlineEdit onClick={() => {
+                                                setEditPrices(true);
+                                                setExtraToEdit(extraObj);
+                                            }} className='fs-5 cursor-pointer' /> <AiOutlineEye className='fs-5 cursor-pointer' onClick={() => {
+                                                setViewPrices(true);
+
+                                                setExtraToEdit(extraObj);
+                                            }} /></td>
+
+                                        </tr>
+                                    )
+                                })}
+
+
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             )}
         </>

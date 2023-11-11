@@ -4,7 +4,7 @@ const initialState = {
     isBookingSubmitted: false,
     bookingData: null
 }
-const selectedVehicle = null
+
 
 export const bookingSlice = createSlice({
     name: 'bookingInfo',
@@ -14,9 +14,6 @@ export const bookingSlice = createSlice({
             state.isBookingSubmitted = true;
         },
         updateBookingInfo: (state, action) => {
-
-            
-
             state.bookingData = action.payload;
         },
         clearPreSubmission: (state) => {
@@ -25,18 +22,18 @@ export const bookingSlice = createSlice({
     }
 })
 
-export const vehicleSlice = createSlice({
+export const groupSlice = createSlice({
     name: 'selectedVehicle',
-    initialState: selectedVehicle,
+    initialState: null,
     reducers: {
-        selectVehicle: (state, action) => {
+        selectGroup: (state, action) => {
             return action.payload;
         }
     }
 })
 
-export const vehicleReducer = vehicleSlice.reducer;
-export const { selectVehicle } = vehicleSlice.actions;
+export const groupReducer = groupSlice.reducer;
+export const { selectGroup } = groupSlice.actions;
 
 export const bookingReducers = bookingSlice.reducer;
 export const { submitPreBooking, updateBookingInfo, clearPreSubmission } = bookingSlice.actions;

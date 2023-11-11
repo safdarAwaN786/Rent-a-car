@@ -4,6 +4,7 @@ const promoCodeController = require('../controllers/promoCodeController')
 
 
 router.post('/add-code', promoCodeController.addCode);
+router.patch('/update-code', promoCodeController.updatePromoCode);
 
 router.get('/get-code/:codeName', promoCodeController.getCode);
 router.delete('/delete-code/:codeId', promoCodeController.deleteCode);

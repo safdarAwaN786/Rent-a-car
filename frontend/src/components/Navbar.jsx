@@ -5,7 +5,7 @@ import blackLogo from '../assets/img/black-logo.png'
 import { VscAccount } from 'react-icons/vsc'
 import Cookies from 'js-cookie'
 import axios from 'axios';
-import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai'
+import { AiOutlineCloseSquare, AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Button from 'react-bootstrap/Button';
@@ -14,6 +14,7 @@ import { SlMenu } from 'react-icons/sl';
 import Spinner from 'react-bootstrap/Spinner';
 import { useDispatch, useSelector } from 'react-redux'
 import { logInUser, logOutUser } from '../redux/slices/authSlice'
+import { IoIosArrowDropdown, IoIosArrowDropup } from 'react-icons/io'
 
 export default function Navbar() {
     const [validationMessage, setValidationMessage] = useState(null);
@@ -27,7 +28,7 @@ export default function Navbar() {
     const handleShow = () => setShow(true);
     const signUpCloseButtonRef = useRef(null);
     const loginCloseButtonRef = useRef(null);
-
+    const [openPricing, setOpenPricing] = useState(false);
     const loggedIn = useSelector(state => state.auth.loggedIn);
     const user = useSelector(state => state.auth.user);
     const dispatch = useDispatch();
@@ -65,7 +66,7 @@ export default function Navbar() {
         if (userToken) {
             console.log(userToken);
             // Make a request to the backend to verify the user token and get user information
-            axios.get('/user/verify-user', { headers: { Authorization: `Bearer ${userToken}` } })
+            axios.get('/verify-user', { headers: { Authorization: `Bearer ${userToken}` } })
                 .then(response => {
                     dispatch(logInUser({
                         loggedIn: true,
@@ -87,7 +88,7 @@ export default function Navbar() {
         if (userToken) {
             console.log(userToken);
             // Make a request to the backend to verify the user token and get user information
-            axios.get('/user/verify-user', { headers: { Authorization: `Bearer ${userToken}` } })
+            axios.get('/verify-user', { headers: { Authorization: `Bearer ${userToken}` } })
                 .then(response => {
                     dispatch(logInUser({
                         loggedIn: true,
@@ -103,7 +104,8 @@ export default function Navbar() {
     }, [loggedIn]);
 
 
-
+    const [forgotPassword, setForgotPassword] = useState(false);
+    const [sendingMail, setSendingMail] = useState(false);
 
     const [signingUp, setSigningUp] = useState(false);
     const [loggingIn, setLoggingIn] = useState(false);
@@ -113,12 +115,12 @@ export default function Navbar() {
     const handleSignup = () => {
         setSigningUp(true);
         // Perform signup API request
-        axios.post('/user/signup', userDataToSend)
+        axios.post('/signup', userDataToSend)
             .then(response => {
                 setSigningUp(false);
                 console.log(response);
                 const { token } = response.data;
-                Cookies.set('userToken', token, { expires: 1 }); // Set the user token in the cookie
+                Cookies.set('userToken', token); // Set the user token in the cookie
                 dispatch(logInUser({
                     loggedIn: true,
                     user: userDataToSend
@@ -129,7 +131,7 @@ export default function Navbar() {
                     signUpCloseButtonRef.current.click();
                 }
 
-               
+
             })
             .catch(error => {
                 setSigningUp(false);
@@ -152,12 +154,12 @@ export default function Navbar() {
     const handleLogin = () => {
         setLoggingIn(true);
         // Perform login API request
-        axios.post('/user/login', userDataToSend)
+        axios.post('/login', userDataToSend)
             .then(response => {
 
                 setLoggingIn(false);
                 const { token } = response.data;
-                Cookies.set('userToken', token, { expires: 1 }); // Set the user token in the cookie
+                Cookies.set('userToken', token); // Set the user token in the cookie
                 // console.log(Cookies);
 
                 dispatch(logInUser({
@@ -168,7 +170,7 @@ export default function Navbar() {
                 if (loginCloseButtonRef.current) {
                     loginCloseButtonRef.current.click();
                 }
-                
+
             })
             .catch(error => {
                 setLoggingIn(false);
@@ -192,7 +194,7 @@ export default function Navbar() {
         navigate('/');
 
     };
-
+    const [emailForgetten, setEmailForgotten] = useState(null);
 
     const updateUserData = (e) => {
         setUserDataToSend({ ...userDataToSend, [e.target.name]: e.target.value })
@@ -444,7 +446,12 @@ export default function Navbar() {
                                             <div>
 
                                             </div>
-                                            <a href="#" class="forgot-pass">Forget Password?</a>
+                                            <a onClick={() => {
+                                                if (loginCloseButtonRef.current) {
+                                                    loginCloseButtonRef.current.click();
+                                                }
+                                                setForgotPassword(true)
+                                            }} class="forgot-pass cursor-pointer">Forget Password?</a>
                                         </div>
                                     </div>
                                     <div class="col-md-12">
@@ -478,6 +485,65 @@ export default function Navbar() {
                     </div>
                 </div>
             </div>
+
+
+            {forgotPassword && (
+                <div className='addProductBox justify-content-center pt-5  '>
+                    <div className='formBox border-circle  mt-5 pt-4 '>
+                        <div data-aos="fade-down" className=' mb-3 myBox mx-auto border-circle p-3'>
+                            <div className='d-flex justify-content-end'>
+                                <AiOutlineCloseSquare className='cursor-pointer fs-4' onClick={() => {
+                                    setForgotPassword(false)
+                                }} />
+                            </div>
+                            <h1 className='text-center fs-4'>Password Reset Mail</h1>
+                            <form onSubmit={(e) => {
+                                e.preventDefault();
+                                setSendingMail(true);
+                                
+
+                                axios.post('/forgot-password', {email : emailForgetten}).then((res) => {
+                                    setSendingMail(false);
+                                    toast.success('Password Reset Email Sended Successfully!');
+                                    setForgotPassword(false);
+                                }).catch((err) => {
+                                    console.log(err);
+                                    if(err.response.status === 400){
+                                        toast.error(err.response.data.message)
+                                    } else {
+
+                                    toast.error('Error in sending Email, Try Again !');
+                                    }
+                                    setSendingMail(false);
+                                })
+                            }}>
+                            <div className='d-flex flex-column'>
+
+                                <label className='mt-1'>Your Email :</label>
+                                <input onChange={(e)=>{
+                                    setEmailForgotten(e.target.value);
+                                }} name='email' type='email' className='p-1 border border-secondary border-circle mb-1' required />
+                                <div className='d-flex justify-content-center my-4'>
+                                    <button style={{
+                                        zIndex: '00'
+                                    }} type="submit" class="primary-btn6 p-sm-2 p-1 ">
+                                        {sendingMail ? (
+                                            <Spinner animation="border" size="sm" />
+                                        ) : (
+
+                                            'SEND EMAIL'
+                                        )}
+
+                                    </button>
+                                </div>
+                            </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+            )}
+
 
             <div class="topbar-header">
                 <div class="top-bar style-2 d-flex justify-content-between">
@@ -582,13 +648,17 @@ export default function Navbar() {
                                                 <li onClick={() => {
                                                     navigate('/admin-vehicles');
                                                     handleClose();
+                                                }} style={{
+                                                    transition: 'background-color 0.5s ease'
                                                 }} className='cursor-pointer p-1 border-circle sidebar-li'>
-                                                    <a className='text-decoration-none cursor-pointer text-dark fs-5' >Vehicles</a>
+                                                    <a className='text-decoration-none cursor-pointer text-dark fs-5' >Groups</a>
 
                                                 </li>
                                                 <li onClick={() => {
                                                     navigate('/admin-extras');
                                                     handleClose();
+                                                }} style={{
+                                                    transition: 'background-color 0.5s ease'
                                                 }} className='cursor-pointer p-1 border-circle sidebar-li'>
                                                     <a class="text-decoration-none cursor-pointer text-dark fs-5">Extras</a>
 
@@ -596,6 +666,8 @@ export default function Navbar() {
                                                 <li onClick={() => {
                                                     navigate('/admin-pricing');
                                                     handleClose();
+                                                }} style={{
+                                                    transition: 'background-color 0.5s ease'
                                                 }} className='cursor-pointer p-1 border-circle sidebar-li'>
                                                     <a class="text-decoration-none cursor-pointer text-dark fs-5">VAT & Codes</a>
 
@@ -603,10 +675,68 @@ export default function Navbar() {
                                                 <li onClick={() => {
                                                     navigate('/admin-bookings');
                                                     handleClose();
+                                                }} style={{
+                                                    transition: 'background-color 0.5s ease'
                                                 }} className='cursor-pointer p-1 border-circle sidebar-li'>
                                                     <a class="text-decoration-none cursor-pointer text-dark fs-5">Bookings</a>
 
                                                 </li>
+                                                <li onClick={() => {
+                                                    navigate('/admin-seasons');
+                                                    handleClose();
+                                                }} style={{
+                                                    transition: 'background-color 0.5s ease'
+                                                }} className='cursor-pointer p-1 border-circle sidebar-li'>
+                                                    <a class="text-decoration-none cursor-pointer text-dark fs-5">Seasons</a>
+
+                                                </li>
+                                                <li onClick={() => {
+                                                    setOpenPricing(!openPricing);
+                                                }} style={{
+                                                    transition: 'background-color 0.5s ease'
+                                                }} className='cursor-pointer p-1 border-circle sidebar-li d-flex justify-content-between'>
+                                                    <a class="text-decoration-none cursor-pointer text-dark fs-5">Groups Pricing</a>
+                                                    {openPricing ? (
+                                                        <IoIosArrowDropup className={`fs-4 dropResponsive text-dark `} />
+
+                                                    ) : (
+
+                                                        <IoIosArrowDropdown className={`fs-4 dropResponsive text-dark `} />
+                                                    )}
+                                                </li>
+                                                {openPricing && (
+                                                    <div data-aos="fade-down" className='border-start border-dark ms-3 px-2 border-3' >
+
+
+                                                        <li onClick={() => {
+                                                            navigate('/winter-pricing')
+                                                        }} style={{
+                                                            transition: 'background-color 0.5s ease'
+                                                        }} className='cursor-pointer p-1 border-circle sidebar-li my-1'>
+                                                            <a className='text-dark text-dark text-decoration-none'>
+                                                                Winter Pricing
+                                                            </a>
+                                                        </li>
+                                                        <li onClick={() => {
+                                                            navigate('/summer-pricing')
+                                                        }} style={{
+                                                            transition: 'background-color 0.5s ease'
+                                                        }} className='cursor-pointer p-1 border-circle sidebar-li my-1'>
+                                                            <a className='text-dark text-dark text-decoration-none'>
+                                                                Summer Pricing
+                                                            </a>
+                                                        </li>
+                                                        <li onClick={() => {
+                                                            navigate('/summerHigh-pricing')
+                                                        }} style={{
+                                                            transition: 'background-color 0.5s ease'
+                                                        }} className='cursor-pointer p-1 border-circle sidebar-li my-1'>
+                                                            <a className='text-dark text-dark text-decoration-none'>
+                                                                Summer High Pricing
+                                                            </a>
+                                                        </li>
+                                                    </div>
+                                                )}
                                             </>
                                         ) : (
                                             <>
@@ -614,37 +744,49 @@ export default function Navbar() {
 
                                                 <li onClick={() => {
                                                     navigate('/')
+                                                }} style={{
+                                                    transition: 'background-color 0.5s ease'
                                                 }} className='cursor-pointer p-1 border-circle sidebar-li'>
                                                     <a className='text-decoration-none cursor-pointer text-dark fs-5' >Home</a>
 
                                                 </li>
                                                 <li onClick={() => {
                                                     navigate('/reservations')
+                                                }} style={{
+                                                    transition: 'background-color 0.5s ease'
                                                 }} className='cursor-pointer p-1 border-circle sidebar-li'>
                                                     <a class="text-decoration-none cursor-pointer text-dark fs-5">Reservations</a>
 
                                                 </li>
-                                                <li className='cursor-pointer p-1 border-circle sidebar-li '>
-                                                    <a onClick={() => {
-                                                        navigate('/vehicle-guide')
-                                                    }} class="text-decoration-none cursor-pointer text-dark fs-5">Vehicle Guide</a>
+                                                <li onClick={() => {
+                                                    navigate('/vehicle-guide')
+                                                }} style={{
+                                                    transition: 'background-color 0.5s ease'
+                                                }} className='cursor-pointer p-1 border-circle sidebar-li '>
+                                                    <a class="text-decoration-none cursor-pointer text-dark fs-5">Vehicle Guide</a>
 
                                                 </li>
-                                                <li className='cursor-pointer p-1 border-circle sidebar-li '>
+                                                <li style={{
+                                                    transition: 'background-color 0.5s ease'
+                                                }} className='cursor-pointer p-1 border-circle sidebar-li '>
                                                     <a href="#" class="text-decoration-none cursor-pointer text-dark fs-5">Price</a>
 
                                                 </li>
-                                                <li className='cursor-pointer  p-1 border-circle sidebar-li '>
-                                                    <a onClick={() => {
-                                                        navigate('/terms-and-conditions')
-                                                    }} class="text-decoration-none cursor-pointer text-dark fs-5">Terms & Conditions</a>
+                                                <li onClick={() => {
+                                                    navigate('/terms-and-conditions')
+                                                }} style={{
+                                                    transition: 'background-color 0.5s ease'
+                                                }} className='cursor-pointer  p-1 border-circle sidebar-li '>
+                                                    <a class="text-decoration-none cursor-pointer text-dark fs-5">Terms & Conditions</a>
 
                                                 </li>
 
-                                                <li className='cursor-pointer  p-1 border-circle sidebar-li '>
-                                                    <a onClick={() => {
-                                                        navigate('/contact')
-                                                    }} class="text-decoration-none cursor-pointer text-dark fs-5">CONTACT US</a>
+                                                <li onClick={() => {
+                                                    navigate('/contact')
+                                                }} style={{
+                                                    transition: 'background-color 0.5s ease'
+                                                }} className='cursor-pointer  p-1 border-circle sidebar-li '>
+                                                    <a class="text-decoration-none cursor-pointer text-dark fs-5">CONTACT US</a>
                                                 </li>
                                             </>
                                         )}

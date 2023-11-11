@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/static/css/main.d4a7afee.css",
-    "main.js": "/static/js/main.14b5234f.js",
+    "main.css": "/static/css/main.7195892b.css",
+    "main.js": "/static/js/main.0744e5ef.js",
     "static/media/04.png": "/static/media/04.d820f7418981dc6d311e.png",
     "static/media/bannar2-bg.jpg": "/static/media/bannar2-bg.bdb68c706f4a303cebbf.jpg",
     "static/media/home5-banner-img-01.png": "/static/media/home5-banner-img-01.25a428373fecb8d67589.png",
@@ -33,9 +33,9 @@
     "static/media/body-01.svg": "/static/media/body-01.0fdfea18185d14f8567a3c0e097fae12.svg",
     "static/media/customer-feedbac-bg1.png": "/static/media/customer-feedbac-bg1.f94f82a6e05006ac2aa0.png",
     "static/media/mercedes.svg": "/static/media/mercedes.72c90ec379486a2252fe43bf2cd2e5d2.svg",
-    "static/media/black-logo.png": "/static/media/black-logo.5f8aea2189585a50bf5c.png",
     "static/media/recieve.svg": "/static/media/recieve.38316055c73bf58c195f6ae9d481b417.svg",
     "static/media/nissan.svg": "/static/media/nissan.216ebcb79989c0964225eb2e2c484b50.svg",
+    "static/media/black-logo.png": "/static/media/black-logo.9f956aeeceeae51fc921.png",
     "static/media/rack.png": "/static/media/rack.cec9cd91eb3eda30602d.png",
     "static/media/affordable.svg": "/static/media/affordable.0ef708630c5706e67eeb401c0d7c37b3.svg",
     "static/media/gps.png": "/static/media/gps.cf4ba422f63c9d3bcf62.png",
@@ -61,11 +61,11 @@
     "static/media/slick-prev.svg": "/static/media/slick-prev.4f7a64407bfa144f7cdc.svg",
     "static/media/arrow-left.svg": "/static/media/arrow-left.ec751e1ca16697c58eae.svg",
     "static/media/arrow-right.svg": "/static/media/arrow-right.44f6400b0d09a2222fa2.svg",
-    "main.d4a7afee.css.map": "/static/css/main.d4a7afee.css.map",
-    "main.14b5234f.js.map": "/static/js/main.14b5234f.js.map"
+    "main.7195892b.css.map": "/static/css/main.7195892b.css.map",
+    "main.0744e5ef.js.map": "/static/js/main.0744e5ef.js.map"
   },
   "entrypoints": [
-    "static/css/main.d4a7afee.css",
-    "static/js/main.14b5234f.js"
+    "static/css/main.7195892b.css",
+    "static/js/main.0744e5ef.js"
   ]
 }

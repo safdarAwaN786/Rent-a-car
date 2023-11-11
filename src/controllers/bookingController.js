@@ -1,7 +1,7 @@
 const nodemailer = require('nodemailer');
 const User = require('../models/User');
 const Booking = require('../models/bookingModel');
-const Vehicle = require('../models/vehicleModel');
+const Group = require('../models/groupModel');
 const Vat = require('../models/VAT')
 
 const transporter = nodemailer.createTransport({
@@ -19,21 +19,20 @@ const addBooking = async (req, res) => {
     const vat = await Vat.find();
 
 
+    console.log(req.body);
 
-    const user = await User.findById(req.body.user);
-
-    const vehicle = await Vehicle.findById(req.body.vehicle);
+    const group = await Group.findById(req.body.group);
 
 
-    const vatedPrice = req.body.totalPrice + ((vehicle.price / 100) * vat[0].value)
+    const vatedPrice = req.body.totalPrice + ((group[req.body.currentSeason][req.body.daysText] / 100) * vat[0].value)
 
 
 
     const booking = new Booking({ ...req.body, netVatedTotal: Math.round(vatedPrice), vatValue: vat[0].value });
-   
 
 
-   
+
+
 
     await booking.save();
     console.log(booking);
@@ -59,8 +58,8 @@ const getUserBookings = async (req, res) => {
       model: 'User'
     })
       .populate({
-        path: 'vehicle',
-        model: 'vehicle'
+        path: 'group',
+        model: 'Group'
       });
 
 
@@ -79,10 +78,11 @@ const getAllBookings = async (req, res) => {
       model: 'User'
     })
       .populate({
-        path: 'vehicle',
-        model: 'vehicle'
+        path: 'group',
+        model: 'Group'
       });
 
+     
 
     res.status(200).send({ status: true, message: "The Following are the Bookings!", data: allBookings });
 
@@ -121,8 +121,8 @@ const confirmBooking = async (req, res) => {
       model: 'User'
     })
       .populate({
-        path: 'vehicle',
-        model: 'vehicle'
+        path: 'group',
+        model: 'Group'
       });
 
 
@@ -164,6 +164,9 @@ const confirmBooking = async (req, res) => {
             table {
               border-collapse: collapse;
               width: 100%;
+            }
+            img{
+              width : 100%;
             }
             
             th, td {
@@ -231,10 +234,10 @@ const confirmBooking = async (req, res) => {
                 <th>TOTAL</th>
               </tr>
               <tr>
-                <td>${booking.vehicle.name}</td>
+                <td>${booking.group.vehicleName}</td>
                 <td>1</td>
-                <td>€${booking.vehicle.price}</td>
-                <td>€${booking.vehicle.price}</td>
+                <td>€${booking.group[booking.currentSeason][booking.daysText]}</td>
+                <td>€${booking.group[booking.currentSeason][booking.daysText]}</td>
               </tr>
               ${extrasContent}
                 
@@ -247,11 +250,11 @@ const confirmBooking = async (req, res) => {
               
                   <tr>
             <th>Promo Discount:</th>
-            <td>€${Math.round((booking.vehicle.price / 100) * (booking.promoCode?.discountPercent || 0))}</td>
+            <td>€${Math.round((booking.group[booking.currentSeason][booking.daysText] / 100) * (booking.promoCode?.discountPercent || 0))}</td>
         </tr>
               <tr>
               <th>Total VAT included:</th>
-              <td>€${Math.round((booking.vehicle.price / 100) * booking.vatValue)}</td>
+              <td>€${Math.round((booking.group[booking.currentSeason][booking.daysText] / 100) * booking.vatValue)}</td>
             </tr>
               <tr>
               <th>Grand Total(${numberOfDays}days):</th>
@@ -276,6 +279,7 @@ const confirmBooking = async (req, res) => {
                 <p>Sincerely,</p>
               
                 <p>The YourWay Car Hire Team</p>
+                <img src='https://res.cloudinary.com/dzpac6i3a/image/upload/v1699596015/Screenshot_2023-11-09_144507_qgsvra.png' />
 `
     };
 
@@ -308,4 +312,4 @@ const confirmBooking = async (req, res) => {
 
 
 
-module.exports = { addBooking, getUserBookings, getAllBookings, deleteBooking,  confirmBooking};
+module.exports = { addBooking, getUserBookings, getAllBookings, deleteBooking, confirmBooking };

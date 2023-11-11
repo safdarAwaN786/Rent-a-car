@@ -4,26 +4,37 @@ import ProductCard from './ProductCard'
 import axios from 'axios';
 import Spinner from 'react-bootstrap/Spinner';
 import { toast } from 'react-toastify';
+import { useSelector } from 'react-redux';
 
 
 export default function ProductsSection() {
     const [allDataArr, setAllDataArr] = useState(null);
 
-    const [vehiclesList, setVehiclesList] = useState(null);
+    const [groupsList, setGroupsList] = useState(null);
 
 
 
+    const reGetData = ()=>{
+        axios.get('/read-groups').then((res) => {
+            console.log(res);
+            setLoading(false)
+            setAllDataArr(res.data.data);
+            setGroupsList(res.data.data)
+        }).catch((e) => {
+            toast.error('Error, Please Refresh!')
+        })
+    }
 
 
 
     useEffect(() => {
-        axios.get('/vehicle/read-vehicles').then((res) => {
+        axios.get('/read-groups').then((res) => {
             console.log(res);
-            setLoading(false);
+            setLoading(false)
             setAllDataArr(res.data.data);
-            setVehiclesList(res.data.data)
-        }).catch((e)=>{
-            toast.error('Error Slow Internet, Please Refresh!');
+            setGroupsList(res.data.data)
+        }).catch((e) => {
+            reGetData();
         })
     }, [])
 
@@ -52,7 +63,7 @@ export default function ProductsSection() {
     const sevenPassengers = allDataArr?.filter(vehicleObj => vehicleObj.adults == 6);
     const eightPassengers = allDataArr?.filter(vehicleObj => vehicleObj.adults == 8);
 
-    const [vehicleType, setVehiceType] = useState(null);
+    const [groupCategory, setGroupCategory] = useState(null);
     const [transmissionType, setTransmissionType] = useState(null);
     const [noOfPassengers, setNoOfPassengers] = useState(null);
 
@@ -81,38 +92,40 @@ export default function ProductsSection() {
         }
     }, [windowWidth])
 
+    const currentSeason = useSelector(state => state.currentSeason);
+    const daysPrice = useSelector(state => state.numberOfDays?.priceText);
 
-    const vehicleTypeFilter = (e) => {
+    const groupCategoryFilter = (e) => {
         if (e.target.checked) {
-            setVehiceType(e.target.value);
+            setGroupCategory(e.target.value);
 
             if (transmissionType && noOfPassengers) {
-                setVehiclesList(allDataArr?.filter((vehicleObj) => {
+                setGroupsList(allDataArr?.filter((groupObj) => {
                     return (
 
-                        vehicleObj.vehicleType === e.target.value && vehicleObj.transmissionType === transmissionType && vehicleObj.adults == noOfPassengers
+                        groupObj.groupCategory === e.target.value && groupObj.transmissionType === transmissionType && groupObj.adults == noOfPassengers
                     )
                 }))
 
             } else if (transmissionType && !noOfPassengers) {
-                setVehiclesList(allDataArr?.filter((vehicleObj) => {
+                setGroupsList(allDataArr?.filter((groupObj) => {
                     return (
 
-                        vehicleObj.vehicleType === e.target.value && vehicleObj.transmissionType === transmissionType
+                        groupObj.groupCategory === e.target.value && groupObj.transmissionType === transmissionType
                     )
                 }))
             } else if (noOfPassengers && !transmissionType) {
-                setVehiclesList(allDataArr?.filter((vehicleObj) => {
+                setGroupsList(allDataArr?.filter((groupObj) => {
 
                     return (
 
-                        vehicleObj.vehicleType === e.target.value && vehicleObj.adults == noOfPassengers
+                        groupObj.groupCategory === e.target.value && groupObj.adults == noOfPassengers
                     )
                 }))
             } else {
-                setVehiclesList(allDataArr?.filter((vehicleObj) => {
+                setGroupsList(allDataArr?.filter((groupObj) => {
                     return (
-                        vehicleObj?.vehicleType === e.target.value
+                        groupObj?.groupCategory === e.target.value
                     )
                 }))
             }
@@ -124,33 +137,33 @@ export default function ProductsSection() {
         if (e.target.checked) {
             setTransmissionType(e.target.value);
 
-            if (vehicleType && noOfPassengers) {
-                setVehiclesList(allDataArr?.filter((vehicleObj) => {
+            if (groupCategory && noOfPassengers) {
+                setGroupsList(allDataArr?.filter((groupObj) => {
                     return (
 
-                        vehicleObj.transmissionType === e.target.value && vehicleObj.vehicleType === vehicleType && vehicleObj.adults == noOfPassengers
+                        groupObj.transmissionType === e.target.value && groupObj.groupCategory === groupCategory && groupObj.adults == noOfPassengers
                     )
                 }))
 
-            } else if (vehicleType && !noOfPassengers) {
-                setVehiclesList(allDataArr?.filter((vehicleObj) => {
+            } else if (groupCategory && !noOfPassengers) {
+                setGroupsList(allDataArr?.filter((groupObj) => {
                     return (
 
-                        vehicleObj.transmissionType === e.target.value && vehicleObj.vehicleType === vehicleType
+                        groupObj.transmissionType === e.target.value && groupObj.groupCategory === groupCategory
                     )
                 }))
-            } else if (noOfPassengers && !vehicleType) {
-                setVehiclesList(allDataArr?.filter((vehicleObj) => {
+            } else if (noOfPassengers && !groupCategory) {
+                setGroupsList(allDataArr?.filter((groupObj) => {
 
                     return (
 
-                        vehicleObj.transmissionType === e.target.value && vehicleObj.adults == noOfPassengers
+                        groupObj.transmissionType === e.target.value && groupObj.adults == noOfPassengers
                     )
                 }))
             } else {
-                setVehiclesList(allDataArr?.filter((vehicleObj) => {
+                setGroupsList(allDataArr?.filter((groupObj) => {
                     return (
-                        vehicleObj?.transmissionType === e.target.value
+                        groupObj?.transmissionType === e.target.value
                     )
                 }))
             }
@@ -162,33 +175,33 @@ export default function ProductsSection() {
         if (e.target.checked) {
             setNoOfPassengers(e.target.value);
 
-            if (vehicleType && transmissionType) {
-                setVehiclesList(allDataArr?.filter((vehicleObj) => {
+            if (groupCategory && transmissionType) {
+                setGroupsList(allDataArr?.filter((groupObj) => {
                     return (
 
-                        vehicleObj.adults == e.target.value && vehicleObj.vehicleType === vehicleType && vehicleObj.transmissionType == transmissionType
+                        groupObj.adults == e.target.value && groupObj.groupCategory === groupCategory && groupObj.transmissionType == transmissionType
                     )
                 }))
 
-            } else if (vehicleType && !transmissionType) {
-                setVehiclesList(allDataArr?.filter((vehicleObj) => {
+            } else if (groupCategory && !transmissionType) {
+                setGroupsList(allDataArr?.filter((groupObj) => {
                     return (
 
-                        vehicleObj.adults == e.target.value && vehicleObj.vehicleType === vehicleType
+                        groupObj.adults == e.target.value && groupObj.groupCategory === groupCategory
                     )
                 }))
-            } else if (transmissionType && !vehicleType) {
-                setVehiclesList(allDataArr?.filter((vehicleObj) => {
+            } else if (transmissionType && !groupCategory) {
+                setGroupsList(allDataArr?.filter((groupObj) => {
 
                     return (
 
-                        vehicleObj.adults == e.target.value && vehicleObj.transmissionType == transmissionType
+                        groupObj.adults == e.target.value && groupObj.transmissionType == transmissionType
                     )
                 }))
             } else {
-                setVehiclesList(allDataArr?.filter((vehicleObj) => {
+                setGroupsList(allDataArr?.filter((groupObj) => {
                     return (
-                        vehicleObj?.adults == e.target.value
+                        groupObj?.adults == e.target.value
                     )
                 }))
             }
@@ -229,7 +242,7 @@ export default function ProductsSection() {
                                                     <li>
                                                         <label class="containerss">
                                                             <input onChange={(e) => {
-                                                                vehicleTypeFilter(e);
+                                                                groupCategoryFilter(e);
                                                             }} value='Saloon Manual Transmission' class="form-check-input" type="radio" name='vehicleType' />
 
                                                             <span class="text">Saloon Manual Transmission</span>
@@ -239,7 +252,7 @@ export default function ProductsSection() {
                                                     <li>
                                                         <label class="containerss">
                                                             <input onChange={(e) => {
-                                                                vehicleTypeFilter(e);
+                                                               groupCategoryFilter(e);
                                                             }} value='Saloon Automatic Transmission' class="form-check-input" type="radio" name='vehicleType' />
 
                                                             <span class="text">Saloon Automatic Transmission</span>
@@ -249,7 +262,7 @@ export default function ProductsSection() {
                                                     <li>
                                                         <label class="containerss">
                                                             <input onChange={(e) => {
-                                                                vehicleTypeFilter(e);
+                                                                groupCategoryFilter(e);
                                                             }} value='Cabrio/Open Top' class="form-check-input" type="radio" name='vehicleType' />
                                                             <span class="text">Cabrio / Open Top</span>
                                                             <span class="qty">({cabrioOpenTop?.length})</span>
@@ -258,7 +271,7 @@ export default function ProductsSection() {
                                                     <li>
                                                         <label class="containerss">
                                                             <input onChange={(e) => {
-                                                                vehicleTypeFilter(e);
+                                                                groupCategoryFilter(e);
                                                             }} value='People Carrier' class="form-check-input userDifRadio" type="radio" name='vehicleType' />
 
                                                             <span class="text">People Carrier/Wheelchair Accessible Vehicles</span>
@@ -268,7 +281,7 @@ export default function ProductsSection() {
                                                     <li>
                                                         <label class="containerss">
                                                             <input onChange={(e) => {
-                                                                vehicleTypeFilter(e);
+                                                               groupCategoryFilter(e);
                                                             }} value='SUV/4WD' class="form-check-input" type="radio" name='vehicleType' />
 
                                                             <span class="text">SUV / 4WD</span>
@@ -279,33 +292,33 @@ export default function ProductsSection() {
                                                         <label class="containerss">
                                                             <input onChange={(e) => {
                                                                 if (e.target.checked) {
-                                                                    setVehiceType(null);
+                                                                    setGroupCategory(null);
 
                                                                     if (transmissionType && noOfPassengers) {
-                                                                        setVehiclesList(allDataArr?.filter((vehicleObj) => {
+                                                                        setGroupsList(allDataArr?.filter((groupObj) => {
                                                                             return (
 
-                                                                                vehicleObj.transmissionType === transmissionType && vehicleObj.adults == noOfPassengers
+                                                                                groupObj.transmissionType === transmissionType && groupObj.adults == noOfPassengers
                                                                             )
                                                                         }))
 
                                                                     } else if (transmissionType && !noOfPassengers) {
-                                                                        setVehiclesList(allDataArr?.filter((vehicleObj) => {
+                                                                        setGroupsList(allDataArr?.filter((groupObj) => {
                                                                             return (
 
-                                                                                vehicleObj.transmissionType === transmissionType
+                                                                                groupObj.transmissionType === transmissionType
                                                                             )
                                                                         }))
                                                                     } else if (noOfPassengers && !transmissionType) {
-                                                                        setVehiclesList(allDataArr?.filter((vehicleObj) => {
+                                                                        setGroupsList(allDataArr?.filter((groupObj) => {
 
                                                                             return (
 
-                                                                                vehicleObj.adults == noOfPassengers
+                                                                                groupObj.adults == noOfPassengers
                                                                             )
                                                                         }))
                                                                     } else {
-                                                                        setVehiclesList(allDataArr);
+                                                                        setGroupsList(allDataArr);
                                                                     }
                                                                 }
                                                             }} class="form-check-input" type="radio" name='vehicleType' />
@@ -352,31 +365,31 @@ export default function ProductsSection() {
                                                                 if (e.target.checked) {
                                                                     setTransmissionType(null);
 
-                                                                    if (vehicleType && noOfPassengers) {
-                                                                        setVehiclesList(allDataArr?.filter((vehicleObj) => {
+                                                                    if (groupCategory && noOfPassengers) {
+                                                                        setGroupsList(allDataArr?.filter((groupObj) => {
                                                                             return (
 
-                                                                                vehicleObj.vehicleType === vehicleType && vehicleObj.adults == noOfPassengers
+                                                                                groupObj.groupCategory === groupCategory && groupObj.adults == noOfPassengers
                                                                             )
                                                                         }))
 
-                                                                    } else if (vehicleType && !noOfPassengers) {
-                                                                        setVehiclesList(allDataArr?.filter((vehicleObj) => {
+                                                                    } else if (groupCategory && !noOfPassengers) {
+                                                                        setGroupsList(allDataArr?.filter((groupObj) => {
                                                                             return (
 
-                                                                                vehicleObj.vehicleType === vehicleType
+                                                                                groupObj.groupCategory === groupCategory
                                                                             )
                                                                         }))
-                                                                    } else if (noOfPassengers && !vehicleType) {
-                                                                        setVehiclesList(allDataArr?.filter((vehicleObj) => {
+                                                                    } else if (noOfPassengers && !groupCategory) {
+                                                                        setGroupsList(allDataArr?.filter((groupObj) => {
 
                                                                             return (
 
-                                                                                vehicleObj.adults == noOfPassengers
+                                                                                groupObj.adults == noOfPassengers
                                                                             )
                                                                         }))
                                                                     } else {
-                                                                        setVehiclesList(allDataArr);
+                                                                        setGroupsList(allDataArr);
                                                                     }
                                                                 }
                                                             }} class="form-check-input" type="radio" name='transmissionType' />
@@ -475,31 +488,31 @@ export default function ProductsSection() {
                                                                 if (e.target.checked) {
                                                                     setNoOfPassengers(null);
 
-                                                                    if (vehicleType && transmissionType) {
-                                                                        setVehiclesList(allDataArr?.filter((vehicleObj) => {
+                                                                    if (groupCategory && transmissionType) {
+                                                                        setGroupsList(allDataArr?.filter((groupObj) => {
                                                                             return (
 
-                                                                                vehicleObj.vehicleType === vehicleType && vehicleObj.transmissionType == transmissionType
+                                                                                groupObj.groupCategory === groupCategory && groupObj.transmissionType == transmissionType
                                                                             )
                                                                         }))
 
-                                                                    } else if (vehicleType && !transmissionType) {
-                                                                        setVehiclesList(allDataArr?.filter((vehicleObj) => {
+                                                                    } else if (groupCategory && !transmissionType) {
+                                                                        setGroupsList(allDataArr?.filter((groupObj) => {
                                                                             return (
 
-                                                                                vehicleObj.vehicleType === vehicleType
+                                                                                groupObj.groupCategory === groupCategory
                                                                             )
                                                                         }))
-                                                                    } else if (transmissionType && !vehicleType) {
-                                                                        setVehiclesList(allDataArr?.filter((vehicleObj) => {
+                                                                    } else if (transmissionType && !groupCategory) {
+                                                                        setGroupsList(allDataArr?.filter((groupObj) => {
 
                                                                             return (
 
-                                                                                vehicleObj.transmissionType == transmissionType
+                                                                                groupObj.transmissionType == transmissionType
                                                                             )
                                                                         }))
                                                                     } else {
-                                                                        setVehiclesList(allDataArr);
+                                                                        setGroupsList(allDataArr);
                                                                     }
                                                                 }
                                                             }} class="form-check-input" type="radio" name='passengers' />
@@ -556,11 +569,18 @@ export default function ProductsSection() {
                                     <div class="list-grid-product-wrap grid-group-wrapper">
                                         <div class="row g-4  mb-40">
 
-                                            {vehiclesList?.sort((a, b) => a.price - b.price).map((vehicleObj) => {
+                                        
+
+                                            {groupsList?.sort((a, b) => {
+                                                if (daysPrice) {
+                                                    return a[currentSeason][daysPrice] - b[currentSeason][daysPrice];
+                                                }
+                                                return a[currentSeason]['1to2daysPrice'] - b[currentSeason]['1to2daysPrice'];
+                                            }).map((groupObj) => {
 
                                                 return (
                                                     <div class={`${gridView ? 'col-lg-6 col-md-6 col-sm-12' : 'col-12'}  wow fadeInUp item`}>
-                                                        <ProductCard  gridView={gridView} vehicleData={vehicleObj} />
+                                                        <ProductCard  gridView={gridView} groupData={groupObj} />
                                                     </div>
                                                 )
                                             })}

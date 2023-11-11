@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom"
 import { toast } from 'react-toastify';
 import { useDispatch, useSelector } from 'react-redux';
 import { clearPreSubmission, submitPreBooking, updateBookingInfo } from '../redux/slices/bookingSlices';
+import { setNumberOfDays } from '../redux/slices/daysNumberSlice';
 
 
 export default function MainSection() {
@@ -18,7 +19,7 @@ export default function MainSection() {
 
     const bookingSubmitted = useSelector(state => state.booking.isBookingSubmitted);
     const bookingData = useSelector(state => state.booking.bookingData);
-
+    const landingPageContent = useSelector(state => state.webContent?.landingPage);
 
     const updateBookingData = (e) => {
 
@@ -40,14 +41,15 @@ export default function MainSection() {
     ]
     return (
         <>
-            <div class="banner-section2">
+            <div style={{
+                backgroundImage: `linear-gradient(180deg, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.15) 100%), url(${landingPageContent?.backgroundImageUrl})`
+            }} class="banner-section2">
                 <div class="">
                     <div class=" mx-5">
                         <div class="banner-content">
                             {/* <!-- <h1>Explore Cyprus</h1> --> */}
-                            <h1 className='px-2'>Start Your Journey 'Your Way'!</h1>
-                            <p className='px-2'>Drive into Unforgettable Experiences with 'Your Way' Car Hire - Your Companion for Reliable and
-                                Exciting Journeys Across the Island</p>
+                            <h1 className='px-2'>{landingPageContent?.mainHeading}</h1>
+                            <p className='px-2'>{landingPageContent?.mainText}</p>
                             <div className='bg-white py-3 me-3 w-100 border-circle'>
                                 <form onSubmit={(e) => {
                                     e.preventDefault();
@@ -58,9 +60,34 @@ export default function MainSection() {
                                     } else if (!bookingData.dropOffLocation) {
                                         toast.warning('Please Provide Drop Off Location !');
                                     } else {
+                                        const pickUpDate = new Date(bookingData?.pickUpDate);
+                                        const dropOffDate = new Date(bookingData?.dropOffDate);
 
-                                        dispatch(submitPreBooking());
-                                        navigate('/vehicle-guide')
+                                        if (dropOffDate < pickUpDate) {
+                                            toast.warning('Drop off date is earlier than Pick Up Date!')
+                                        } else {
+
+
+                                            // To calculate the time difference
+                                            const timeDiff = Math.abs(dropOffDate.getTime() - pickUpDate.getTime());
+                                            const numberOfDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
+                                            console.log(numberOfDays);
+                                            let priceText;
+                                            if (numberOfDays <= 2) {
+                                                priceText = '1to2daysPrice'
+                                            } else if (numberOfDays >= 3 && numberOfDays <= 6) {
+                                                priceText = '3to6daysPrice'
+                                            } else if (numberOfDays >= 7 && numberOfDays <= 14) {
+                                                priceText = '15plusDaysPrice'
+                                            }
+
+                                            dispatch(setNumberOfDays({
+                                                number: numberOfDays,
+                                                priceText: priceText
+                                            }))
+                                            dispatch(submitPreBooking());
+                                            navigate('/vehicle-guide')
+                                        }
                                     }
 
                                 }}>

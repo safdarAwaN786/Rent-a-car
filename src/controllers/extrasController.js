@@ -28,7 +28,7 @@ const getExtras = async (req, res) => {
 
     
     try {
-        const allExtras = await Extra.find();
+        const allExtras = await Extra.findOne();
         
 
         console.log(allExtras);

@@ -29,22 +29,28 @@ app.use((req, res, next) => {
 // Import routes
 const userRoutes = require('./src/routes/userRoutes'); // Adjust the path based on your file structure
 const adminRoutes = require('./src/routes/VATRoutes'); // Adjust the path based on your file structure
-const vehicleRoutes = require('./src/routes/vehicleRoutes'); // Adjust the path based on your file structure
+const groupRoutes = require('./src/routes/groupRoutes'); // Adjust the path based on your file structure
 const extrasRoutes = require('./src/routes/extrasRoutes'); // Adjust the path based on your file structure
 const promoCodeRoutes = require('./src/routes/promoCodeRoutes'); // Adjust the path based on your file structure
 const bookingRoutes = require('./src/routes/bookingRoutes'); // Adjust the path based on your file structure
+const categoryRoutes = require('./src/routes/vehicleCategory'); // Adjust the path based on your file structure
+const seasonRoutes = require('./src/routes/seasonRoutes'); // Adjust the path based on your file structure
+const contentRoutes = require('./src/routes/contentRouter'); // Adjust the path based on your file structure
 
 
 
 
 // Use the user routes
-app.use('/user', userRoutes); // Assuming user routes are prefixed with '/user'
+app.use( userRoutes); // Assuming user routes are prefixed with '/user'
 
-app.use('/vat', adminRoutes); // Assuming user routes are prefixed with '/user'
-app.use('/vehicle', vehicleRoutes); // Assuming user routes are prefixed with '/user'
-app.use('/extras', extrasRoutes);
-app.use('/promo-code', promoCodeRoutes);
-app.use('/booking', bookingRoutes);
+app.use( adminRoutes); // Assuming user routes are prefixed with '/user'
+app.use(groupRoutes); // Assuming user routes are prefixed with '/user'
+app.use( extrasRoutes);
+app.use( promoCodeRoutes);
+app.use( bookingRoutes);
+app.use( categoryRoutes);
+app.use( seasonRoutes);
+app.use( contentRoutes);
 
 
 

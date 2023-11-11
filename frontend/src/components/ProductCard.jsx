@@ -11,9 +11,9 @@ import transmissionImg from '../assets/img/home4/icon/menual.svg'
 import ACImg from '../assets/img/home4/icon/Resized_svg (9).svg'
 import { toast } from 'react-toastify'
 import { useDispatch, useSelector } from 'react-redux'
-import { selectVehicle, updateBookingInfo } from '../redux/slices/bookingSlices'
+import { selectGroup, selectVehicle, updateBookingInfo } from '../redux/slices/bookingSlices'
 
-export default function ProductCard({ gridView, vehicleData }) {
+export default function ProductCard({ gridView, groupData }) {
 
     const bookingSubmitted = useSelector(state => state.booking.isBookingSubmitted);
     const loggedIn = useSelector(state => state.auth.loggedIn);
@@ -21,7 +21,9 @@ export default function ProductCard({ gridView, vehicleData }) {
     const navigate = useNavigate();
     const bookingData = useSelector(state => state.booking.bookingData);
     const dispatch = useDispatch()
-
+    const numberOfDays = useSelector(state => state.numberOfDays?.number);
+    const daysPrice = useSelector(state => state.numberOfDays?.priceText);
+    const currentSeason = useSelector(state => state.currentSeason);
     return (
         <div class={`product-card ${gridView ? '' : 'd-flex flex-row'} `}>
             <div class="product-img">
@@ -29,7 +31,7 @@ export default function ProductCard({ gridView, vehicleData }) {
                 <div class="swiper product-img-slider">
                     <div class="swiper-wrapper">
                         <div class="swiper-slide">
-                            <img src={vehicleData?.imageUrl} />
+                            <img src={groupData?.imageUrl} />
 
                         </div>
 
@@ -37,50 +39,48 @@ export default function ProductCard({ gridView, vehicleData }) {
                 </div>
             </div>
             <div class="product-content">
-                <p><b>Group - </b><h5>{vehicleData?.group}</h5></p>
-                <h5><a className='text-decoration-none cursor-pointer' >{vehicleData?.name} | <b>or similar</b></a></h5>
+                <p>Group - <b>{groupData?.groupName}</b></p>
+                <h5><a className='text-decoration-none cursor-pointer' ><b>{groupData?.vehicleName}</b> | or similar</a></h5>
                 <div class="price-location">
                     <div class="price">
-                        <strong>€{vehicleData?.price}</strong>
+                    <strong>€{daysPrice ? groupData[currentSeason][daysPrice] : groupData[currentSeason]['1to2daysPrice']}</strong>
                     </div>
-                    <div class="location">
-                        <a className='text-decoration-none cursor-pointer'><i class="bi bi-geo-alt"></i>{vehicleData?.location}</a>
-                    </div>
+                    
                 </div>
                 <ul class="features">
                     <li>
                         <img src={engineImg} alt />
-                        Engine Size: {vehicleData?.engineSize}
+                        Engine Size: {groupData?.engineSize}
                     </li>
                     <li>
                         <img width={14} src={adultImg} alt />
-                        Adults: {vehicleData?.adults}
+                        Adults: {groupData?.adults}
                     </li>
                     <li>
                         <img src={doorsImg} alt />
-                        Doors: {vehicleData?.doors}
+                        Doors: {groupData?.doors}
                     </li>
                     <li>
                         <img src={childrenImg} alt />
-                        Children: {vehicleData?.children}
+                        Children: {groupData?.children}
                     </li>
                     <li>
                         <img src={seatsImg} alt />
-                        Seats: {vehicleData?.seats}
+                        Seats: {groupData?.seats}
                     </li>
                     <li>
                         <img src={bigLuggageImg} alt />
-                        Big Luggage: {vehicleData?.bigLuggage}
+                        Big Luggage: {groupData?.bigLuggage}
                     </li>
                     <li>
                         <img src={smallLuggageImg} alt />
-                        Small Luggage: {vehicleData?.smallLuggage}
+                        Small Luggage: {groupData?.smallLuggage}
                     </li>
                     <li>
                         <img src={transmissionImg} alt />
-                        Transmission: {vehicleData?.transmissionType}
+                        Transmission: {groupData?.transmissionType}
                     </li>
-                    {vehicleData?.AC && (
+                    {groupData?.AC && (
 
                         <li>
                             <img src={ACImg} alt />
@@ -94,21 +94,16 @@ export default function ProductCard({ gridView, vehicleData }) {
                         if (loggedIn === true && user) {
 
                             if (bookingSubmitted) {
-                                const pickUpDate = new Date(bookingData?.pickUpDate);
-                                const dropOffDate = new Date(bookingData?.dropOffDate);
-
-                                // To calculate the time difference
-                                const timeDiff = Math.abs(dropOffDate.getTime() - pickUpDate.getTime());
-                                const numberOfDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
-                                console.log(numberOfDays);
+                                
                                 console.log('correct');
-                                dispatch(updateBookingInfo({ ...bookingData, vehicle: vehicleData._id, basicPrice: vehicleData.price * numberOfDays, user: user._id }))
-                                dispatch(selectVehicle(vehicleData));
+                                dispatch(updateBookingInfo({ ...bookingData, group: groupData._id, basicPrice: groupData[currentSeason][daysPrice] * numberOfDays, currentSeason : currentSeason, daysText : daysPrice, user: user._id }))
+
+                                dispatch(selectGroup(groupData));
 
                                 navigate('/complete-booking');
                             } else {
                                 dispatch(updateBookingInfo({ ...bookingData,  user: user._id }))
-                                dispatch(selectVehicle(vehicleData));
+                                dispatch(selectGroup(groupData));
                                 navigate('/');
                             }
 

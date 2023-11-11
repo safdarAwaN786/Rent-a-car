@@ -20,6 +20,7 @@ import { Modal, Upload } from 'antd';
 import axios from 'axios'
 import { toast } from 'react-toastify'
 import Spinner from 'react-bootstrap/esm/Spinner'
+import { useSelector } from 'react-redux'
 
 const getBase64 = (file) =>
     new Promise((resolve, reject) => {
@@ -29,10 +30,10 @@ const getBase64 = (file) =>
         reader.onerror = (error) => reject(error);
     });
 
-export default function AdminProductCard({ gridView, vehicleData, reGetData }) {
-    const [vehicleToEdit, setVehicleToEdit] = useState(null);
-    const [editVehicle, setEditVehicle] = useState(false);
-    const [editingVehicle, setEditingVehicle] = useState(false);
+export default function AdminProductCard({ gridView, groupData, reGetData }) {
+    const [groupToEdit, setGroupToEdit] = useState(null);
+    const [editGroup, setEditGroup] = useState(false);
+    const [editingGroup, setEditingGroup] = useState(false);
     const customStyles = {
         menu: (provided) => ({
             ...provided,
@@ -47,8 +48,8 @@ export default function AdminProductCard({ gridView, vehicleData, reGetData }) {
         }),
     };
 
-
-    const vehicleCategories = [
+    const currentSeason = useSelector(state => state.currentSeason);
+    const groupCategories = [
         { value: 'Saloon Manual Transmission', label: <div>Saloon Manual Transmission</div> },
         { value: 'Saloon Automatic Transmission', label: <div>Saloon Automatic Transmission</div> },
         { value: 'Cabrio/Open Top', label: <div>Cabrio/Open Top</div> },
@@ -56,28 +57,14 @@ export default function AdminProductCard({ gridView, vehicleData, reGetData }) {
         { value: 'SUV/4WD', label: <div>SUV/4WD</div> },
 
     ]
-    const groups = [
-        { value: 'A3', label: <div>A3</div> },
-        { value: 'A4', label: <div>A4</div> },
-        { value: 'A5', label: <div>A5</div> },
-        { value: 'B3', label: <div>B3</div> },
-        { value: 'B4', label: <div>B4</div> },
-        { value: 'C2', label: <div>C2</div> },
-        { value: 'C4', label: <div>C4</div> },
-        { value: 'C6', label: <div>C6</div> },
-        { value: 'C8', label: <div>C8</div> },
-        { value: 'D1', label: <div>D1</div> },
-        { value: 'D4', label: <div>D4</div> },
-        { value: 'D7', label: <div>D7</div> },
-        { value: 'D8', label: <div>D8</div> },
-    ]
+
 
     useEffect(() => {
-        console.log(vehicleToEdit);
-    }, [vehicleToEdit])
+        console.log(groupToEdit);
+    }, [groupToEdit])
 
-    const updateVehicleData = (e) => {
-        setVehicleToEdit({ ...vehicleToEdit, [e.target.name]: e.target.value })
+    const updateGroupData = (e) => {
+        setGroupToEdit({ ...groupToEdit, [e.target.name]: e.target.value })
     }
 
 
@@ -86,7 +73,7 @@ export default function AdminProductCard({ gridView, vehicleData, reGetData }) {
     const [previewTitle, setPreviewTitle] = useState('');
     const [fileList, setFileList] = useState([
         {
-            url: vehicleData?.imageUrl
+            url: groupData?.imageUrl
         }
     ]);
     const handleCancel = () => setPreviewOpen(false);
@@ -120,13 +107,7 @@ export default function AdminProductCard({ gridView, vehicleData, reGetData }) {
 
 
 
-    // const [open, setOpen] = useState(false);
-    // const showModal = () => {
-    //     setOpen(true);
-    // };
-    // const handleOk = () => {
-    //     setOpen(false);
-    // };
+
 
 
 
@@ -134,7 +115,7 @@ export default function AdminProductCard({ gridView, vehicleData, reGetData }) {
         <>
 
 
-            {editVehicle && (
+            {editGroup && (
 
                 <div className='addProductBox justify-content-center pt-5  '>
                     <div className='formBox border-circle  mt-5 pt-4 '>
@@ -144,54 +125,55 @@ export default function AdminProductCard({ gridView, vehicleData, reGetData }) {
                             <div className='d-flex justify-content-end'>
 
                                 <AiOutlineCloseSquare className='cursor-pointer fs-4' onClick={() => {
-                                    setEditVehicle(false)
+                                    setEditGroup(false);
                                 }} />
                             </div>
 
 
-                            <h1 className='text-center fs-4'>Edit Vehicle</h1>
+                            <h1 className='text-center fs-4'>Edit Group Details</h1>
 
                             <form encType='multipart/form-data' onSubmit={(event) => {
                                 event.preventDefault();
-                                setEditingVehicle(true);
+                                setEditingGroup(true);
                                 const data = new FormData();
 
-                                console.log(vehicleToEdit)
+                                console.log(groupToEdit)
 
                                 // Append each field individually to the FormData object
-                                data.append('name', vehicleToEdit.name);
+                                data.append('groupName', groupToEdit.groupName);
+                                data.append('GroupName', groupToEdit.GroupName);
 
-                                data.append('engineSize', vehicleToEdit.engineSize);
-                                data.append('adults', vehicleToEdit.adults);
-                                data.append('doors', vehicleToEdit.doors);
-                                data.append('children', vehicleToEdit.children);
-                                data.append('seats', vehicleToEdit.seats);
-                                data.append('bigLuggage', vehicleToEdit.bigLuggage);
-                                data.append('smallLuggage', vehicleToEdit.smallLuggage);
-                                data.append('transmissionType', vehicleToEdit.transmissionType);
-                                data.append('price', vehicleToEdit.price);
-                                data.append('AC', vehicleToEdit.AC);
-                                data.append('vehicleType', vehicleToEdit.vehicleType);
-                                data.append('group', vehicleToEdit.group);
-                                data.append('vehicleImage', fileList[0].originFileObj);
+                                data.append('engineSize', groupToEdit.engineSize);
+                                data.append('adults', groupToEdit.adults);
+                                data.append('doors', groupToEdit.doors);
+                                data.append('children', groupToEdit.children);
+                                data.append('seats', groupToEdit.seats);
+                                data.append('bigLuggage', groupToEdit.bigLuggage);
+                                data.append('smallLuggage', groupToEdit.smallLuggage);
+                                data.append('transmissionType', groupToEdit.transmissionType);
 
-                                event.target.reset();
+                                data.append('AC', groupToEdit.AC);
+                                data.append('groupCategory', groupToEdit.groupCategory);
 
+                                data.append('GroupImage', fileList[0].originFileObj);
 
 
-                                axios.post(`/vehicle/edit-vehicle/${vehicleToEdit?._id}`, data)
+
+
+
+                                axios.post(`/edit-group/${groupToEdit?._id}`, data)
                                     .then(response => {
-                                        setEditVehicle(false);
-                                        setEditingVehicle(false)
+                                        setEditGroup(false);
+                                        setEditingGroup(false)
                                         console.log(response);
                                         reGetData();
 
-                                        toast.success("Vehicle Updated Successfully!");
+                                        toast.success("Group Updated Successfully!");
 
                                     })
                                     .catch(error => {
-                                        toast.error('Error in updating Vehicle!')
-                                        console.error('Error updating vehicle', error)
+                                        toast.error('Error in updating Group!')
+                                        console.error('Error updating Group', error)
                                     });
 
                             }}>
@@ -221,86 +203,85 @@ export default function AdminProductCard({ gridView, vehicleData, reGetData }) {
 
                                     </div>
 
+                                    <label className='mt-1'>Group Name :</label>
+                                    <input value={groupToEdit?.groupName} onChange={(e) => {
+                                        updateGroupData(e)
+                                    }} name='groupName' type='text' className='p-1 border border-secondary border-circle mb-1' />
+
                                     <label className='mt-1'>Vehicle Name :</label>
-                                    <input value={vehicleToEdit?.name} onChange={(e) => {
-                                        updateVehicleData(e)
-                                    }} name='name' type='text' className='p-1 border border-secondary border-circle mb-1' />
+                                    <input value={groupToEdit?.vehicleName} onChange={(e) => {
+                                        updateGroupData(e)
+                                    }} name='vehicleName' type='text' className='p-1 border border-secondary border-circle mb-1' />
 
                                     <label className='mt-1'>Engine Size :</label>
-                                    <input value={vehicleToEdit?.engineSize} onChange={(e) => {
-                                        updateVehicleData(e)
+                                    <input value={groupToEdit?.engineSize} onChange={(e) => {
+                                        updateGroupData(e)
                                     }} name='engineSize' type='text' className='p-1 border border-secondary border-circle mb-1' />
 
 
                                     <label className='mt-1'>Adults :</label>
-                                    <input value={vehicleToEdit?.adults} onChange={(e) => {
-                                        updateVehicleData(e)
+                                    <input value={groupToEdit?.adults} onChange={(e) => {
+                                        updateGroupData(e)
                                     }} name='adults' type='number' className='p-1 border border-secondary border-circle mb-1' />
 
                                     <label className='mt-1'>Doors :</label>
-                                    <input value={vehicleToEdit?.doors} onChange={(e) => {
-                                        updateVehicleData(e)
+                                    <input value={groupToEdit?.doors} onChange={(e) => {
+                                        updateGroupData(e)
                                     }} name='doors' type='number' className='p-1 border border-secondary border-circle mb-1' />
 
                                     <label className='mt-1'>Children :</label>
-                                    <input value={vehicleToEdit?.children} onChange={(e) => {
-                                        updateVehicleData(e)
+                                    <input value={groupToEdit?.children} onChange={(e) => {
+                                        updateGroupData(e)
                                     }} name='children' type='number' className='p-1 border border-secondary border-circle mb-1' />
 
                                     <label className='mt-1'>Seats :</label>
-                                    <input value={vehicleToEdit?.seats} onChange={(e) => {
-                                        updateVehicleData(e)
+                                    <input value={groupToEdit?.seats} onChange={(e) => {
+                                        updateGroupData(e)
                                     }} name='seats' type='number' className='p-1 border border-secondary border-circle mb-1' />
 
                                     <label className='mt-1'>Big Luggage :</label>
-                                    <input value={vehicleToEdit?.bigLuggage} onChange={(e) => {
-                                        updateVehicleData(e)
+                                    <input value={groupToEdit?.bigLuggage} onChange={(e) => {
+                                        updateGroupData(e)
                                     }} name='bigLuggage' type='text' className='p-1 border border-secondary border-circle mb-1' />
 
                                     <label className='mt-1'>Small Luggage :</label>
-                                    <input value={vehicleToEdit?.smallLuggage} onChange={(e) => {
-                                        updateVehicleData(e)
+                                    <input value={groupToEdit?.smallLuggage} onChange={(e) => {
+                                        updateGroupData(e)
                                     }} name='smallLuggage' type='text' className='p-1 border border-secondary border-circle mb-1' />
                                     <label className='mt-1'>Transmission Type  :</label>
                                     <Select onChange={(value) => {
-                                        setVehicleToEdit({ ...vehicleToEdit, transmissionType: value.value })
+                                        setGroupToEdit({ ...groupToEdit, transmissionType: value.value })
                                     }} name='transmissionType' styles={customStyles} options={[
                                         { value: 'Automatic', label: <div>Automatic</div> },
                                         { value: 'Manual', label: <div>Manual</div> },
                                     ]} />
 
 
-                                    <label className='mt-2'>Price (€EUR):</label>
-                                    <input value={vehicleToEdit?.price} onChange={(e) => {
-                                        updateVehicleData(e)
-                                    }} name='price' type='number' className='p-1 border border-secondary border-circle mb-1' />
+
                                     <div className='my-2'>
 
 
                                         <label className='mt-1'>AC :</label>
-                                        <input checked={vehicleToEdit?.AC} onChange={(e) => {
-                                            setVehicleToEdit({ ...vehicleToEdit, AC: e.target.checked })
+                                        <input checked={groupToEdit?.AC} onChange={(e) => {
+                                            setGroupToEdit({ ...groupToEdit, AC: e.target.checked })
                                         }} style={{
                                             width: '18px',
                                             height: '18px'
                                         }} type='checkbox' className='m-4 border border-secondary border-circle mb-1' />
                                     </div>
 
-                                    <label className='mt-2'>Vehicle Type  :</label>
+                                    <label className='mt-2'>Group Type  :</label>
                                     <Select onChange={(value) => {
-                                        setVehicleToEdit({ ...vehicleToEdit, vehicleType: value.value })
-                                    }} name='vehicleType' styles={customStyles} options={vehicleCategories} />
-                                    <label className='mt-2'>Group  :</label>
-                                    <Select onChange={(value) => {
-                                        setVehicleToEdit({ ...vehicleToEdit, group: value.value })
-                                    }} name='group' options={groups} />
+                                        setGroupToEdit({ ...groupToEdit, groupCategory: value.value })
+                                    }} name='groupCategory' styles={customStyles} options={groupCategories} />
+
 
 
                                     <div className='d-flex justify-content-center my-4'>
                                         <button style={{
                                             zIndex: '00'
                                         }} type="submit" class="primary-btn6 p-sm-2 p-1 ">
-                                            {editingVehicle ? (
+                                            {editingGroup ? (
                                                 <Spinner animation="border" size="sm" />
                                             ) : (
 
@@ -327,7 +308,7 @@ export default function AdminProductCard({ gridView, vehicleData, reGetData }) {
                     <div class="swiper product-img-slider">
                         <div class="swiper-wrapper">
                             <div class="swiper-slide">
-                                <img src={vehicleData?.imageUrl} />
+                                <img src={groupData?.imageUrl} />
 
                             </div>
 
@@ -335,48 +316,49 @@ export default function AdminProductCard({ gridView, vehicleData, reGetData }) {
                     </div>
                 </div>
                 <div class="product-content">
-                    <p className='fs-5 mb-0'>Group - <b>{vehicleData?.group}</b></p>
-                    <h5><a className='text-decoration-none cursor-pointer fs-5' >{vehicleData?.name}</a> | <span>or similar</span></h5>
+                    <p className='fs-5 mb-0'>Group - <b>{groupData?.groupName}</b></p>
+                    <h5><a className='text-decoration-none cursor-pointer fs-5' >{groupData?.vehicleName}</a> | <span>or similar</span></h5>
                     <div class="price-location">
                         <div class="price">
-                            <strong>€{vehicleData?.price}</strong>
+                            <strong>€{currentSeason ? groupData[currentSeason]['1to2daysPrice'] : groupData.winterPrices['1to2daysPrice']}</strong>
                         </div>
+
 
                     </div>
                     <ul class="features">
                         <li>
                             <img src={engineImg} alt />
-                            Engine Size: {vehicleData?.engineSize}
+                            Engine Size: {groupData?.engineSize}
                         </li>
                         <li>
                             <img width={14} src={adultImg} alt />
-                            Adults: {vehicleData?.adults}
+                            Adults: {groupData?.adults}
                         </li>
                         <li>
                             <img src={doorsImg} alt />
-                            Doors: {vehicleData?.doors}
+                            Doors: {groupData?.doors}
                         </li>
                         <li>
                             <img src={childrenImg} alt />
-                            Children: {vehicleData?.children}
+                            Children: {groupData?.children}
                         </li>
                         <li>
                             <img src={seatsImg} alt />
-                            Seats: {vehicleData?.seats}
+                            Seats: {groupData?.seats}
                         </li>
                         <li>
                             <img src={bigLuggageImg} alt />
-                            Big Luggage: {vehicleData?.bigLuggage}
+                            Big Luggage: {groupData?.bigLuggage}
                         </li>
                         <li>
                             <img src={smallLuggageImg} alt />
-                            Small Luggage: {vehicleData?.smallLuggage}
+                            Small Luggage: {groupData?.smallLuggage}
                         </li>
                         <li>
                             <img src={transmissionImg} alt />
-                            Transmission: {vehicleData?.transmissionType}
+                            Transmission: {groupData?.transmissionType}
                         </li>
-                        {vehicleData?.AC && (
+                        {groupData?.AC && (
 
                             <li>
                                 <img src={ACImg} alt />
@@ -387,26 +369,26 @@ export default function AdminProductCard({ gridView, vehicleData, reGetData }) {
 
                     <div class="d-flex justify-content-end border-bottom border-secondary-subtle pb-2">
                         <AiOutlineEdit onClick={() => {
-                            setVehicleToEdit(vehicleData)
-                            setEditVehicle(true)
+                            setGroupToEdit(groupData)
+                            setEditGroup(true)
                         }} className='mx-2 fs-4 cursor-pointer productIcon' />
                         <MdOutlineDelete onClick={() => {
 
 
                             Modal.confirm({
                                 title: 'Confirm',
-                                content: 'Do you want to delete this vehicle ?',
+                                content: 'Do you want to delete this Group ?',
 
                                 onOk() {
                                     console.log('Deleting');
                                     axios
-                                        .delete(`/vehicle/delete-vehicle/${vehicleData?._id}`)
+                                        .delete(`/delete-group/${groupData?._id}`)
                                         .then((res) => {
-                                            toast.success('Vehicle deleted Successfully!');
+                                            toast.success('Group deleted Successfully!');
                                             reGetData();
                                         })
                                         .catch((e) => {
-                                            toast.error('Error in Deleting Vehicle! Try Again');
+                                            toast.error('Error in Deleting Group! Try Again');
                                         });
                                 },
                                 footer: (_, { OkBtn, CancelBtn }) => (
