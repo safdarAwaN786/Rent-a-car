@@ -185,7 +185,7 @@ export default function Navbar() {
             });
     };
 
-
+    const [openContent, setOpenContent] = useState(false);
     // User logout function
     const handleLogout = () => {
         Cookies.remove('userToken');
@@ -733,6 +733,78 @@ export default function Navbar() {
                                                         }} className='cursor-pointer p-1 border-circle sidebar-li my-1'>
                                                             <a className='text-dark text-dark text-decoration-none'>
                                                                 Summer High Pricing
+                                                            </a>
+                                                        </li>
+                                                    </div>
+                                                )}
+
+                                                <li onClick={() => {
+                                                    setOpenContent(!openContent);
+                                                }} style={{
+                                                    transition: 'background-color 0.5s ease'
+                                                }} className='cursor-pointer p-1 border-circle sidebar-li d-flex justify-content-between'>
+                                                    <a class="text-decoration-none cursor-pointer text-dark fs-5">Web content</a>
+                                                    {openContent ? (
+                                                        <IoIosArrowDropup className={`fs-4 dropResponsive text-dark `} />
+
+                                                    ) : (
+
+                                                        <IoIosArrowDropdown className={`fs-4 dropResponsive text-dark `} />
+                                                    )}
+                                                </li>
+
+                                                {openContent && (
+                                                    <div data-aos="fade-down" className='border-start border-dark ms-3 px-2 border-3' >
+
+
+                                                        <li onClick={() => {
+                                                            navigate('/landingPage-content');
+                                                            handleClose();
+                                                        }} style={{
+                                                            transition: 'background-color 0.5s ease'
+                                                        }} className='cursor-pointer p-1 border-circle sidebar-li my-1'>
+                                                            <a className='text-dark text-dark text-decoration-none'>
+                                                                Landing Page
+                                                            </a>
+                                                        </li>
+                                                        <li onClick={() => {
+                                                            navigate('/reservations-content');
+                                                            handleClose();
+                                                        }} style={{
+                                                            transition: 'background-color 0.5s ease'
+                                                        }} className='cursor-pointer p-1 border-circle sidebar-li my-1'>
+                                                            <a className='text-dark text-dark text-decoration-none'>
+                                                                Reservations
+                                                            </a>
+                                                        </li>
+                                                        <li onClick={() => {
+                                                            navigate('/terms&conditions-content');
+                                                            handleClose();
+                                                        }} style={{
+                                                            transition: 'background-color 0.5s ease'
+                                                        }} className='cursor-pointer p-1 border-circle sidebar-li my-1'>
+                                                            <a className='text-dark text-dark text-decoration-none'>
+                                                            Terms & Conditions
+                                                            </a>
+                                                        </li>
+                                                        <li onClick={() => {
+                                                            navigate('/contactus-content');
+                                                            handleClose();
+                                                        }} style={{
+                                                            transition: 'background-color 0.5s ease'
+                                                        }} className='cursor-pointer p-1 border-circle sidebar-li my-1'>
+                                                            <a className='text-dark text-dark text-decoration-none'>
+                                                            Contact Us
+                                                            </a>
+                                                        </li>
+                                                        <li onClick={() => {
+                                                            navigate('/privacy&cookies-content');
+                                                            handleClose();
+                                                        }} style={{
+                                                            transition: 'background-color 0.5s ease'
+                                                        }} className='cursor-pointer p-1 border-circle sidebar-li my-1'>
+                                                            <a className='text-dark text-dark text-decoration-none'>
+                                                            Privacy & Cookies Policy
                                                             </a>
                                                         </li>
                                                     </div>
