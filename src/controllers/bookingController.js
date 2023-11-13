@@ -56,6 +56,9 @@ const getUserBookings = async (req, res) => {
     const userBookings = await Booking.find({ user: req.params.userId }).populate({
       path: 'user',
       model: 'User'
+    }).populate({
+      path : 'group',
+      model : 'Group'
     })
       .populate({
         path: 'group',
@@ -76,13 +79,12 @@ const getAllBookings = async (req, res) => {
     const allBookings = await Booking.find().populate({
       path: 'user',
       model: 'User'
-    })
-      .populate({
+    }).populate({
         path: 'group',
         model: 'Group'
       });
 
-     
+     console.log(allBookings);
 
     res.status(200).send({ status: true, message: "The Following are the Bookings!", data: allBookings });
 

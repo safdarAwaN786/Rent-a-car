@@ -41,7 +41,7 @@ export default function TermsConditionsContent() {
             }} />
           </div>
           <div className='d-flex justify-content-center my-2 '>
-            <button type="button" class="primary-btn6  p-sm-2 p-1 " >
+            <button type="submit" class="primary-btn6  p-sm-2 p-1 " >
               {updating ? (
                 <Spinner size='sm' />
               ) : (

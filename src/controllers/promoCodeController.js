@@ -74,15 +74,24 @@ const deleteCode = async (req, res) => {
 
 const getCode = async (req, res) => {
     try {
+        const today = new Date();
+        
 
         const requiredCode = await PromoCode.findOne({ code: req.params.codeName })
         console.log(requiredCode);
 
         if (requiredCode) {
-
-            console.log('Code Found..');
-
-            res.status(200).send({ status: true, message: "The Code is found!", data: requiredCode });
+            const startDate = new Date(requiredCode.startDate);
+            const endDate = new Date(requiredCode.endDate);  
+            console.log(today);
+            console.log(startDate);
+            console.log(endDate);
+            if(today > startDate && today < endDate ){
+                
+                res.status(200).send({ status: true, message: "The Code is found!", data: requiredCode });
+            } else {
+                res.status(201).send({ status: true, message: "This Code is out of its Limit, Now!", data: requiredCode });
+            }
         } else {
             res.status(201).send({ status: false, message: "The Code does not Exist!", });
         }

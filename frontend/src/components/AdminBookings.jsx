@@ -127,9 +127,15 @@ export default function AdminBookings() {
                         <th>Drop Off Location</th>
                         <td>{bookingToView.dropOffLocation}</td>
                       </tr>
-                      <tr>
-                        <th><h4 className='text-center'>Prices</h4></th>
-                      </tr>
+                    </tbody>
+                  </table>
+
+
+
+                  <h4 className='text-center my-2'>Prices</h4>
+                  <table class="table infoTable table-striped table-bordered">
+                    <tbody>
+
                       <tr>
                         <th>Vehicle Price</th>
                         <td>€{bookingToView.group[bookingToView.currentSeason][bookingToView.daysText]}</td>
@@ -284,8 +290,8 @@ export default function AdminBookings() {
             )}
           </div>
 
-         
-          
+
+
 
 
         </div>

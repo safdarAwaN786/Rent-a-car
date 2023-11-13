@@ -103,7 +103,7 @@ export default function Reservations() {
       <Navbar />
       <ReservationsBanner />
 
-      <h3 className='text-center'>All Bookings</h3>
+      <h3 className='text-center my-3'>Your Bookings</h3>
 
       {loading && user ? (
         <div className='underTable d-flex justify-content-center my-3'>
