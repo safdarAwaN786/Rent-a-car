@@ -31,6 +31,7 @@ export default function ReservationsContent() {
                                 ...editableContent.reservationsPage,
                                 backgroundImageUrl: returnedUrl,
                             };
+                            console.log(editableContent);
                             dispatch(setWebContent(editableContent));
                         } catch (error) {
                             console.log(error)

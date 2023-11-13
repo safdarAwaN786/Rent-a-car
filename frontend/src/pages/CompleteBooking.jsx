@@ -536,7 +536,7 @@ export default function CompleteBooking() {
                                                     e.preventDefault();
                                                     setApplyingPromo(true)
                                                     e.target.reset();
-                                                    axios.get(`/get-code/${codeValue}`).then((res) => {
+                                                    axios.get(`/get-code/${codeValue}/${bookingData?.group}`).then((res) => {
                                                         console.log(res);
                                                         setApplyingPromo(false);
                                                         if (res.status === 201) {

@@ -22,6 +22,10 @@ export default function AdminPricing() {
     const [editingCode, setEditingCode,] = useState(false);
     const [viewCode, setViewCode] = useState(false);
 
+    const [allGroups, setAllGroups] = useState(null);
+
+
+
     useEffect(() => {
         axios.get('/get-codes').then((response) => {
             setLoadingCodes(false)
@@ -38,6 +42,16 @@ export default function AdminPricing() {
         })
     }
 
+    useEffect(() => {
+        axios.get('read-groups').then((res) => {
+            console.log(res.data);
+            setAllGroups(res.data.data);
+        })
+    }, [])
+
+    useEffect(() => {
+        console.log(codeToSend);
+    }, [codeToSend])
 
 
     const formatDate = (date) => {
@@ -50,6 +64,9 @@ export default function AdminPricing() {
         });
         return formatDate;
     }
+    useEffect(()=>{
+        console.log(codeToProcess);
+    }, [codeToProcess])
 
     const updateVat = () => {
         axios.get("/get-vat").then((response) => {
@@ -62,7 +79,7 @@ export default function AdminPricing() {
         axios.get("/get-vat").then((response) => {
             setLoadingVAT(false);
             setVatValueObj(response.data[0]);
-        }).catch((e)=>{
+        }).catch((e) => {
             updateVat();
         })
     }, [])
@@ -225,6 +242,38 @@ export default function AdminPricing() {
 
                                                 </div>
                                             </div>
+                                            <div className='extraBox flex-wrap flex-column my-1 border-circle p-3 d-flex  justify-content-between'>
+                                                <h5 class="text-center" >Select Groups to Apply Code on :</h5>
+                                                {allGroups?.map((groupObj) => {
+                                                    return (
+                                                        <div>
+                                                            <input onChange={(e) => {
+                                                                let updatedGroups;
+                                                                if (codeToSend?.Groups) {
+                                                                    updatedGroups = [...codeToSend.Groups]
+                                                                } else {
+                                                                    updatedGroups = [];
+                                                                }
+
+                                                                if (e.target.checked) {
+                                                                    updatedGroups.push(groupObj._id);
+
+                                                                } else {
+                                                                    updatedGroups = updatedGroups.filter(groupId => groupId != groupObj._id);
+                                                                }
+
+                                                                setCodeToSend({ ...codeToSend, Groups: updatedGroups });
+                                                            }} name='description' type='checkbox' className='mx-2 pt-1' style={{
+                                                                width: '20px',
+                                                                height: '20px'
+                                                            }} />
+                                                            <p className='mb-2 d-inline fs-5'><b>{groupObj.groupName}</b></p>
+
+                                                        </div>
+                                                    )
+                                                })}
+
+                                            </div>
                                             <div className='d-flex justify-content-center my-4'>
                                                 <button style={{
                                                     zIndex: '00'
@@ -266,7 +315,7 @@ export default function AdminPricing() {
                                                 if (response.status === 201) {
                                                     toast.error(response.data.message)
                                                 } else {
-                                                    toast.success("Code Added Successfully!");
+                                                    toast.success("Code Updated Successfully!");
                                                 }
 
                                                 setEditingCode(false);
@@ -278,7 +327,7 @@ export default function AdminPricing() {
                                                 console.log(error);
                                                 setAddingCode(false);
                                                 setAddCode(false)
-                                                toast.error('Error in Adding Code, Try Again!')
+                                                toast.error('Error in Updating Code, Try Again!')
                                             });
                                     }}>
                                         <div className='d-flex flex-column'>
@@ -314,7 +363,7 @@ export default function AdminPricing() {
                                             <div className='extraBox flex-wrap my-1 border-circle p-2 d-flex  justify-content-between'>
                                                 <label class="form-check-label" >End Date :</label>
                                                 <div>
-                                                    <input onChange={(e) => {
+                                                    <input value={codeToProcess?.endDate} onChange={(e) => {
                                                         setCodeToProcess({ ...codeToProcess, [e.target.name]: e.target.value });
                                                     }} name='endDate' type='date' className='p-1 mx-2 border border-secondary border-circle mb-1' required />
 
@@ -328,6 +377,38 @@ export default function AdminPricing() {
                                                     }} name='description' type='text' className='w-100 p-1  border border-secondary border-circle  mb-1' required />
 
                                                 </div>
+                                            </div>
+                                            <div className='extraBox flex-wrap flex-column my-1 border-circle p-3 d-flex  justify-content-between'>
+                                                <h5 class="text-center" >Groups to Apply Code on :</h5>
+                                                {allGroups?.map((groupObj) => {
+                                                    return (
+                                                        <div>
+                                                            <input checked={codeToProcess?.Groups.includes(groupObj._id)} onChange={(e) => {
+                                                                let updatedGroups;
+                                                                if (codeToProcess?.Groups) {
+                                                                    updatedGroups = [...codeToProcess.Groups]
+                                                                } else {
+                                                                    updatedGroups = [];
+                                                                }
+
+                                                                if (e.target.checked) {
+                                                                    updatedGroups.push(groupObj._id);
+
+                                                                } else {
+                                                                    updatedGroups = updatedGroups.filter(groupId => groupId != groupObj._id);
+                                                                }
+
+                                                                setCodeToProcess({ ...codeToProcess, Groups: updatedGroups });
+                                                            }} name='description' type='checkbox' className='mx-2 pt-1' style={{
+                                                                width: '20px',
+                                                                height: '20px'
+                                                            }} />
+                                                            <p className='mb-2 d-inline fs-5'><b>{groupObj.groupName}</b></p>
+
+                                                        </div>
+                                                    )
+                                                })}
+
                                             </div>
                                             <div className='d-flex justify-content-center my-4'>
                                                 <button style={{
@@ -411,6 +492,22 @@ export default function AdminPricing() {
                                                     }} name='description' type='text' className='w-100 p-1  border border-secondary border-circle  mb-1' required readOnly />
 
                                                 </div>
+                                            </div>
+                                            <div className='extraBox flex-wrap flex-column my-1 border-circle p-3 d-flex  justify-content-between'>
+                                                <h5 class="text-center" >Groups to Apply Code on :</h5>
+                                                {allGroups?.map((groupObj) => {
+                                                    return (
+                                                        <div>
+                                                            <input checked={codeToProcess?.Groups.includes(groupObj._id)}  name='description' type='checkbox' className='mx-2 pt-1' style={{
+                                                                width: '20px',
+                                                                height: '20px'
+                                                            }} readOnly/>
+                                                            <p className='mb-2 d-inline fs-5'><b>{groupObj.groupName}</b></p>
+
+                                                        </div>
+                                                    )
+                                                })}
+
                                             </div>
 
                                         </div>

@@ -59,18 +59,16 @@ const updateContent = async (req, res) => {
 
         await Content.findByIdAndUpdate(req.body._id, req.body, {
             new: true,
-        })
-
-
-        res.status(200).send({
-            status: true, message: "The content is updated!"
+        }).then(()=>{
+            console.log('Updated Content!');
+            res.status(200).send({
+                status: true, message: "The content is updated!"
+            });
         });
-
-
-
-
+        console.log('Log from outside');
 
     } catch (error) {
+        console.log(error);
         res.status(400).send({ status: false, message: error.message });
     }
 }

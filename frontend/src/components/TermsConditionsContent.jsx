@@ -33,8 +33,8 @@ export default function TermsConditionsContent() {
             <h4 className='text-center my-2 mb-4'>Edit As You Want✨</h4>
             <JoditEditor value={webContent?.termsConditionsPage?.pageContent} onChange={(content) => {
               const editableContent = { ...webContent };
-              editableContent.termsConditinsPage = {
-                ...editableContent.termsConditinsPage,
+              editableContent.termsConditionsPage = {
+                ...editableContent.termsConditionsPage,
                 pageContent: content,
               };
               dispatch(setWebContent(editableContent));

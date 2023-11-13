@@ -21,6 +21,9 @@ const promoCodeSchema = new mongoose.Schema({
     description: {
         type: String,
         required: true
+    },
+    Groups : {
+        type : Array,
     }
 })
 
