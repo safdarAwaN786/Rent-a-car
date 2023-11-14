@@ -102,7 +102,7 @@ export default function AdminExtras() {
 
 
 
-                                        axios.post('/update-extra', { _id: extrasObj[0]._id, Extras: extrasArr })
+                                        axios.post('/update-extra', { _id: extrasObj._id, Extras: extrasArr })
                                             .then(response => {
                                                 setEditingPrices(false);
 

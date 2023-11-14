@@ -1,22 +1,23 @@
 const Season = require('../models/seasonModel');
+const Group = require('../models/groupModel')
 
 
 const addSeason = async (req, res) => {
-    try {
-        const season = new Season(req.body);
+    // try {
+    //     const season = new Season(req.body);
 
-        await season.save();
+    //     await season.save();
 
-        res.status(200).send({
-            status: true, message: "The Season is added!", data: season
+    //     res.status(200).send({
+    //         status: true, message: "The Season is added!", data: season
 
-        });
+    //     });
 
 
-    } catch (error) {
-        res.status(400).send({ status: false, message: error.message });
+    // } catch (error) {
+    //     res.status(400).send({ status: false, message: error.message });
 
-    }
+    // }
 }
 
 
@@ -40,7 +41,7 @@ const updateSeason = async (req, res) => {
     try {
 
         console.log(req.body);
-        const updatedSeason = await Season.findByIdAndUpdate(req.body._id, req.body, {
+        const updatedSeason = await Group.findByIdAndUpdate(req.body._id, req.body, {
             new: true,
         });
 

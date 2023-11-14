@@ -34,6 +34,7 @@ export default function WinterPricing() {
         })
     })
 
+   
 
 
 
@@ -74,8 +75,8 @@ export default function WinterPricing() {
                                         event.preventDefault();
                                         setEditingPrices(true);
 
-
-                                        axios.post('/update-seasons', groupToProcess)
+                                        console.log(groupToProcess);
+                                        axios.patch('/update-seasons', groupToProcess)
                                             .then(response => {
                                                 setEditingPrices(false);
                                                 setEditPrices(false);

@@ -76,7 +76,7 @@ export default function SummerHighPricing() {
                                         setEditingPrices(true);
 
 
-                                        axios.post('/update-seasons', groupToProcess)
+                                        axios.patch('/update-seasons', groupToProcess)
                                             .then(response => {
                                                 setEditingPrices(false);
                                                 setEditPrices(false);
