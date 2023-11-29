@@ -154,6 +154,10 @@ export default function Reservations() {
                           <td>{bookingToView.group?.vehicleName}</td>
                         </tr>
                         <tr>
+                          <th>Additional Comment</th>
+                          <td>{bookingToView?.comment || '---'}</td>
+                        </tr>
+                        <tr>
                           <th>Booking Date</th>
                           <td>{formatDate(bookingToView.bookingDate)}</td>
                         </tr>

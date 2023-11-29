@@ -17,31 +17,15 @@ const addBooking = async (req, res) => {
   try {
 
     const vat = await Vat.find();
-
-
     console.log(req.body);
-
     const group = await Group.findById(req.body.group);
-
-
     const vatedPrice = req.body.totalPrice + ((group[req.body.currentSeason][req.body.daysText] / 100) * vat[0].value)
-
-
-
     const booking = new Booking({ ...req.body, netVatedTotal: Math.round(vatedPrice), vatValue: vat[0].value });
-
-
-
-
-
     await booking.save();
     console.log(booking);
     res.status(200).send({
       status: true, message: "The Booking is added!", data: booking
     });
-
-
-
   } catch (error) {
     console.log(error)
     res.status(400).send({ status: false, message: error.message });

@@ -50,6 +50,10 @@ const bookingSchema = new mongoose.Schema({
         type: String,
         required: true
      },
+     comment : {
+        type : String,
+        required : true
+     },
      daysNumber: {
         type: Number,
         required: true

@@ -510,7 +510,11 @@ export default function CompleteBooking() {
                                                 <h4>Your Selection</h4>
                                                 <p></p>
                                             </div>
-
+                                            <div>
+                                                <textarea value={bookingData?.comment} onChange={(e)=>{
+                                                    dispatch(updateBookingInfo({...bookingData, comment :  e.target.value}))
+                                                }} rows={2} className='border-circle w-100 p-1'  placeholder='Additional Comments'/>
+                                            </div>
 
                                             <div class="product-widget mb-20">
                                                 <div class="check-box-item">
@@ -520,7 +524,6 @@ export default function CompleteBooking() {
                                                             <div class="col-6">
                                                                 <li>
                                                                     Basic Rate:</li>
-
                                                             </div>
                                                             <div class="col-6">
 
