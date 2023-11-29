@@ -1,14 +1,4 @@
 import React from 'react'
-import BMWImg from '../assets/img/home2/icon/BMW-removebg-preview.png'
-import KiaImg from '../assets/img/home2/icon/kia-removebg-preview.png'
-import RenaultImg from '../assets/img/home2/icon/renault-removebg-preview.png'
-import HundaiImg from '../assets/img/home2/icon/hundai-removebg-preview.png'
-import FordImg from '../assets/img/home2/icon/Ford-removebg-preview.png'
-import MercedesImg from '../assets/img/home2/icon/mercedes.svg'
-import AudiImg from '../assets/img/home2/icon/audi.svg'
-import ToyotaImg from '../assets/img/home2/icon/toyota.svg'
-import NissanImg from '../assets/img/home2/icon/nissan.svg'
-import MazdaImg from '../assets/img/home2/icon/mazda.svg'
 import { useSelector } from 'react-redux'
 
 export default function BrandsSection() {
@@ -34,10 +24,15 @@ export default function BrandsSection() {
 
                                 {landingPageContent?.brands?.map((brandObj, index) => {
                                     return (
-                                        <div class="col-lg-3 col-md-4 col-sm-6 col-6 wow fadeInUp" >
-                                            <a class="car-category text-center text-decoration-none">
-                                                <div class="icon">
-                                                    <img src={brandObj.logoUrl} alt />
+                                        <div   class="col-lg-3 col-md-4 col-sm-6 col-6 wow fadeInUp" >
+                                            <a style={{
+                                            height : '200px'
+                                        }} class="car-category text-center text-decoration-none">
+                                                <div style={{
+                                                    height : '100px',
+                                                    width : '80%'
+                                                }} class="icon">
+                                                    <img className='h-100' src={brandObj.logoUrl} alt />
                                                 </div>
                                                 <div class="content">
                                                     <h6>{brandObj.brandName}</h6>

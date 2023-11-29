@@ -72,15 +72,15 @@ export default function AdminProductsSection() {
 
     const manualTransmission = allDataArr?.filter(groupObj => groupObj.transmissionType === 'Manual');
 
-    const twoPassengers = allDataArr?.filter(groupObj => groupObj.adults == 2);
-    const threePassengers = allDataArr?.filter(groupObj => groupObj.adults == 3);
+    const twoPassengers = allDataArr?.filter(groupObj => groupObj.seats == 2);
+    const threePassengers = allDataArr?.filter(groupObj => groupObj.seats == 3);
 
-    const fourPassengers = allDataArr?.filter(groupObj => groupObj.adults == 4);
+    const fourPassengers = allDataArr?.filter(groupObj => groupObj.seats == 4);
 
-    const fivePassengers = allDataArr?.filter(groupObj => groupObj.adults == 5);
-    const sixPassengers = allDataArr?.filter(groupObj => groupObj.adults == 6);
-    const sevenPassengers = allDataArr?.filter(groupObj => groupObj.adults == 7);
-    const eightPassengers = allDataArr?.filter(groupObj => groupObj.adults == 8);
+    const fivePassengers = allDataArr?.filter(groupObj => groupObj.seats == 5);
+    const sixPassengers = allDataArr?.filter(groupObj => groupObj.seats == 6);
+    const sevenPassengers = allDataArr?.filter(groupObj => groupObj.seats == 7);
+    const eightPassengers = allDataArr?.filter(groupObj => groupObj.seats == 8);
 
     const [groupCategory, setGroupCategory] = useState(null);
     const [transmissionType, setTransmissionType] = useState(null);
@@ -112,7 +112,7 @@ export default function AdminProductsSection() {
 
                     return (
 
-                        groupObj.groupCategory === e.target.value && groupObj.adults == noOfPassengers
+                        groupObj.groupCategory === e.target.value && groupObj.seats == noOfPassengers
                     )
                 }))
             } else {
@@ -134,7 +134,7 @@ export default function AdminProductsSection() {
                 setGroupsList(allDataArr?.filter((groupObj) => {
                     return (
 
-                        groupObj.transmissionType === e.target.value && groupObj.groupCategory === groupCategory && groupObj.adults == noOfPassengers
+                        groupObj.transmissionType === e.target.value && groupObj.groupCategory === groupCategory && groupObj.seats == noOfPassengers
                     )
                 }))
 
@@ -150,7 +150,7 @@ export default function AdminProductsSection() {
 
                     return (
 
-                        groupObj.transmissionType === e.target.value && groupObj.adults == noOfPassengers
+                        groupObj.transmissionType === e.target.value && groupObj.seats == noOfPassengers
                     )
                 }))
             } else {
@@ -172,7 +172,7 @@ export default function AdminProductsSection() {
                 setGroupsList(allDataArr?.filter((groupObj) => {
                     return (
 
-                        groupObj.adults == e.target.value && groupObj.groupCategory === groupCategory && groupObj.transmissionType == transmissionType
+                        groupObj.seats == e.target.value && groupObj.groupCategory === groupCategory && groupObj.transmissionType == transmissionType
                     )
                 }))
 
@@ -180,7 +180,7 @@ export default function AdminProductsSection() {
                 setGroupsList(allDataArr?.filter((groupObj) => {
                     return (
 
-                        groupObj.adults == e.target.value && groupObj.groupCategory === groupCategory
+                        groupObj.seats == e.target.value && groupObj.groupCategory === groupCategory
                     )
                 }))
             } else if (transmissionType && !groupCategory) {
@@ -188,13 +188,13 @@ export default function AdminProductsSection() {
 
                     return (
 
-                        groupObj.adults == e.target.value && groupObj.transmissionType == transmissionType
+                        groupObj.seats == e.target.value && groupObj.transmissionType == transmissionType
                     )
                 }))
             } else {
                 setGroupsList(allDataArr?.filter((groupObj) => {
                     return (
-                        groupObj?.adults == e.target.value
+                        groupObj?.seats == e.target.value
                     )
                 }))
             }
@@ -529,7 +529,7 @@ export default function AdminProductsSection() {
                                                                         setGroupsList(allDataArr?.filter((groupObj) => {
                                                                             return (
 
-                                                                                groupObj.transmissionType === transmissionType && groupObj.adults == noOfPassengers
+                                                                                groupObj.transmissionType === transmissionType && groupObj.seats == noOfPassengers
                                                                             )
                                                                         }))
 
@@ -545,7 +545,7 @@ export default function AdminProductsSection() {
 
                                                                             return (
 
-                                                                                groupObj.adults == noOfPassengers
+                                                                                groupObj.seats == noOfPassengers
                                                                             )
                                                                         }))
                                                                     } else {
@@ -600,7 +600,7 @@ export default function AdminProductsSection() {
                                                                         setGroupsList(allDataArr?.filter((groupObj) => {
                                                                             return (
 
-                                                                                groupObj.groupCategory === groupCategory && groupObj.adults == noOfPassengers
+                                                                                groupObj.groupCategory === groupCategory && groupObj.seats == noOfPassengers
                                                                             )
                                                                         }))
 
@@ -616,7 +616,7 @@ export default function AdminProductsSection() {
 
                                                                             return (
 
-                                                                                groupObj.adults == noOfPassengers
+                                                                                groupObj.seats == noOfPassengers
                                                                             )
                                                                         }))
                                                                     } else {

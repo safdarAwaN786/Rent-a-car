@@ -11727,7 +11727,7 @@ header.style-6 .main-menu .hotline-area .content h6 a {
 	position: fixed;
 	top: 100px;
 	right: 0px;
-	height: 500px;
+	height: 100vh;
 	overflow-y: scroll;
 }
 .banner-section1 .banner-content .sub-title svg {

@@ -3,6 +3,14 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const nodemailer = require('nodemailer');
 
+const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: 'yourwaycarhire@gmail.com',
+        pass: 'sqvm jlqn xsis ysfn'
+    }
+});
+
 // User Signup
 const signup = async (req, res) => {
     const { firstName, lastName, email, password } = req.body;
@@ -132,7 +140,7 @@ const forgotPassword = async (req, res) => {
             return res.status(400).json({ message: 'User not found!' });
         }
 
-   
+
 
         // Send the new password to the user's email
         const transporter = nodemailer.createTransport({
@@ -176,9 +184,9 @@ const changePassword = async (req, res) => {
         console.log(req.body);
         let user = await User.findById(req.params.userId);
         // Generate a new random password
-        const {newPassword} = req.body;
+        const { newPassword } = req.body;
 
-        
+
         // Hash the new password
         const salt = await bcrypt.genSalt(10);
         user.password = await bcrypt.hash(newPassword, salt);
@@ -188,7 +196,7 @@ const changePassword = async (req, res) => {
 
         res.status(200).send({
             status: true, message: "The Password is changed!", data: user
-          });
+        });
 
         if (!user) {
             return res.status(400).json({ message: 'User not found!' });
@@ -201,4 +209,90 @@ const changePassword = async (req, res) => {
     }
 }
 
-module.exports = { signup, login, logout, getUserData, forgotPassword, changePassword };
+const sendMessage = async (req, res) => {
+    console.log(req.body);
+    try {
+        
+   
+
+    const mailOptions = {
+        from: 'yourwaycarhire@gmail.com',
+        to: 'naumanahmed449@gmail.com',
+        subject: `${req.body.subject}`,
+        html: `
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <meta charset="utf-8">
+                <title>Message Form User</title>
+                <style>
+                    table {
+                        border-collapse: collapse;
+                        width: 100%;
+                    }
+                    img {
+                        width: 100%;
+                    }
+    
+                    th, td {
+                        border: 1px solid #dddddd;
+                        text-align: left;
+                        padding: 8px;
+                    }
+                </style>
+            </head>
+            <body>
+                <h1>Message From User</h1>
+    
+                <p>A new message has been received from the website contact form. Details are as follows:</p>
+    
+                <table>
+                    <tr>
+                        <th>Field</th>
+                        <th>Value</th>
+                    </tr>
+                    <tr>
+                        <td>Full Name</td>
+                        <td>${req.body.fullName}</td>
+                    </tr>
+                    <tr>
+                        <td>Phone</td>
+                        <td>${req.body.phone}</td>
+                    </tr>
+                    <tr>
+                        <td>Email</td>
+                        <td>${req.body.email}</td>
+                    </tr>
+                    <tr>
+                        <td>Subject</td>
+                        <td>${req.body.subject}</td>
+                    </tr>
+                    <tr>
+                        <td>Short Notes</td>
+                        <td>${req.body.shortNotes}</td>
+                    </tr>
+                </table>
+    
+                
+            </body>
+            </html>
+        `,
+    };
+
+
+    transporter.sendMail(mailOptions, async function (error, info) {
+        if (error) {
+            res.status(500).send({ status: false, message: 'Internal server error' });
+        } else {
+            console.log('Email sent: ' + info.response);
+            res.status(200).send({
+                status: true,
+                message: 'The Message is Sended!',
+            });
+        }
+    });
+} catch (error) {
+    res.status(500).json({ error: 'Server error' });
+}}
+
+module.exports = { signup, login, logout, getUserData, forgotPassword, changePassword, sendMessage };

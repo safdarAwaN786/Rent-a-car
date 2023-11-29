@@ -1,13 +1,20 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { CiLocationOn } from 'react-icons/ci'
 import { PiArrowBendUpRightLight, PiPhoneCallLight } from 'react-icons/pi'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
 import { useSelector } from 'react-redux'
+import axios from 'axios'
+import { toast } from 'react-toastify'
+import Spinner from 'react-bootstrap/esm/Spinner'
 export default function ContactUs({ loggedIn, user, setLoggedIn, setUser }) {
 
     const contactUsPageContent = useSelector(state => state.webContent?.contactUsPage);
-
+    const [messageData, setMessageData] = useState(null);
+    const [sendingMessage, setSendingMessage] = useState(false);
+    const updateMessageData = (e)=>{
+        setMessageData({...messageData, [e.target.name] : e.target.value})
+    }
 
     return (
         <>
@@ -73,9 +80,9 @@ export default function ContactUs({ loggedIn, user, setLoggedIn, setUser }) {
                                             )
                                         })}
 
-                                       
-                                        
-                                    
+
+
+
 
                                     </ul>
                                 </div>
@@ -93,42 +100,70 @@ export default function ContactUs({ loggedIn, user, setLoggedIn, setUser }) {
                     <div class="col-lg-7">
                         <div class="inquiry-form">
 
-                            <form>
+                            <form  onSubmit={(e) => {
+                                e.preventDefault();
+                                setSendingMessage(true)
+                                axios.post('/send-message', messageData).then((res)=>{
+                                    setMessageData(null)
+                                    setSendingMessage(false)
+                                    toast.success('Message sended successfully !')
+                                }).catch((err)=>{
+                                    setSendingMessage(false)
+                                    toast.error('Error in sending Message, Try Again!')
+                                })
+                            }}>
                                 <div class="row">
                                     <div class="col-md-12">
                                         <div class="form-inner mb-10">
                                             <label>Full Name*</label>
-                                            <input type="text" placeholder="Jackson Mile" />
+                                            <input onChange={(e)=>{
+                                                updateMessageData(e);
+                                            }} type="text" placeholder="Jackson Mile" value={messageData?.fullName} name='fullName' required />
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-inner mb-10">
                                             <label>Phone*</label>
-                                            <input type="text" placeholder="Ex- +880-13* ** ***" />
+                                            <input onChange={(e)=>{
+                                                updateMessageData(e);
+                                            }} value={messageData?.phone} name='phone' type="number" placeholder="Ex- +880-13* ** ***" required />
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-inner mb-10">
                                             <label>Email <span>(Optional)</span></label>
-                                            <input type="email" placeholder="Ex- info@gmail.com" />
+                                            <input onChange={(e)=>{
+                                                updateMessageData(e);
+                                            }} name='email' value={messageData?.email} type="email" placeholder="Ex- info@gmail.com" />
                                         </div>
                                     </div>
                                     <div class="col-md-12">
                                         <div class="form-inner mb-10">
                                             <label>Subject*</label>
-                                            <input type="email" placeholder="Subject" />
+                                            <input onChange={(e)=>{
+                                                updateMessageData(e);
+                                            }} value={messageData?.subject} name='subject' type="text" placeholder="Subject" required />
                                         </div>
                                     </div>
                                     <div class="col-md-12">
                                         <div class="form-inner mb-10">
                                             <label>Short Notes*</label>
-                                            <textarea placeholder="Write Something..."></textarea>
+                                            <textarea onChange={(e)=>{
+                                                updateMessageData(e);
+                                            }} name='shortNotes' value={messageData?.shortNotes} placeholder="Write Something..." required />
                                         </div>
                                     </div>
                                     <div class="col-md-12">
                                         <div class="col-md-12">
                                             <div class="form-inner">
-                                                <button type="submit" class="primary-btn3">Submit Now</button>
+                                                <button type="submit" 
+                                                class="primary-btn3">
+                                                {sendingMessage ? (
+                                                    <Spinner animation="border" size="sm" />
+                                                ) : (
+                                                    'Submit Now'
+                                                )}
+                                                </button>
                                             </div>
                                         </div>
                                     </div>
@@ -138,10 +173,10 @@ export default function ContactUs({ loggedIn, user, setLoggedIn, setUser }) {
                     </div>
                 </div>
             </div>
-            <div class="contact-page pt-1 mb-100">
+            {/* <div class="contact-page pt-1 mb-100">
                 <div class="container">
 
-                    
+
                     <h5>Feedback & Suggestions:</h5>
                     <p>Your experience matters to us. We welcome your feedback to continually enhance our services and cater to
                         your car hire needs in the best way possible.</p>
@@ -149,7 +184,7 @@ export default function ContactUs({ loggedIn, user, setLoggedIn, setUser }) {
 
 
                 </div>
-            </div>
+            </div> */}
 
             <div class="contact-map">
                 <iframe

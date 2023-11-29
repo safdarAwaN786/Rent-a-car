@@ -131,185 +131,184 @@ export default function Reservations() {
 
 
                   <h1 className='text-center fs-4'>Booking Information</h1>
+                  <div className='table-Cover'>
 
-                  <table class="table infoTable table-striped table-bordered">
+                    <table class="table infoTable table-striped table-bordered">
 
-                    <tbody>
+                      <tbody>
 
-                      <tr>
-                        <th>Your Name</th>
-                        <td>{bookingToView.user.firstName} {bookingToView.user.lastName}</td>
-                      </tr>
-                      <tr>
-                        <th>Your Email</th>
-                        <td>{bookingToView.user.email}</td>
-                      </tr>
-                      <tr>
-                        <th>Booked Group</th>
-                        <td>{bookingToView.group?.groupName}</td>
-                      </tr>
-                      <tr>
-                        <th>Booked Vehicle</th>
-                        <td>{bookingToView.group?.vehicleName}</td>
-                      </tr>
-                      <tr>
-                        <th>Booking Date</th>
-                        <td>{formatDate(bookingToView.bookingDate)}</td>
-                      </tr>
-                      <tr>
-                        <th>Current Status</th>
-                        <td className={`fw-bold ${bookingToView.status === 'Not Confirmed' && 'text-danger'} ${bookingToView.status === 'Confirmed' && 'text-success'} ${bookingToView.status === 'Completed' && 'text-success'}`}>{bookingToView.status}</td>
-                      </tr>
-                      <tr>
-                        <th>Pick Up Date</th>
-                        <td>{formatDate(bookingToView.pickUpDate)}</td>
-                      </tr>
-                      <tr>
-                        <th>Pick Up Time</th>
-                        <td>{bookingToView.pickUpTime}</td>
-                      </tr>
-                      <tr>
-                        <th>Pick Up Location</th>
-                        <td>{bookingToView.pickUpLocation}</td>
-                      </tr>
-                      <tr>
-                        <th>Drop Off Date</th>
-                        <td>{formatDate(bookingToView.dropOffDate)}</td>
-                      </tr>
-                      <tr>
-                        <th>Drop Off Time</th>
-                        <td>{bookingToView.dropOffTime}</td>
-                      </tr>
-                      <tr>
-                        <th>Drop Off Location</th>
-                        <td>{bookingToView.dropOffLocation}</td>
-                      </tr>
-                    </tbody>
-                  </table>
+                        <tr>
+                          <th>Your Name</th>
+                          <td>{bookingToView.user.firstName} {bookingToView.user.lastName}</td>
+                        </tr>
+                        <tr>
+                          <th>Your Email</th>
+                          <td>{bookingToView.user.email}</td>
+                        </tr>
+                        <tr>
+                          <th>Booked Group</th>
+                          <td>{bookingToView.group?.groupName}</td>
+                        </tr>
+                        <tr>
+                          <th>Booked Vehicle</th>
+                          <td>{bookingToView.group?.vehicleName}</td>
+                        </tr>
+                        <tr>
+                          <th>Booking Date</th>
+                          <td>{formatDate(bookingToView.bookingDate)}</td>
+                        </tr>
+                        <tr>
+                          <th>Current Status</th>
+                          <td className={`fw-bold ${bookingToView.status === 'Not Confirmed' && 'text-danger'} ${bookingToView.status === 'Confirmed' && 'text-success'} ${bookingToView.status === 'Completed' && 'text-success'}`}>{bookingToView.status}</td>
+                        </tr>
+                        <tr>
+                          <th>Pick Up Date</th>
+                          <td>{formatDate(bookingToView.pickUpDate)}</td>
+                        </tr>
+                        <tr>
+                          <th>Pick Up Time</th>
+                          <td>{bookingToView.pickUpTime}</td>
+                        </tr>
+                        <tr>
+                          <th>Pick Up Location</th>
+                          <td>{bookingToView.pickUpLocation}</td>
+                        </tr>
+                        <tr>
+                          <th>Drop Off Date</th>
+                          <td>{formatDate(bookingToView.dropOffDate)}</td>
+                        </tr>
+                        <tr>
+                          <th>Drop Off Time</th>
+                          <td>{bookingToView.dropOffTime}</td>
+                        </tr>
+                        <tr>
+                          <th>Drop Off Location</th>
+                          <td>{bookingToView.dropOffLocation}</td>
+                        </tr>
+                      </tbody>
+                    </table>
 
+                  </div>
 
 
                   <h4 className='text-center my-2'>Prices</h4>
-                  <table class="table infoTable table-striped table-bordered">
-                    <tbody>
+                  <div className='table-Cover'>
 
-                      <tr>
-                        <th>Vehicle Price</th>
-                        <td>€{bookingToView.group[bookingToView.currentSeason][bookingToView.daysText]}</td>
-                      </tr>
-                      <tr>
-                        <th>Airport Fee</th>
-                        <td>€{bookingToView.airPortFee}</td>
-                      </tr>
-                      {bookingToView.addedExtras.map((extraObj) => {
-                        return (
-                          <tr>
-                            <th>{extraObj.extraName} </th>
-                            <td>€{extraObj.price} X {extraObj.quantity}</td>
-                          </tr>
-                        )
-                      }
-                      )}
-                      <tr>
-                        <th>Promo Discount</th>
-                        <td>€{Math.round(bookingToView.group[bookingToView.currentSeason][bookingToView.daysText] / 100) * (bookingToView.promoCode?.discountPercent || 0)}</td>
-                      </tr>
-                      <tr>
-                        <th>Total VAT added</th>
-                        <td>€{Math.round(bookingToView.group[bookingToView.currentSeason][bookingToView.daysText] / 100) * (bookingToView.vatValue)}</td>
-                      </tr>
-                      <tr>
-                        <th>Grand Total ({bookingToView.daysNumber}days)</th>
-                        <td>€{bookingToView.netVatedTotal}</td>
-                      </tr>
+                    <table class="table infoTable table-striped table-bordered">
+                      <tbody>
 
-                    </tbody>
-                  </table>
-
-
+                        <tr>
+                          <th>Vehicle Price</th>
+                          <td>€{bookingToView.group[bookingToView.currentSeason][bookingToView.daysText]}</td>
+                        </tr>
+                        <tr>
+                          <th>Airport Fee</th>
+                          <td>€{bookingToView.airPortFee}</td>
+                        </tr>
+                        {bookingToView.addedExtras.map((extraObj) => {
+                          return (
+                            <tr>
+                              <th>{extraObj.extraName} </th>
+                              <td>€{extraObj.price} X {extraObj.quantity}</td>
+                            </tr>
+                          )
+                        }
+                        )}
+                        <tr>
+                          <th>Promo Discount</th>
+                          <td>€{Math.round(bookingToView.group[bookingToView.currentSeason][bookingToView.daysText] / 100) * (bookingToView.promoCode?.discountPercent || 0)}</td>
+                        </tr>
+                        <tr>
+                          <th>Total VAT added</th>
+                          <td>€{Math.round(bookingToView.group[bookingToView.currentSeason][bookingToView.daysText] / 100) * (bookingToView.vatValue)}</td>
+                        </tr>
+                        <tr>
+                          <th>Grand Total ({bookingToView.daysNumber}days)</th>
+                          <td>€{bookingToView.netVatedTotal}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
               </div>
             </div>
           )
           }
 
-          
+          <div className='table-Cover mx-3 my-3'>
+            <table class="table table-striped table-bordered">
+              <thead>
+                <tr>
+
+                  <th scope="col"># Vehicle</th>
+
+                  <th scope="col">Status</th>
+                  <th scope="col">Booking Date</th>
+                  <th scope="col">Action</th>
+                </tr>
+              </thead>
+
+              <tbody>
 
 
-            <div className='table-Cover mx-3 my-3'>
-              <table class="table table-striped table-bordered">
-                <thead>
-                  <tr>
+                {bookings?.filter(booking => booking.status !== 'Completed').map((booking, index) => {
 
-                    <th scope="col"># Vehicle</th>
-
-                    <th scope="col">Status</th>
-                    <th scope="col">Booking Date</th>
-                    <th scope="col">Action</th>
-                  </tr>
-                </thead>
-
-                <tbody>
-
-
-                  {bookings?.filter(booking => booking.status !== 'Completed').map((booking, index) => {
-
-                    const date = new Date(booking.bookingDate); // Convert to Date object
-                    const formattedDate = date.toLocaleDateString('en-GB', {
-                      day: '2-digit',
-                      month: '2-digit',
-                      year: 'numeric',
-                    });
-                    return (
-                      <tr>
-                        <th scope="row">{index + 1}. {booking.group?.vehicleName}</th>
-                        <td scope='row' className={`${booking.status === 'Not Confirmed' && 'text-danger'} ${booking.status === 'Confirmed' && 'text-success'} `}>{booking.status}</td>
-                        <td scope="row">{formattedDate}</td>
-                        <td><button onClick={() => {
-                          setViewBooking(true);
-                          setBookingToView(booking);
-                        }} className='btn btn-outline-dark px-1'><BsEyeFill className='fs-5' />View</button></td>
+                  const date = new Date(booking.bookingDate); // Convert to Date object
+                  const formattedDate = date.toLocaleDateString('en-GB', {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric',
+                  });
+                  return (
+                    <tr>
+                      <th scope="row">{index + 1}. {booking.group?.vehicleName}</th>
+                      <td scope='row' className={`${booking.status === 'Not Confirmed' && 'text-danger'} ${booking.status === 'Confirmed' && 'text-success'} `}>{booking.status}</td>
+                      <td scope="row">{formattedDate}</td>
+                      <td><button onClick={() => {
+                        setViewBooking(true);
+                        setBookingToView(booking);
+                      }} className='btn btn-outline-dark px-1'><BsEyeFill className='fs-5' />View</button></td>
 
 
 
 
-                      </tr>
-                    )
-                  })}
-                  {bookings?.filter(booking => booking.status === 'Completed').map((booking, index) => {
+                    </tr>
+                  )
+                })}
+                {bookings?.filter(booking => booking.status === 'Completed').map((booking, index) => {
 
-                    const date = new Date(booking.bookingDate); // Convert to Date object
-                    const formattedDate = date.toLocaleDateString('en-GB', {
-                      day: '2-digit',
-                      month: '2-digit',
-                      year: 'numeric',
-                    });
-                    return (
-                      <tr>
-                        <th scope="row">{index + 1}. {booking.group?.vehicleName}</th>
-                        <td scope='row' className={`${booking.status === 'Not Confirmed' && 'text-danger'} ${booking.status === 'Confirmed' && 'text-success'} `}>{booking.status}</td>
-                        <td scope="row">{formattedDate}</td>
-                        <td><button onClick={() => {
-                          setViewBooking(true);
-                          setBookingToView(booking);
-                        }} className='btn btn-outline-dark px-1'><BsEyeFill className='fs-5' />View</button></td>
+                  const date = new Date(booking.bookingDate); // Convert to Date object
+                  const formattedDate = date.toLocaleDateString('en-GB', {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric',
+                  });
+                  return (
+                    <tr>
+                      <th scope="row">{index + 1}. {booking.group?.vehicleName}</th>
+                      <td scope='row' className={`${booking.status === 'Not Confirmed' && 'text-danger'} ${booking.status === 'Confirmed' && 'text-success'} `}>{booking.status}</td>
+                      <td scope="row">{formattedDate}</td>
+                      <td><button onClick={() => {
+                        setViewBooking(true);
+                        setBookingToView(booking);
+                      }} className='btn btn-outline-dark px-1'><BsEyeFill className='fs-5' />View</button></td>
 
-                      </tr>
-                    )
-                  })}
+                    </tr>
+                  )
+                })}
 
-                  {!bookings || bookings.length == 0 && (
-                    <div className='underTable d-flex justify-content-center py-2'>
-                      <p>No Bookings Found!</p>
-                    </div>
-                  )}
-                </tbody>
-              </table>
+                {!bookings || bookings.length == 0 && (
+                  <div className='underTable d-flex justify-content-center py-2'>
+                    <p>No Bookings Found!</p>
+                  </div>
+                )}
+              </tbody>
+            </table>
 
 
-            </div>
+          </div>
 
-          
+
 
         </>
       )}

@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/static/css/main.aa8429ea.css",
-    "main.js": "/static/js/main.61cc0551.js",
+    "main.css": "/static/css/main.4fe7550a.css",
+    "main.js": "/static/js/main.e566b5ad.js",
     "static/media/04.png": "/static/media/04.d820f7418981dc6d311e.png",
     "static/media/bannar2-bg.jpg": "/static/media/bannar2-bg.bdb68c706f4a303cebbf.jpg",
     "static/media/home5-banner-img-01.png": "/static/media/home5-banner-img-01.25a428373fecb8d67589.png",
@@ -19,22 +19,17 @@
     "static/media/01.png": "/static/media/01.b20c0fe1bf554d8847c9.png",
     "static/media/bootstrap-iconsbe27.woff?": "/static/media/bootstrap-iconsbe27.c1d7432ee75fa194e499.woff",
     "static/media/bootstrap-iconsbe27.woff2?": "/static/media/bootstrap-iconsbe27.a13b815539b49de48d23.woff2",
-    "static/media/mazda.svg": "/static/media/mazda.c0d3f3cd7d3c980d4310b5f9fb1242fa.svg",
-    "static/media/audi.svg": "/static/media/audi.f4088897aa6e5efae4a5b7ac08f6361b.svg",
     "static/media/category-bg.png": "/static/media/category-bg.ba8a7cf5a19dbd211e7b.png",
     "static/media/compare-bg.png": "/static/media/compare-bg.7db6e4ea1687fcab88e2.png",
     "static/media/Resized_svg (4).png": "/static/media/Resized_svg (4).66729e917a20e82bb991.png",
     "static/media/happy-customar.svg": "/static/media/happy-customar.1d28726073bb0ff731f789b121a1ada8.svg",
     "static/media/bottom_logo.png": "/static/media/bottom_logo.9cae346ea7945b2abc3f.png",
-    "static/media/toyota.svg": "/static/media/toyota.fb45bab42aeda9bca3bbf79a384c2c0b.svg",
     "static/media/tyre1.png": "/static/media/tyre1.a0c34bb73b97b9bf0ffb.png",
     "static/media/product-wd-bg.png": "/static/media/product-wd-bg.945ad76727b64f744410.png",
     "static/media/ski.png": "/static/media/ski.df5a7b9854ba3eae01cf.png",
     "static/media/body-01.svg": "/static/media/body-01.0fdfea18185d14f8567a3c0e097fae12.svg",
     "static/media/customer-feedbac-bg1.png": "/static/media/customer-feedbac-bg1.f94f82a6e05006ac2aa0.png",
-    "static/media/mercedes.svg": "/static/media/mercedes.72c90ec379486a2252fe43bf2cd2e5d2.svg",
     "static/media/recieve.svg": "/static/media/recieve.38316055c73bf58c195f6ae9d481b417.svg",
-    "static/media/nissan.svg": "/static/media/nissan.216ebcb79989c0964225eb2e2c484b50.svg",
     "static/media/black-logo.png": "/static/media/black-logo.9f956aeeceeae51fc921.png",
     "static/media/rack.png": "/static/media/rack.cec9cd91eb3eda30602d.png",
     "static/media/affordable.svg": "/static/media/affordable.0ef708630c5706e67eeb401c0d7c37b3.svg",
@@ -61,11 +56,11 @@
     "static/media/slick-prev.svg": "/static/media/slick-prev.4f7a64407bfa144f7cdc.svg",
     "static/media/arrow-left.svg": "/static/media/arrow-left.ec751e1ca16697c58eae.svg",
     "static/media/arrow-right.svg": "/static/media/arrow-right.44f6400b0d09a2222fa2.svg",
-    "main.aa8429ea.css.map": "/static/css/main.aa8429ea.css.map",
-    "main.61cc0551.js.map": "/static/js/main.61cc0551.js.map"
+    "main.4fe7550a.css.map": "/static/css/main.4fe7550a.css.map",
+    "main.e566b5ad.js.map": "/static/js/main.e566b5ad.js.map"
   },
   "entrypoints": [
-    "static/css/main.aa8429ea.css",
-    "static/js/main.61cc0551.js"
+    "static/css/main.4fe7550a.css",
+    "static/js/main.e566b5ad.js"
   ]
 }

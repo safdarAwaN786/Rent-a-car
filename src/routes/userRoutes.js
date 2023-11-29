@@ -10,6 +10,7 @@ router.post('/signup', userController.signup);
 router.post('/login', userController.login);
 router.post('/forgot-password', userController.forgotPassword);
 router.post('/change-password/:userId', userController.changePassword);
+router.post('/send-message', userController.sendMessage);
 
 // User Logout
 router.get('/logout', userController.logout);

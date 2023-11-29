@@ -500,43 +500,43 @@ export default function Navbar() {
                             <form onSubmit={(e) => {
                                 e.preventDefault();
                                 setSendingMail(true);
-                                
 
-                                axios.post('/forgot-password', {email : emailForgetten}).then((res) => {
+
+                                axios.post('/forgot-password', { email: emailForgetten }).then((res) => {
                                     setSendingMail(false);
                                     toast.success('Password Reset Email Sended Successfully!');
                                     setForgotPassword(false);
                                 }).catch((err) => {
                                     console.log(err);
-                                    if(err.response.status === 400){
+                                    if (err.response.status === 400) {
                                         toast.error(err.response.data.message)
                                     } else {
 
-                                    toast.error('Error in sending Email, Try Again !');
+                                        toast.error('Error in sending Email, Try Again !');
                                     }
                                     setSendingMail(false);
                                 })
                             }}>
-                            <div className='d-flex flex-column'>
+                                <div className='d-flex flex-column'>
 
-                                <label className='mt-1'>Your Email :</label>
-                                <input onChange={(e)=>{
-                                    setEmailForgotten(e.target.value);
-                                }} name='email' type='email' className='p-1 border border-secondary border-circle mb-1' required />
-                                <div className='d-flex justify-content-center my-4'>
-                                    <button style={{
-                                        zIndex: '00'
-                                    }} type="submit" class="primary-btn6 p-sm-2 p-1 ">
-                                        {sendingMail ? (
-                                            <Spinner animation="border" size="sm" />
-                                        ) : (
+                                    <label className='mt-1'>Your Email :</label>
+                                    <input onChange={(e) => {
+                                        setEmailForgotten(e.target.value);
+                                    }} name='email' type='email' className='p-1 border border-secondary border-circle mb-1' required />
+                                    <div className='d-flex justify-content-center my-4'>
+                                        <button style={{
+                                            zIndex: '00'
+                                        }} type="submit" class="primary-btn6 p-sm-2 p-1 ">
+                                            {sendingMail ? (
+                                                <Spinner animation="border" size="sm" />
+                                            ) : (
 
-                                            'SEND EMAIL'
-                                        )}
+                                                'SEND EMAIL'
+                                            )}
 
-                                    </button>
+                                        </button>
+                                    </div>
                                 </div>
-                            </div>
                             </form>
                         </div>
                     </div>
@@ -577,10 +577,10 @@ export default function Navbar() {
                                         }} class="text-decoration-none cursor-pointer">Vehicle Guide</a>
 
                                     </li>
-                                    <li>
+                                    {/* <li>
                                         <a href="#" class="text-decoration-none cursor-pointer">Price</a>
 
-                                    </li>
+                                    </li> */}
                                     <li>
                                         <a onClick={() => {
                                             navigate('/terms-and-conditions')
@@ -784,7 +784,7 @@ export default function Navbar() {
                                                             transition: 'background-color 0.5s ease'
                                                         }} className='cursor-pointer p-1 border-circle sidebar-li my-1'>
                                                             <a className='text-dark text-dark text-decoration-none'>
-                                                            Terms & Conditions
+                                                                Terms & Conditions
                                                             </a>
                                                         </li>
                                                         <li onClick={() => {
@@ -794,7 +794,7 @@ export default function Navbar() {
                                                             transition: 'background-color 0.5s ease'
                                                         }} className='cursor-pointer p-1 border-circle sidebar-li my-1'>
                                                             <a className='text-dark text-dark text-decoration-none'>
-                                                            Contact Us
+                                                                Contact Us
                                                             </a>
                                                         </li>
                                                         <li onClick={() => {
@@ -804,7 +804,17 @@ export default function Navbar() {
                                                             transition: 'background-color 0.5s ease'
                                                         }} className='cursor-pointer p-1 border-circle sidebar-li my-1'>
                                                             <a className='text-dark text-dark text-decoration-none'>
-                                                            Privacy & Cookies Policy
+                                                                Privacy & Cookies Policy
+                                                            </a>
+                                                        </li>
+                                                        <li onClick={() => {
+                                                            navigate('/contact-content');
+                                                            handleClose();
+                                                        }} style={{
+                                                            transition: 'background-color 0.5s ease'
+                                                        }} className='cursor-pointer p-1 border-circle sidebar-li my-1'>
+                                                            <a className='text-dark text-dark text-decoration-none'>
+                                                                Extras FAQ's
                                                             </a>
                                                         </li>
                                                     </div>
@@ -838,12 +848,12 @@ export default function Navbar() {
                                                     <a class="text-decoration-none cursor-pointer text-dark fs-5">Vehicle Guide</a>
 
                                                 </li>
-                                                <li style={{
+                                                {/* <li style={{
                                                     transition: 'background-color 0.5s ease'
                                                 }} className='cursor-pointer p-1 border-circle sidebar-li '>
                                                     <a href="#" class="text-decoration-none cursor-pointer text-dark fs-5">Price</a>
 
-                                                </li>
+                                                </li> */}
                                                 <li onClick={() => {
                                                     navigate('/terms-and-conditions')
                                                 }} style={{
