@@ -11723,6 +11723,17 @@ header.style-6 .main-menu .hotline-area .content h6 a {
 	height: 500px !important;
 	overflow-y: scroll;
 }
+
+.gridView{
+	height: 550px !important;
+}
+.adminGridView{
+	height: 580px !important;
+}
+.columnView{
+	height: 280px !important;
+}
+
 .admin-Box {
 	position: fixed;
 	top: 100px;

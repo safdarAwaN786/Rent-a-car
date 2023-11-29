@@ -28,7 +28,7 @@ export default function ProductCard({ gridView, groupData }) {
     console.log(currentSeason);
     console.log(daysPrice);
     return (
-        <div class={`product-card ${gridView ? '' : 'd-flex flex-row'} `}>
+        <div class={`product-card ${gridView ? 'gridView' : 'd-flex flex-row columnView'} `}>
             <div class="product-img">
 
                 <div class="swiper product-img-slider">

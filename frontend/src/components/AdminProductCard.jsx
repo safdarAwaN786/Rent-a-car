@@ -301,7 +301,7 @@ export default function AdminProductCard({ gridView, groupData, reGetData }) {
                 </div>
             )}
 
-            <div class={`product-card ${gridView ? '' : 'd-flex flex-row'} `}>
+            <div class={`product-card ${gridView ? 'adminGridView' : 'd-flex flex-row columnView'} `}>
                 <div class="product-img">
 
                     <div class="swiper product-img-slider">
