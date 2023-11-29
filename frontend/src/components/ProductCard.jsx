@@ -12,6 +12,7 @@ import ACImg from '../assets/img/home4/icon/Resized_svg (9).svg'
 import { toast } from 'react-toastify'
 import { useDispatch, useSelector } from 'react-redux'
 import { selectGroup, selectVehicle, updateBookingInfo } from '../redux/slices/bookingSlices'
+import { setNumberOfDays } from '../redux/slices/daysNumberSlice'
 
 export default function ProductCard({ gridView, groupData }) {
 
@@ -48,7 +49,7 @@ export default function ProductCard({ gridView, groupData }) {
                 <h5><a className='text-decoration-none cursor-pointer' ><b>{groupData?.vehicleName}</b> | or similar</a></h5>
                 <div class="price-location">
                     <div class="price">
-                    
+
                         <strong>€{daysPrice ? groupData[currentSeason][daysPrice] : groupData[currentSeason]['1to6daysPrice']} per day</strong>
                     </div>
 
@@ -111,6 +112,8 @@ export default function ProductCard({ gridView, groupData }) {
                                     return toast.warning('Please Provide Pick Off Date!');
                                 }
 
+
+
                                 const pickupDateTime = new Date(`${pickUpDate}T${pickUpTime}`);
                                 const dropoffDateTime = new Date(`${dropOffDate}T${dropOffTime}`);
                                 const currentDate = new Date();
@@ -124,8 +127,22 @@ export default function ProductCard({ gridView, groupData }) {
                                 if (hoursDifference <= 48) {
                                     return toast.warning('Booking cannot be made within 48 hours before pick Up!');
                                 }
+
+                                const timeDiff = Math.abs(new Date(dropOffDate).getTime() - new Date(pickUpDate).getTime());
+
+                                if (dropOffDate !== pickUpDate && dropoffDateTime.getHours() >= (pickupDateTime.getHours() + 2)) {
+                                    const numberOfDays = Math.ceil((timeDiff / (1000 * 3600 * 24)) + 1);
+                                    dispatch(setNumberOfDays({ number: numberOfDays, priceText: numberOfDays <= 6 ? '1to6daysPrice' : numberOfDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice' }));
+                                } else if (dropOffDate === pickUpDate) {
+                                    const numberOfDays = 1;
+                                    dispatch(setNumberOfDays({ number: numberOfDays, priceText: numberOfDays <= 6 ? '1to6daysPrice' : numberOfDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice' }));
+                                } else {
+                                    const numberOfDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
+                                    dispatch(setNumberOfDays({ number: numberOfDays, priceText: numberOfDays <= 6 ? '1to6daysPrice' : numberOfDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice' }));
+                                }
+
                                 console.log('correct');
-                                dispatch(updateBookingInfo({ ...bookingData, group: groupData._id, basicPrice: ((groupData[currentSeason][daysPrice] * numberOfDays) + bookingData?.airPortFee), currentSeason: currentSeason, daysText: daysPrice, daysNumber : numberOfDays, user: user._id }))
+                                dispatch(updateBookingInfo({ ...bookingData, group: groupData._id, basicPrice: ((groupData[currentSeason][daysPrice] * numberOfDays) + bookingData?.airPortFee), currentSeason: currentSeason, daysText: daysPrice, daysNumber: numberOfDays, user: user._id }))
                                 dispatch(selectGroup(groupData));
                                 navigate('/complete-booking');
                             } else {

@@ -75,8 +75,8 @@ export default function SummerHighPricing() {
                                         event.preventDefault();
                                         setEditingPrices(true);
 
-
-                                        axios.patch('/update-seasons', groupToProcess)
+                                        console.log(groupToProcess)
+                                        axios.post(`/edit-group/${groupToProcess._id}`, groupToProcess)
                                             .then(response => {
                                                 setEditingPrices(false);
                                                 setEditPrices(false);

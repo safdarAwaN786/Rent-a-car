@@ -11720,7 +11720,7 @@ header.style-6 .main-menu .hotline-area .content h6 a {
 	left: 0px;
 	border-radius: 0px 10px 10px 0px;
 	display: block;
-	height: 500px;
+	height: 500px !important;
 	overflow-y: scroll;
 }
 .admin-Box {

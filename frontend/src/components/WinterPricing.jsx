@@ -35,7 +35,9 @@ export default function WinterPricing() {
     })
 
    
-
+    useEffect(()=>{
+        console.log(groupToProcess);
+    }, [groupToProcess])
 
 
     return (
@@ -76,7 +78,7 @@ export default function WinterPricing() {
                                         setEditingPrices(true);
 
                                         console.log(groupToProcess);
-                                        axios.patch('/update-seasons', groupToProcess)
+                                        axios.post(`/edit-group/${groupToProcess._id}`, groupToProcess)
                                             .then(response => {
                                                 setEditingPrices(false);
                                                 setEditPrices(false);
@@ -102,7 +104,7 @@ export default function WinterPricing() {
                                             <div className='extraBox my-2 border-circle p-2 d-flex  justify-content-between'>
                                                 <label class="form-check-label" >1-6 Days Price :</label>
                                                 <div><span>€</span>
-                                                    <input value={groupToProcess.winterPrices['3to6daysPrice']} onChange={(e) => {
+                                                    <input value={groupToProcess.winterPrices['1to6daysPrice']} onChange={(e) => {
 
                                                         setGroupToProcess({
                                                             ...groupToProcess,
