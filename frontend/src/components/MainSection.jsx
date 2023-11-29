@@ -58,7 +58,7 @@ export default function MainSection() {
                                             return toast.warning('Please Provide Pick Up Location!');
                                         } else if (!dropOffLocation) {
                                             return toast.warning('Please Provide Drop Off Location!');
-                                        } 
+                                        }
 
                                         const pickupDateTime = new Date(`${pickUpDate}T${pickUpTime}`);
                                         const dropoffDateTime = new Date(`${dropOffDate}T${dropOffTime}`);
@@ -130,7 +130,7 @@ export default function MainSection() {
                                                 <div class="formbuilder-date form-group field-date-1696006456045">
                                                     <label for="date-1696006456045" class="formbuilder-date-label">Pick-up
                                                         Date</label>
-                                                    <input value={bookingData?.pickUpDate} onChange={(e) => {
+                                                    <input min={new Date().toISOString().split('T')[0]} value={bookingData?.pickUpDate} onChange={(e) => {
 
 
                                                         updateBookingData(e);
@@ -193,7 +193,7 @@ export default function MainSection() {
                                                 <div class="formbuilder-date form-group field-date-1696006456045">
                                                     <label for="date-1696006456045" class="formbuilder-date-label">Drop-off
                                                         date</label>
-                                                    <input value={bookingData?.dropOffDate} onChange={(e) => {
+                                                    <input min={bookingData?.pickUpDate ? (new Date(bookingData?.pickUpDate).toISOString().split('T')[0]) : (new Date().toISOString().split('T')[0])} value={bookingData?.dropOffDate} onChange={(e) => {
                                                         updateBookingData(e);
                                                     }} type="date" class="form-control" name="dropOffDate"
                                                         access="false" id="date-1696006456045" required />

@@ -11720,7 +11720,7 @@ header.style-6 .main-menu .hotline-area .content h6 a {
 	left: 0px;
 	border-radius: 0px 10px 10px 0px;
 	display: block;
-	height: 500px !important;
+	height: 100% !important;
 	overflow-y: scroll;
 }
 
@@ -11738,8 +11738,9 @@ header.style-6 .main-menu .hotline-area .content h6 a {
 	position: fixed;
 	top: 100px;
 	right: 0px;
-	height: 100vh;
-	overflow-y: scroll;
+	height: 80vh;
+	overflow-y: scroll !important;
+	margin-bottom: 10%;
 }
 .banner-section1 .banner-content .sub-title svg {
 	fill: var(--primary-color1)

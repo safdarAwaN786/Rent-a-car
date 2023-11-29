@@ -66,10 +66,7 @@ export default function Admin({ tab }) {
             <Navbar />
 
             <div className='row my-5 pt-5'>
-                <div style={{
-                    height: '100vh',
-
-                }} ref={adminSidebar} className='col-md-3  bg-dark  p-4 admin-sidebar'>
+                <div  ref={adminSidebar} className='col-md-3  bg-dark  p-4 admin-sidebar'>
                     <ul style={{
                         marginBottom: '120px'
                     }} className=' list-unstyled'>
