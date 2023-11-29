@@ -312,43 +312,25 @@ export default function AdminProductsSection() {
 
                             <div className='addProductBox justify-content-center pt-5  '>
                                 <div className='formBox border-circle  mt-5 pt-4 '>
-
-
                                     <div data-aos="fade-down" className=' mb-3 myBox mx-auto border-circle p-3'>
                                         <div className='d-flex justify-content-end'>
-
                                             <AiOutlineCloseSquare className='cursor-pointer fs-4' onClick={() => {
                                                 setAddGroup(false)
                                             }} />
                                         </div>
-
-
                                         <h1 className='text-center fs-4'>Add New Group</h1>
-
                                         <form encType='multipart/form-data' onSubmit={(event) => {
                                             event.preventDefault();
                                             setAddingNewGroup(true);
                                             const data = new FormData(event.target);
-
                                             data.append('vehicleImage', fileList[0].originFileObj);
                                             data.append('AC', AC);
-
-
-
-
-
-
                                             axios.post('/add-group', data)
                                                 .then(response => {
                                                     setAddGroup(false);
                                                     setAddingNewGroup(false);
                                                     console.log(response);
-
-
-
                                                     toast.success("Group Added Successfully!");
-
-
                                                     reGetData();
                                                 })
                                                 .catch(error => {
@@ -399,15 +381,7 @@ export default function AdminProductsSection() {
 
 
                                                 <label className='mt-1'>Adults :</label>
-                                                <Select name='adults' styles={customStyles} options={[
-                                                    { value: 2, label: <div>2</div> },
-                                                    { value: 3, label: <div>3</div> },
-                                                    { value: 4, label: <div>4</div> },
-                                                    { value: 5, label: <div>5</div> },
-                                                    { value: 6, label: <div>6</div> },
-                                                    { value: 7, label: <div>7</div> },
-                                                    { value: 8, label: <div>8</div> },
-                                                ]} />
+                                                <input name='adults' type='number' className='p-1 border border-secondary border-circle mb-1' />
 
                                                 <label className='mt-1'>Doors :</label>
                                                 <input name='doors' type='number' className='p-1 border border-secondary border-circle mb-1' />
@@ -416,7 +390,15 @@ export default function AdminProductsSection() {
                                                 <input name='children' type='number' className='p-1 border border-secondary border-circle mb-1' />
 
                                                 <label className='mt-1'>Seats :</label>
-                                                <input name='seats' type='number' className='p-1 border border-secondary border-circle mb-1' />
+                                                <Select name='seats' styles={customStyles} options={[
+                                                    { value: 2, label: <div>2</div> },
+                                                    { value: 3, label: <div>3</div> },
+                                                    { value: 4, label: <div>4</div> },
+                                                    { value: 5, label: <div>5</div> },
+                                                    { value: 6, label: <div>6</div> },
+                                                    { value: 7, label: <div>7</div> },
+                                                    { value: 8, label: <div>8</div> },
+                                                ]} />
 
                                                 <label className='mt-1'>Big Luggage :</label>
                                                 <input name='bigLuggage' type='text' className='p-1 border border-secondary border-circle mb-1' />
@@ -492,7 +474,7 @@ export default function AdminProductsSection() {
                                                         <label class="containerss">
                                                             <input onChange={(e) => {
                                                                 groupCategoryFilter(e);
-                                                            }} value='Saloon Manual Transmission' class="form-check-input" type="radio" name='groupCategory' />
+                                                            }} value='Saloon Manual Transmission' className='filterInput' type="radio" name='groupCategory' />
 
                                                             <span class="text">Saloon Manual Transmission</span>
                                                             <span class="qty">({saloonManualTransmission?.length})</span>
@@ -502,7 +484,7 @@ export default function AdminProductsSection() {
                                                         <label class="containerss">
                                                             <input onChange={(e) => {
                                                                 groupCategoryFilter(e);
-                                                            }} value='Saloon Automatic Transmission' class="form-check-input" type="radio" name='groupCategory' />
+                                                            }} value='Saloon Automatic Transmission' className='filterInput' type="radio" name='groupCategory' />
 
                                                             <span class="text">Saloon Automatic Transmission</span>
                                                             <span class="qty">({saloonAutomaticTransmission?.length})</span>
@@ -512,7 +494,7 @@ export default function AdminProductsSection() {
                                                         <label class="containerss">
                                                             <input onChange={(e) => {
                                                                 groupCategoryFilter(e);
-                                                            }} value='Cabrio/Open Top' class="form-check-input" type="radio" name='groupCategory' />
+                                                            }} value='Cabrio/Open Top' className='filterInput' type="radio" name='groupCategory' />
                                                             <span class="text">Cabrio / Open Top</span>
                                                             <span class="qty">({cabrioOpenTop?.length})</span>
                                                         </label>
@@ -521,9 +503,9 @@ export default function AdminProductsSection() {
                                                         <label class="containerss">
                                                             <input onChange={(e) => {
                                                                 groupCategoryFilter(e);
-                                                            }} value='People Carrier' class="form-check-input difRadio" type="radio" name='groupCategory' />
+                                                            }} value='People Carrier' className='filterInput' type="radio" name='groupCategory' />
 
-                                                            <span class="text">People Carrier/Wheelchair Accessible groups</span>
+                                                            <span class="text">People Carrier</span>
                                                             <span class="qty">({peopleCarrier?.length})</span>
                                                         </label>
                                                     </li>
@@ -531,7 +513,7 @@ export default function AdminProductsSection() {
                                                         <label class="containerss">
                                                             <input onChange={(e) => {
                                                                 groupCategoryFilter(e);
-                                                            }} value='SUV/4WD' class="form-check-input" type="radio" name='groupCategory' />
+                                                            }} value='SUV/4WD' className='filterInput' type="radio" name='groupCategory' />
 
                                                             <span class="text">SUV / 4WD</span>
                                                             <span class="qty">({SUV4WD?.length})</span>
@@ -570,7 +552,7 @@ export default function AdminProductsSection() {
                                                                         setGroupsList(allDataArr);
                                                                     }
                                                                 }
-                                                            }} class="form-check-input" type="radio" name='groupCategory' />
+                                                            }} className='filterInput' type="radio" name='groupCategory' />
 
                                                             <span class="text">All Types</span>
 
@@ -591,7 +573,7 @@ export default function AdminProductsSection() {
                                                         <label class="containerss">
                                                             <input onChange={(e) => {
                                                                 transmissionTypeFilter(e)
-                                                            }} value='Automatic' class="form-check-input" type="radio" name='transmissionType' />
+                                                            }} value='Automatic' className='filterInput' type="radio" name='transmissionType' />
 
                                                             <span class="text">Automatic</span>
                                                             <span class="qty">({automaticTransmission?.length})</span>
@@ -601,7 +583,7 @@ export default function AdminProductsSection() {
                                                         <label class="containerss">
                                                             <input onChange={(e) => {
                                                                 transmissionTypeFilter(e)
-                                                            }} value='Manual' class="form-check-input" type="radio" name='transmissionType' />
+                                                            }} value='Manual' className='filterInput' type="radio" name='transmissionType' />
 
                                                             <span class="text">Manual</span>
                                                             <span class="qty">({manualTransmission?.length})</span>
@@ -641,7 +623,7 @@ export default function AdminProductsSection() {
                                                                         setGroupsList(allDataArr);
                                                                     }
                                                                 }
-                                                            }} class="form-check-input" type="radio" name='transmissionType' />
+                                                            }} className='filterInput' type="radio" name='transmissionType' />
 
                                                             <span class="text">All Transmissions</span>
 
@@ -664,7 +646,7 @@ export default function AdminProductsSection() {
                                                         <label class="containerss">
                                                             <input onChange={(e) => {
                                                                 noOfPassengersFilter(e);
-                                                            }} value={2} class="form-check-input" type="radio" name='passengers' />
+                                                            }} value={2} className='filterInput' type="radio" name='passengers' />
 
                                                             <span class="text">2</span>
                                                             <span class="qty">({twoPassengers?.length})</span>
@@ -674,7 +656,7 @@ export default function AdminProductsSection() {
                                                         <label class="containerss">
                                                             <input onChange={(e) => {
                                                                 noOfPassengersFilter(e);
-                                                            }} value={3} class="form-check-input" type="radio" name='passengers' />
+                                                            }} value={3} className='filterInput' type="radio" name='passengers' />
 
                                                             <span class="text">3</span>
                                                             <span class="qty">({threePassengers?.length})</span>
@@ -684,7 +666,7 @@ export default function AdminProductsSection() {
                                                         <label class="containerss">
                                                             <input onChange={(e) => {
                                                                 noOfPassengersFilter(e);
-                                                            }} value={4} class="form-check-input" type="radio" name='passengers' />
+                                                            }} value={4} className='filterInput' type="radio" name='passengers' />
 
                                                             <span class="text">4</span>
                                                             <span class="qty">({fourPassengers?.length})</span>
@@ -695,7 +677,7 @@ export default function AdminProductsSection() {
                                                             <input
                                                                 onChange={(e) => {
                                                                     noOfPassengersFilter(e);
-                                                                }} value={5} class="form-check-input" type="radio" name='passengers' />
+                                                                }} value={5} className='filterInput' type="radio" name='passengers' />
 
                                                             <span class="text">5</span>
                                                             <span class="qty">({fivePassengers?.length})</span>
@@ -705,7 +687,7 @@ export default function AdminProductsSection() {
                                                         <label class="containerss">
                                                             <input onChange={(e) => {
                                                                 noOfPassengersFilter(e);
-                                                            }} value={6} class="form-check-input" type="radio" name='passengers' />
+                                                            }} value={6} className='filterInput' type="radio" name='passengers' />
 
                                                             <span class="text">6</span>
                                                             <span class="qty">({sixPassengers?.length})</span>
@@ -715,7 +697,7 @@ export default function AdminProductsSection() {
                                                         <label class="containerss">
                                                             <input onChange={(e) => {
                                                                 noOfPassengersFilter(e);
-                                                            }} value={7} class="form-check-input" type="radio" name='passengers' />
+                                                            }} value={7} className='filterInput' type="radio" name='passengers' />
 
                                                             <span class="text">7</span>
                                                             <span class="qty">({sevenPassengers?.length})</span>
@@ -725,7 +707,7 @@ export default function AdminProductsSection() {
                                                         <label class="containerss">
                                                             <input onChange={(e) => {
                                                                 noOfPassengersFilter(e);
-                                                            }} value={8} class="form-check-input" type="radio" name='passengers' />
+                                                            }} value={8} className='filterInput' type="radio" name='passengers' />
 
                                                             <span class="text">8</span>
                                                             <span class="qty">({eightPassengers?.length})</span>
@@ -764,7 +746,7 @@ export default function AdminProductsSection() {
                                                                         setGroupsList(allDataArr);
                                                                     }
                                                                 }
-                                                            }} class="form-check-input" type="radio" name='passengers' />
+                                                            }} className='filterInput' type="radio" name='passengers' />
 
                                                             <span class="text">All Passengers</span>
 

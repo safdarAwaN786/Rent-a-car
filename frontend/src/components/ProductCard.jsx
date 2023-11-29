@@ -24,6 +24,8 @@ export default function ProductCard({ gridView, groupData }) {
     const numberOfDays = useSelector(state => state.numberOfDays?.number);
     const daysPrice = useSelector(state => state.numberOfDays?.priceText);
     const currentSeason = useSelector(state => state.currentSeason);
+    console.log(currentSeason);
+    console.log(daysPrice);
     return (
         <div class={`product-card ${gridView ? '' : 'd-flex flex-row'} `}>
             <div class="product-img">
@@ -31,7 +33,10 @@ export default function ProductCard({ gridView, groupData }) {
                 <div class="swiper product-img-slider">
                     <div class="swiper-wrapper">
                         <div class="swiper-slide">
-                            <img src={groupData?.imageUrl} />
+                            <img style={{
+                                height: '250px',
+                                width: '100%'
+                            }} src={groupData?.imageUrl} />
 
                         </div>
 
@@ -43,9 +48,10 @@ export default function ProductCard({ gridView, groupData }) {
                 <h5><a className='text-decoration-none cursor-pointer' ><b>{groupData?.vehicleName}</b> | or similar</a></h5>
                 <div class="price-location">
                     <div class="price">
-                    <strong>€{daysPrice ? groupData[currentSeason][daysPrice] : groupData[currentSeason]['1to2daysPrice']}</strong>
-                    </div>
                     
+                        <strong>€{daysPrice ? groupData[currentSeason][daysPrice] : groupData[currentSeason]['1to6daysPrice']} per day</strong>
+                    </div>
+
                 </div>
                 <ul class="features">
                     <li>
@@ -94,15 +100,36 @@ export default function ProductCard({ gridView, groupData }) {
                         if (loggedIn === true && user) {
 
                             if (bookingSubmitted) {
-                                
+                                const { pickUpLocation, dropOffLocation, pickUpDate, dropOffDate, pickUpTime, dropOffTime } = bookingData;
+                                if (!pickUpLocation) {
+                                    return toast.warning('Please Provide Pick Up Location!');
+                                } else if (!dropOffLocation) {
+                                    return toast.warning('Please Provide Drop Off Location!');
+                                } else if (!dropOffDate) {
+                                    return toast.warning('Please Provide Drop Off Date!');
+                                } else if (!pickUpDate) {
+                                    return toast.warning('Please Provide Pick Off Date!');
+                                }
+
+                                const pickupDateTime = new Date(`${pickUpDate}T${pickUpTime}`);
+                                const dropoffDateTime = new Date(`${dropOffDate}T${dropOffTime}`);
+                                const currentDate = new Date();
+
+                                if (dropoffDateTime <= pickupDateTime) {
+                                    return toast.warning('Drop off date should be later than Pick Up Date!');
+                                }
+
+                                const hoursDifference = (pickupDateTime.getTime() - currentDate.getTime()) / (1000 * 60 * 60);
+
+                                if (hoursDifference <= 48) {
+                                    return toast.warning('Booking cannot be made within 48 hours before pick Up!');
+                                }
                                 console.log('correct');
-                                dispatch(updateBookingInfo({ ...bookingData, group: groupData._id, basicPrice: groupData[currentSeason][daysPrice] * numberOfDays, currentSeason : currentSeason, daysText : daysPrice, user: user._id }))
-
+                                dispatch(updateBookingInfo({ ...bookingData, group: groupData._id, basicPrice: ((groupData[currentSeason][daysPrice] * numberOfDays) + bookingData?.airPortFee), currentSeason: currentSeason, daysText: daysPrice, daysNumber : numberOfDays, user: user._id }))
                                 dispatch(selectGroup(groupData));
-
                                 navigate('/complete-booking');
                             } else {
-                                dispatch(updateBookingInfo({ ...bookingData,  user: user._id }))
+                                dispatch(updateBookingInfo({ ...bookingData, user: user._id }))
                                 dispatch(selectGroup(groupData));
                                 navigate('/');
                             }

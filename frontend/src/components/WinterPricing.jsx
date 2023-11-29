@@ -98,24 +98,9 @@ export default function WinterPricing() {
 
 
 
+                                          
                                             <div className='extraBox my-2 border-circle p-2 d-flex  justify-content-between'>
-                                                <label class="form-check-label" >1-2 Days Price :</label>
-                                                <div><span>€</span>
-                                                    <input value={groupToProcess.winterPrices['1to2daysPrice']} onChange={(e) => {
-
-                                                        setGroupToProcess({
-                                                            ...groupToProcess,
-                                                            winterPrices: {
-                                                                ...groupToProcess.winterPrices,
-                                                                ['1to2daysPrice']: e.target.value
-                                                            }
-                                                        });
-
-                                                    }} type='number' className='p-1 mx-2 border border-secondary border-circle mb-1' required />
-                                                </div>
-                                            </div>
-                                            <div className='extraBox my-2 border-circle p-2 d-flex  justify-content-between'>
-                                                <label class="form-check-label" >3-6 Days Price :</label>
+                                                <label class="form-check-label" >1-6 Days Price :</label>
                                                 <div><span>€</span>
                                                     <input value={groupToProcess.winterPrices['3to6daysPrice']} onChange={(e) => {
 
@@ -123,7 +108,7 @@ export default function WinterPricing() {
                                                             ...groupToProcess,
                                                             winterPrices: {
                                                                 ...groupToProcess.winterPrices,
-                                                                ['3to6daysPrice']: e.target.value
+                                                                ['1to6daysPrice']: e.target.value
                                                             }
                                                         });
 
@@ -198,8 +183,7 @@ export default function WinterPricing() {
                             <thead>
                                 <tr>
                                     <th scope="col"># Group</th>
-                                    <th scope="col">1-2 Days</th>
-                                    <th scope="col">3-6 Days</th>
+                                    <th scope="col">1-6 Days</th>
                                     <th scope="col">7-14 Days</th>
                                     <th scope="col">15+ Days</th>
                                     <th scope="col">Edit</th>
@@ -211,8 +195,8 @@ export default function WinterPricing() {
                                     return (
                                         <tr>
                                             <th scope="row">{index + 1}. {groupObj.groupName}</th>
-                                            <td scope="row">€<b>{groupObj.winterPrices['1to2daysPrice']}</b></td>
-                                            <td scope="row">€<b>{groupObj.winterPrices['3to6daysPrice']}</b></td>
+                                            
+                                            <td scope="row">€<b>{groupObj.winterPrices['1to6daysPrice']}</b></td>
                                             <td scope="row">€<b>{groupObj.winterPrices['7to14daysPrice']}</b></td>
                                             <td scope="row">€<b>{groupObj.winterPrices['15plusDaysPrice']}</b></td>
 

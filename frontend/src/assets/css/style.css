@@ -44,6 +44,10 @@ li {
 .border-circle {
 	border-radius: 6px;
 }
+.filterInput{
+	width: 18px;
+	height: 18px;
+}
 
 body.home-5 {
 	padding: 0 6.3%
@@ -12607,7 +12611,9 @@ header.style-6 .main-menu .hotline-area .content h6 a {
 .product-card .product-img {
 	position: relative;
 	border-radius: 5px;
-	transition: .35s
+	transition: .35s;
+	width: 100%;
+	
 }
 
 .product-card .product-img .number-of-img {
@@ -24731,11 +24737,10 @@ width:  100px !important;
 		
 	}
 }
+@media (max-width: 425px){
 
-@media (min-width: 1199px){
-
-	.userDifRadio{
-		width: 20px !important;
+	.difRadio{
+		width: 40px !important;
 		
 	}
 }
@@ -24792,7 +24797,7 @@ width:  100px !important;
 	height: 70px;
 	min-width: 80px;
 	max-width: 80px;
-	border-radius: 5px
+	border-radius: 5px,
 }
 
 .product-sidebar .product-widget .recent-product-list .recent-product .product-img img {

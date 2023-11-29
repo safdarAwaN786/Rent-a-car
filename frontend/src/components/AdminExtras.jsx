@@ -95,21 +95,13 @@ export default function AdminExtras() {
                                     <form encType='multipart/form-data' onSubmit={(event) => {
                                         event.preventDefault();
                                         setEditingPrices(true);
-
-
                                         // setAddProduct(false);
-
-
-
-
                                         axios.post('/update-extra', { _id: extrasObj._id, Extras: extrasArr })
                                             .then(response => {
                                                 setEditingPrices(false);
-
                                                 setEditPrices(false);
                                                 setExtraToEdit(null);
                                                 updateExtras();
-
                                                 toast.success("Prices Updated Successfully!");
 
                                             })
@@ -134,8 +126,6 @@ export default function AdminExtras() {
                                                 <>                                                    {extraToEdit.priceOfExtra.map((extraPriceObj, index) => {
                                                     return (
                                                         <div className='extraBox flex-wrap my-2 border-circle p-2 d-flex  justify-content-between'>
-
-
                                                             <label class="form-check-label" >{extraPriceObj.groupName} :</label>
                                                             <div>
 
@@ -153,7 +143,6 @@ export default function AdminExtras() {
                                                                         }
                                                                     }
                                                                     setExtraToEdit(foundExtra)
-
                                                                     setExtrasArr(updatedExtras);
                                                                 }} type='number' className='p-1 mx-2 border border-secondary border-circle mb-1' required />
                                                             </div>

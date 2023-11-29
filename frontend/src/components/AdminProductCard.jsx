@@ -136,13 +136,10 @@ export default function AdminProductCard({ gridView, groupData, reGetData }) {
                                 event.preventDefault();
                                 setEditingGroup(true);
                                 const data = new FormData();
-
                                 console.log(groupToEdit)
-
                                 // Append each field individually to the FormData object
                                 data.append('groupName', groupToEdit.groupName);
-                                data.append('GroupName', groupToEdit.GroupName);
-
+                                data.append('vehicleName', groupToEdit.vehicleName);
                                 data.append('engineSize', groupToEdit.engineSize);
                                 data.append('adults', groupToEdit.adults);
                                 data.append('doors', groupToEdit.doors);
@@ -151,15 +148,9 @@ export default function AdminProductCard({ gridView, groupData, reGetData }) {
                                 data.append('bigLuggage', groupToEdit.bigLuggage);
                                 data.append('smallLuggage', groupToEdit.smallLuggage);
                                 data.append('transmissionType', groupToEdit.transmissionType);
-
                                 data.append('AC', groupToEdit.AC);
                                 data.append('groupCategory', groupToEdit.groupCategory);
-
-                                data.append('GroupImage', fileList[0].originFileObj);
-
-
-
-
+                                data.append('vehicleImage', fileList[0].originFileObj);
 
                                 axios.post(`/edit-group/${groupToEdit?._id}`, data)
                                     .then(response => {
@@ -224,6 +215,8 @@ export default function AdminProductCard({ gridView, groupData, reGetData }) {
                                         updateGroupData(e)
                                     }} name='adults' type='number' className='p-1 border border-secondary border-circle mb-1' />
 
+
+
                                     <label className='mt-1'>Doors :</label>
                                     <input value={groupToEdit?.doors} onChange={(e) => {
                                         updateGroupData(e)
@@ -235,9 +228,15 @@ export default function AdminProductCard({ gridView, groupData, reGetData }) {
                                     }} name='children' type='number' className='p-1 border border-secondary border-circle mb-1' />
 
                                     <label className='mt-1'>Seats :</label>
-                                    <input value={groupToEdit?.seats} onChange={(e) => {
-                                        updateGroupData(e)
-                                    }} name='seats' type='number' className='p-1 border border-secondary border-circle mb-1' />
+                                    <Select defaultValue={groupToEdit?.seats} name='seats' styles={customStyles} options={[
+                                        { value: 2, label: <div>2</div> },
+                                        { value: 3, label: <div>3</div> },
+                                        { value: 4, label: <div>4</div> },
+                                        { value: 5, label: <div>5</div> },
+                                        { value: 6, label: <div>6</div> },
+                                        { value: 7, label: <div>7</div> },
+                                        { value: 8, label: <div>8</div> },
+                                    ]} />
 
                                     <label className='mt-1'>Big Luggage :</label>
                                     <input value={groupToEdit?.bigLuggage} onChange={(e) => {
@@ -308,7 +307,10 @@ export default function AdminProductCard({ gridView, groupData, reGetData }) {
                     <div class="swiper product-img-slider">
                         <div class="swiper-wrapper">
                             <div class="swiper-slide">
-                                <img src={groupData?.imageUrl} />
+                                <img style={{
+                                    height: '250px',
+                                    width: '250px'
+                                }} src={groupData?.imageUrl} />
 
                             </div>
 
@@ -320,7 +322,7 @@ export default function AdminProductCard({ gridView, groupData, reGetData }) {
                     <h5><a className='text-decoration-none cursor-pointer fs-5' >{groupData?.vehicleName}</a> | <span>or similar</span></h5>
                     <div class="price-location">
                         <div class="price">
-                            <strong>€{currentSeason ? groupData[currentSeason]['1to2daysPrice'] : groupData.winterPrices['1to2daysPrice']}</strong>
+                            <strong>€{currentSeason ? groupData[currentSeason]['1to6daysPrice'] : groupData.winterPrices['1to6daysPrice']} per day</strong>
                         </div>
 
 

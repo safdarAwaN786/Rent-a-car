@@ -94,35 +94,16 @@ export default function SummerPricing() {
 
 
                                         <div className='d-flex flex-column'>
-
-
-
                                             <div className='extraBox my-2 border-circle p-2 d-flex  justify-content-between'>
-                                                <label class="form-check-label" >1-2 Days Price :</label>
+                                                <label class="form-check-label" >1-6 Days Price :</label>
                                                 <div><span>€</span>
-                                                    <input value={groupToProcess.summerPrices['1to2daysPrice']} onChange={(e) => {
+                                                    <input value={groupToProcess.summerPrices['1to6daysPrice']} onChange={(e) => {
 
                                                         setGroupToProcess({
                                                             ...groupToProcess,
                                                             summerPrices: {
                                                                 ...groupToProcess.summerPrices,
-                                                                ['1to2daysPrice']: e.target.value
-                                                            }
-                                                        });
-
-                                                    }} type='number' className='p-1 mx-2 border border-secondary border-circle mb-1' required />
-                                                </div>
-                                            </div>
-                                            <div className='extraBox my-2 border-circle p-2 d-flex  justify-content-between'>
-                                                <label class="form-check-label" >3-6 Days Price :</label>
-                                                <div><span>€</span>
-                                                    <input value={groupToProcess.summerPrices['3to6daysPrice']} onChange={(e) => {
-
-                                                        setGroupToProcess({
-                                                            ...groupToProcess,
-                                                            summerPrices: {
-                                                                ...groupToProcess.summerPrices,
-                                                                ['3to6daysPrice']: e.target.value
+                                                                ['1to6daysPrice']: e.target.value
                                                             }
                                                         });
 
@@ -195,9 +176,7 @@ export default function SummerPricing() {
                                 <tr>
 
                                     <th scope="col"># Group</th>
-
-                                    <th scope="col">1-2 Days</th>
-                                    <th scope="col">3-6 Days</th>
+                                    <th scope="col">1-6 Days</th>
                                     <th scope="col">7-14 Days</th>
                                     <th scope="col">15+ Days</th>
                                     <th scope="col">Edit</th>
@@ -209,8 +188,8 @@ export default function SummerPricing() {
                                     return (
                                         <tr>
                                             <th scope="row">{index + 1}. {groupObj.groupName}</th>
-                                            <td scope="row">€<b>{groupObj.summerPrices['1to2daysPrice']}</b></td>
-                                            <td scope="row">€<b>{groupObj.summerPrices['3to6daysPrice']}</b></td>
+                                            
+                                            <td scope="row">€<b>{groupObj.summerPrices['1to6daysPrice']}</b></td>
                                             <td scope="row">€<b>{groupObj.summerPrices['7to14daysPrice']}</b></td>
                                             <td scope="row">€<b>{groupObj.summerPrices['15plusDaysPrice']}</b></td>
 

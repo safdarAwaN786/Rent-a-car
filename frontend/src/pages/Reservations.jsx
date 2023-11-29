@@ -142,7 +142,7 @@ export default function Reservations() {
                       </tr>
                       <tr>
                         <th>Your Email</th>
-                        <td>{bookingToView.user.email} {bookingToView.user.lastName}</td>
+                        <td>{bookingToView.user.email}</td>
                       </tr>
                       <tr>
                         <th>Booked Group</th>
@@ -197,6 +197,10 @@ export default function Reservations() {
                         <th>Vehicle Price</th>
                         <td>€{bookingToView.group[bookingToView.currentSeason][bookingToView.daysText]}</td>
                       </tr>
+                      <tr>
+                        <th>Airport Fee</th>
+                        <td>€{bookingToView.airPortFee}</td>
+                      </tr>
                       {bookingToView.addedExtras.map((extraObj) => {
                         return (
                           <tr>
@@ -215,7 +219,7 @@ export default function Reservations() {
                         <td>€{Math.round(bookingToView.group[bookingToView.currentSeason][bookingToView.daysText] / 100) * (bookingToView.vatValue)}</td>
                       </tr>
                       <tr>
-                        <th>Grand Total ({numberOfdays}days)</th>
+                        <th>Grand Total ({bookingToView.daysNumber}days)</th>
                         <td>€{bookingToView.netVatedTotal}</td>
                       </tr>
 

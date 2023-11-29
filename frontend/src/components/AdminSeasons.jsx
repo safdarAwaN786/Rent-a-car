@@ -107,7 +107,7 @@ export default function AdminSeasons() {
                                         event.preventDefault();
                                         setEditingDates(true);
 
-
+                                        console.log(seasonsArr)
                                         axios.patch('/update-seasons', { _id: seasonObj._id, Seasons: seasonsArr })
                                             .then(response => {
                                                 setEditingDates(false);

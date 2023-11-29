@@ -37,14 +37,8 @@ const groupSchema = new mongoose.Schema({
       type: String,
       enum: ['Manual', 'Automatic']
    },
-
-
    winterPrices: {
-      '1to2daysPrice': {
-         type: Number,
-         default: 20
-      },
-      '3to6daysPrice': {
+      '1to6daysPrice': {
          type: Number,
          default: 60
       },
@@ -58,11 +52,7 @@ const groupSchema = new mongoose.Schema({
       },
    },
    summerPrices: {
-      '1to2daysPrice': {
-         type: Number,
-         default: 10
-      },
-      '3to6daysPrice': {
+      '1to6daysPrice': {
          type: Number,
          default: 30
       },
@@ -76,11 +66,7 @@ const groupSchema = new mongoose.Schema({
       },
    },
    summerHighPrices: {
-      '1to2daysPrice': {
-         type: Number,
-         default: 120
-      },
-      '3to6daysPrice': {
+      '1to6daysPrice': {
          type: Number,
          default: 360
       },
@@ -93,7 +79,6 @@ const groupSchema = new mongoose.Schema({
          default: 15280
       },
    },
-
    AC: {
       type: Boolean,
       default: false

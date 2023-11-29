@@ -39,29 +39,29 @@ export default function ProductsSection() {
     }, [])
 
 
-    const saloonManualTransmission = allDataArr?.filter(vehicleObj => vehicleObj.vehicleType === 'Saloon Manual Transmission');
+    const saloonManualTransmission = allDataArr?.filter(groupObj => groupObj.groupCategory === 'Saloon Manual Transmission');
 
-    const saloonAutomaticTransmission = allDataArr?.filter(vehicleObj => vehicleObj.vehicleType === 'Saloon Automatic Transmission');
+    const saloonAutomaticTransmission = allDataArr?.filter(groupObj => groupObj.groupCategory === 'Saloon Automatic Transmission');
 
-    const cabrioOpenTop = allDataArr?.filter(vehicleObj => vehicleObj.vehicleType === 'Cabrio/Open Top');
+    const cabrioOpenTop = allDataArr?.filter(groupObj => groupObj.groupCategory === 'Cabrio/Open Top');
 
-    const peopleCarrier = allDataArr?.filter(vehicleObj => vehicleObj.vehicleType === 'People Carrier');
+    const peopleCarrier = allDataArr?.filter(groupObj => groupObj.groupCategory === 'People Carrier');
 
-    const SUV4WD = allDataArr?.filter(vehicleObj => vehicleObj.vehicleType === 'SUV/4WD');
+    const SUV4WD = allDataArr?.filter(groupObj => groupObj.groupCategory === 'SUV/4WD');
 
-    const automaticTransmission = allDataArr?.filter(vehicleObj => vehicleObj.transmissionType === 'Automatic');
+    const automaticTransmission = allDataArr?.filter(groupObj => groupObj.transmissionType === 'Automatic');
 
-    const manualTransmission = allDataArr?.filter(vehicleObj => vehicleObj.transmissionType === 'Manual');
+    const manualTransmission = allDataArr?.filter(groupObj => groupObj.transmissionType === 'Manual');
 
-    const twoPassengers = allDataArr?.filter(vehicleObj => vehicleObj.adults == 2);
-    const threePassengers = allDataArr?.filter(vehicleObj => vehicleObj.adults == 3);
+    const twoPassengers = allDataArr?.filter(groupObj => groupObj.seats == 2);
+    const threePassengers = allDataArr?.filter(groupObj => groupObj.seats == 3);
 
-    const fourPassengers = allDataArr?.filter(vehicleObj => vehicleObj.adults == 4);
+    const fourPassengers = allDataArr?.filter(groupObj => groupObj.seats == 4);
 
-    const fivePassengers = allDataArr?.filter(vehicleObj => vehicleObj.adults == 5);
-    const sixPassengers = allDataArr?.filter(vehicleObj => vehicleObj.adults == 6);
-    const sevenPassengers = allDataArr?.filter(vehicleObj => vehicleObj.adults == 6);
-    const eightPassengers = allDataArr?.filter(vehicleObj => vehicleObj.adults == 8);
+    const fivePassengers = allDataArr?.filter(groupObj => groupObj.seats == 5);
+    const sixPassengers = allDataArr?.filter(groupObj => groupObj.seats == 6);
+    const sevenPassengers = allDataArr?.filter(groupObj => groupObj.seats == 7);
+    const eightPassengers = allDataArr?.filter(groupObj => groupObj.seats == 8);
 
     const [groupCategory, setGroupCategory] = useState(null);
     const [transmissionType, setTransmissionType] = useState(null);
@@ -103,7 +103,7 @@ export default function ProductsSection() {
                 setGroupsList(allDataArr?.filter((groupObj) => {
                     return (
 
-                        groupObj.groupCategory === e.target.value && groupObj.transmissionType === transmissionType && groupObj.adults == noOfPassengers
+                        groupObj.groupCategory === e.target.value && groupObj.transmissionType === transmissionType && groupObj.seats == noOfPassengers
                     )
                 }))
 
@@ -119,7 +119,7 @@ export default function ProductsSection() {
 
                     return (
 
-                        groupObj.groupCategory === e.target.value && groupObj.adults == noOfPassengers
+                        groupObj.groupCategory === e.target.value && groupObj.seats == noOfPassengers
                     )
                 }))
             } else {
@@ -141,7 +141,7 @@ export default function ProductsSection() {
                 setGroupsList(allDataArr?.filter((groupObj) => {
                     return (
 
-                        groupObj.transmissionType === e.target.value && groupObj.groupCategory === groupCategory && groupObj.adults == noOfPassengers
+                        groupObj.transmissionType === e.target.value && groupObj.groupCategory === groupCategory && groupObj.seats == noOfPassengers
                     )
                 }))
 
@@ -179,7 +179,7 @@ export default function ProductsSection() {
                 setGroupsList(allDataArr?.filter((groupObj) => {
                     return (
 
-                        groupObj.adults == e.target.value && groupObj.groupCategory === groupCategory && groupObj.transmissionType == transmissionType
+                        groupObj.seats == e.target.value && groupObj.groupCategory === groupCategory && groupObj.transmissionType == transmissionType
                     )
                 }))
 
@@ -187,7 +187,7 @@ export default function ProductsSection() {
                 setGroupsList(allDataArr?.filter((groupObj) => {
                     return (
 
-                        groupObj.adults == e.target.value && groupObj.groupCategory === groupCategory
+                        groupObj.seats == e.target.value && groupObj.groupCategory === groupCategory
                     )
                 }))
             } else if (transmissionType && !groupCategory) {
@@ -195,13 +195,13 @@ export default function ProductsSection() {
 
                     return (
 
-                        groupObj.adults == e.target.value && groupObj.transmissionType == transmissionType
+                        groupObj.seats == e.target.value && groupObj.transmissionType == transmissionType
                     )
                 }))
             } else {
                 setGroupsList(allDataArr?.filter((groupObj) => {
                     return (
-                        groupObj?.adults == e.target.value
+                        groupObj?.seats == e.target.value
                     )
                 }))
             }
@@ -243,7 +243,7 @@ export default function ProductsSection() {
                                                         <label class="containerss">
                                                             <input onChange={(e) => {
                                                                 groupCategoryFilter(e);
-                                                            }} value='Saloon Manual Transmission' class="form-check-input" type="radio" name='vehicleType' />
+                                                            }} value='Saloon Manual Transmission' className='filterInput' type="radio" name='vehicleType' />
 
                                                             <span class="text">Saloon Manual Transmission</span>
                                                             <span class="qty">({saloonManualTransmission?.length})</span>
@@ -253,7 +253,7 @@ export default function ProductsSection() {
                                                         <label class="containerss">
                                                             <input onChange={(e) => {
                                                                groupCategoryFilter(e);
-                                                            }} value='Saloon Automatic Transmission' class="form-check-input" type="radio" name='vehicleType' />
+                                                            }} value='Saloon Automatic Transmission' className='filterInput' type="radio" name='vehicleType' />
 
                                                             <span class="text">Saloon Automatic Transmission</span>
                                                             <span class="qty">({saloonAutomaticTransmission?.length})</span>
@@ -263,7 +263,7 @@ export default function ProductsSection() {
                                                         <label class="containerss">
                                                             <input onChange={(e) => {
                                                                 groupCategoryFilter(e);
-                                                            }} value='Cabrio/Open Top' class="form-check-input" type="radio" name='vehicleType' />
+                                                            }} value='Cabrio/Open Top' className='filterInput' type="radio" name='vehicleType' />
                                                             <span class="text">Cabrio / Open Top</span>
                                                             <span class="qty">({cabrioOpenTop?.length})</span>
                                                         </label>
@@ -272,9 +272,9 @@ export default function ProductsSection() {
                                                         <label class="containerss">
                                                             <input onChange={(e) => {
                                                                 groupCategoryFilter(e);
-                                                            }} value='People Carrier' class="form-check-input userDifRadio" type="radio" name='vehicleType' />
+                                                            }} value='People Carrier' className='filterInput' type="radio" name='vehicleType' />
 
-                                                            <span class="text">People Carrier/Wheelchair Accessible Vehicles</span>
+                                                            <span class="text">People Carrier</span>
                                                             <span class="qty">({peopleCarrier?.length})</span>
                                                         </label>
                                                     </li>
@@ -282,7 +282,7 @@ export default function ProductsSection() {
                                                         <label class="containerss">
                                                             <input onChange={(e) => {
                                                                groupCategoryFilter(e);
-                                                            }} value='SUV/4WD' class="form-check-input" type="radio" name='vehicleType' />
+                                                            }} value='SUV/4WD' className='filterInput' type="radio" name='vehicleType' />
 
                                                             <span class="text">SUV / 4WD</span>
                                                             <span class="qty">({SUV4WD?.length})</span>
@@ -298,7 +298,7 @@ export default function ProductsSection() {
                                                                         setGroupsList(allDataArr?.filter((groupObj) => {
                                                                             return (
 
-                                                                                groupObj.transmissionType === transmissionType && groupObj.adults == noOfPassengers
+                                                                                groupObj.transmissionType === transmissionType && groupObj.seats == noOfPassengers
                                                                             )
                                                                         }))
 
@@ -314,14 +314,14 @@ export default function ProductsSection() {
 
                                                                             return (
 
-                                                                                groupObj.adults == noOfPassengers
+                                                                                groupObj.seats == noOfPassengers
                                                                             )
                                                                         }))
                                                                     } else {
                                                                         setGroupsList(allDataArr);
                                                                     }
                                                                 }
-                                                            }} class="form-check-input" type="radio" name='vehicleType' />
+                                                            }} className='filterInput' type="radio" name='vehicleType' />
 
                                                             <span class="text">All Types</span>
 
@@ -342,7 +342,7 @@ export default function ProductsSection() {
                                                         <label class="containerss">
                                                             <input onChange={(e) => {
                                                                 transmissionTypeFilter(e)
-                                                            }} value='Automatic' class="form-check-input" type="radio" name='transmissionType' />
+                                                            }} value='Automatic' className='filterInput' type="radio" name='transmissionType' />
 
                                                             <span class="text">Automatic</span>
                                                             <span class="qty">({automaticTransmission?.length})</span>
@@ -352,7 +352,7 @@ export default function ProductsSection() {
                                                         <label class="containerss">
                                                             <input onChange={(e) => {
                                                                 transmissionTypeFilter(e)
-                                                            }} value='Manual' class="form-check-input" type="radio" name='transmissionType' />
+                                                            }} value='Manual' className='filterInput' type="radio" name='transmissionType' />
 
                                                             <span class="text">Manual</span>
                                                             <span class="qty">({manualTransmission?.length})</span>
@@ -369,7 +369,7 @@ export default function ProductsSection() {
                                                                         setGroupsList(allDataArr?.filter((groupObj) => {
                                                                             return (
 
-                                                                                groupObj.groupCategory === groupCategory && groupObj.adults == noOfPassengers
+                                                                                groupObj.groupCategory === groupCategory && groupObj.seats == noOfPassengers
                                                                             )
                                                                         }))
 
@@ -385,14 +385,14 @@ export default function ProductsSection() {
 
                                                                             return (
 
-                                                                                groupObj.adults == noOfPassengers
+                                                                                groupObj.seats == noOfPassengers
                                                                             )
                                                                         }))
                                                                     } else {
                                                                         setGroupsList(allDataArr);
                                                                     }
                                                                 }
-                                                            }} class="form-check-input" type="radio" name='transmissionType' />
+                                                            }} className='filterInput' type="radio" name='transmissionType' />
 
                                                             <span class="text">All Transmissions</span>
 
@@ -415,7 +415,7 @@ export default function ProductsSection() {
                                                         <label class="containerss">
                                                             <input onChange={(e) => {
                                                                 noOfPassengersFilter(e);
-                                                            }} value={2} class="form-check-input" type="radio" name='passengers' />
+                                                            }} value={2} className='filterInput' type="radio" name='passengers' />
 
                                                             <span class="text">2</span>
                                                             <span class="qty">({twoPassengers?.length})</span>
@@ -425,7 +425,7 @@ export default function ProductsSection() {
                                                         <label class="containerss">
                                                             <input onChange={(e) => {
                                                                 noOfPassengersFilter(e);
-                                                            }} value={3} class="form-check-input" type="radio" name='passengers' />
+                                                            }} value={3} className='filterInput' type="radio" name='passengers' />
 
                                                             <span class="text">3</span>
                                                             <span class="qty">({threePassengers?.length})</span>
@@ -435,7 +435,7 @@ export default function ProductsSection() {
                                                         <label class="containerss">
                                                             <input onChange={(e) => {
                                                                 noOfPassengersFilter(e);
-                                                            }} value={4} class="form-check-input" type="radio" name='passengers' />
+                                                            }} value={4} className='filterInput' type="radio" name='passengers' />
 
                                                             <span class="text">4</span>
                                                             <span class="qty">({fourPassengers?.length})</span>
@@ -446,7 +446,7 @@ export default function ProductsSection() {
                                                             <input
                                                                 onChange={(e) => {
                                                                     noOfPassengersFilter(e);
-                                                                }} value={5} class="form-check-input" type="radio" name='passengers' />
+                                                                }} value={5} className='filterInput' type="radio" name='passengers' />
 
                                                             <span class="text">5</span>
                                                             <span class="qty">({fivePassengers?.length})</span>
@@ -456,7 +456,7 @@ export default function ProductsSection() {
                                                         <label class="containerss">
                                                             <input onChange={(e) => {
                                                                 noOfPassengersFilter(e);
-                                                            }} value={6} class="form-check-input" type="radio" name='passengers' />
+                                                            }} value={6} className='filterInput' type="radio" name='passengers' />
 
                                                             <span class="text">6</span>
                                                             <span class="qty">({sixPassengers?.length})</span>
@@ -466,7 +466,7 @@ export default function ProductsSection() {
                                                         <label class="containerss">
                                                             <input onChange={(e) => {
                                                                 noOfPassengersFilter(e);
-                                                            }} value={7} class="form-check-input" type="radio" name='passengers' />
+                                                            }} value={7} className='filterInput' type="radio" name='passengers' />
 
                                                             <span class="text">7</span>
                                                             <span class="qty">({sevenPassengers?.length})</span>
@@ -476,7 +476,7 @@ export default function ProductsSection() {
                                                         <label class="containerss">
                                                             <input onChange={(e) => {
                                                                 noOfPassengersFilter(e);
-                                                            }} value={8} class="form-check-input" type="radio" name='passengers' />
+                                                            }} value={8} className='filterInput' type="radio" name='passengers' />
 
                                                             <span class="text">8</span>
                                                             <span class="qty">({eightPassengers?.length})</span>
@@ -515,7 +515,7 @@ export default function ProductsSection() {
                                                                         setGroupsList(allDataArr);
                                                                     }
                                                                 }
-                                                            }} class="form-check-input" type="radio" name='passengers' />
+                                                            }} className='filterInput' type="radio" name='passengers' />
 
                                                             <span class="text">All Passengers</span>
 

@@ -77,7 +77,7 @@ const addGroup = async (req, res) => {
 
       if (foundGroup) {
         console.log('Group Exist');
-       
+
       } else {
         SCDWObj.priceOfExtra.push({
           groupName: req.body.groupName,
@@ -108,7 +108,8 @@ const addGroup = async (req, res) => {
       console.log('Added successfully!');
 
       res.status(200).send({
-        status: true, message: "The group is added!", data: group });
+        status: true, message: "The group is added!", data: group
+      });
     }
 
 
@@ -134,16 +135,62 @@ const editGroup = async (req, res) => {
         console.log(err);
         throw new Error('Failed to upload image to Cloudinary');
       });
-
       updateFields.imageUrl = imageUrl;
     }
 
+    const previousGroup = await Group.findById(req.params.groupId)
+
+    if (previousGroup.groupName !== req.body.groupName) {
+
+      let extra = await Extra.findOne();
+
+      const SCDWObj = extra.Extras.find(obj => obj.extraName === 'Super Collision Damage Waiver (SCDW)');
+      const TyresObj = extra.Extras.find(obj => obj.extraName === 'Tyres, Windscreen, Underbody');
+      const GPSObj = extra.Extras.find(obj => obj.extraName === 'GPS');
+
+      const updatedSCDWObj = SCDWObj.priceOfExtra.find(groupObj => groupObj.groupName === previousGroup.groupName);
+      if(updatedSCDWObj){
+        updatedSCDWObj.groupName = req.body.groupName;
+      } else {
+        SCDWObj.priceOfExtra.push({
+          groupName : req.body.groupName,
+          price : 20,
+          maxQuantity : 1
+        })
+      }
+      const updatedTyresObj = TyresObj.priceOfExtra.find(groupObj => groupObj.groupName === previousGroup.groupName);
+      if(updatedTyresObj){
+        updatedTyresObj.groupName = req.body.groupName;
+      } else {
+        TyresObj.priceOfExtra.push({
+          groupName : req.body.groupName,
+          price : 20,
+          maxQuantity : 1
+        })
+      }
+      console.log(GPSObj.priceOfExtra);
+      const updatedGPSObj = GPSObj.priceOfExtra.find(groupObj => groupObj.groupName === previousGroup.groupName);
+      if(updatedGPSObj){
+        updatedGPSObj.groupName = req.body.groupName;
+      } else {
+        GPSObj.priceOfExtra.push({
+          groupName : req.body.groupName,
+          price : 20,
+          maxQuantity : 1
+        })
+      }
+      console.log(extra.Extras[0].priceOfExtra);
+      await Extra.findByIdAndUpdate(extra._id, extra, {
+        new: true,
+      });
+    }
     const updatedGroup = await Group.findByIdAndUpdate(req.params.groupId, updateFields, {
       new: true,
-
     });
 
 
+
+    console.log(updatedGroup);
 
     console.log('Updated successfully!');
     return res.status(200).send({
@@ -163,15 +210,8 @@ const deleteGroup = async (req, res) => {
 
 
   try {
-
-
-
     const deletedGroup = await Group.findByIdAndDelete(req.params.groupId);
-
-
     let extra = await Extra.findOne();
-
-
     const SCDWObj = extra.Extras.find(obj => obj.extraName === 'Super Collision Damage Waiver (SCDW)');
     const TyresObj = extra.Extras.find(obj => obj.extraName === 'Tyres, Windscreen, Underbody');
     const GPSObj = extra.Extras.find(obj => obj.extraName === 'GPS');
@@ -189,7 +229,7 @@ const deleteGroup = async (req, res) => {
       await Extra.findByIdAndUpdate(extra._id, extra, {
         new: true,
       });
-    } 
+    }
 
 
     console.log('Deleted successfully!');

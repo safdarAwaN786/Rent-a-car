@@ -3,121 +3,135 @@ const mongose = require('mongoose');
 
 const contentSchema = new mongoose.Schema({
     landingPage: {
-        backgroundImageUrl : {
-            type : String
+        backgroundImageUrl: {
+            type: String
         },
-        mainHeading : {
-            type : String
+        mainHeading: {
+            type: String
         },
-        mainText : {
-            type : String
+        mainText: {
+            type: String
         },
         workFlow: [
             {
-                iconUrl : {
-                    type : String
+                iconUrl: {
+                    type: String
                 },
-                heading : {
-                    type : String
+                heading: {
+                    type: String
                 },
-                text : {
-                    type : String
+                text: {
+                    type: String
                 }
             }
         ],
         chooseUs: [
             {
-                iconUrl : {
-                    type : String
+                iconUrl: {
+                    type: String
                 },
-                heading : {
-                    type : String
+                heading: {
+                    type: String
                 },
-                text : {
-                    type : String
+                text: {
+                    type: String
                 }
             }
         ],
         brands: [
             {
-                logoUrl : {
-                    type : String
+                logoUrl: {
+                    type: String
                 },
-                brandName : {
-                    type : String
+                brandName: {
+                    type: String
                 }
             }
         ],
         ourFleet: [
             {
-                imageUrl : {
-                    type : String
+                imageUrl: {
+                    type: String
                 },
-                title : {
-                    type : String
+                title: {
+                    type: String
                 },
-                text : {
-                    type : String
+                text: {
+                    type: String
                 },
             }
         ]
     },
-    reservationsPage : {
-        backgroundImageUrl : {
-            type : String
+    reservationsPage: {
+        backgroundImageUrl: {
+            type: String
         },
-        mainHeading : {
-            type : String
+        mainHeading: {
+            type: String
         },
-        mainText : {
-            type : String
+        mainText: {
+            type: String
         }
     },
-    termsConditionsPage : {
-        lastUpdated : {
-            type : Date,
-            required : true,
-            default : new Date()
+    termsConditionsPage: {
+        lastUpdated: {
+            type: Date,
+            required: true,
+            default: new Date()
         },
-        pageContent : {
-            type : String
+        pageContent: {
+            type: String
         }
     },
-    contactUsPage : {
-        mainHeading : {
-            type : String
+    contactUsPage: {
+        mainHeading: {
+            type: String
         },
-        mainText : {
-            type : String
+        mainText: {
+            type: String
         },
-        offices : [
+        offices: [
             {
-                infoText : {
-                    type : String
+                infoText: {
+                    type: String
                 }
             }
         ],
-        deliveryLocations : [
+        deliveryLocations: [
             {
-                location : {
-                    type : String
+                location: {
+                    type: String
                 }
             }
         ]
     },
-    privacyPolicyPage : {
-        pageContent : {
-            type : String
+    privacyPolicyPage: {
+        pageContent: {
+            type: String
         },
-        lastUpdated : {
-            type : Date,
-            required : true,
-            default : new Date()
+        lastUpdated: {
+            type: Date,
+            required: true,
+            default: new Date()
         },
 
+    },
+    extrasPage: {
+        faqs: [
+
+            {
+                question: {
+                    type: String
+                },
+                answer: {
+                    type: String
+                }
+            }
+
+        ]
     }
 
 });
 
-const contentModel =  new mongoose.model('webContent', contentSchema);
-module.exports =  contentModel;
+const contentModel = new mongoose.model('webContent', contentSchema);
+module.exports = contentModel;

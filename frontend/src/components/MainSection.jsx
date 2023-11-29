@@ -22,11 +22,10 @@ export default function MainSection() {
     const landingPageContent = useSelector(state => state.webContent?.landingPage);
 
     const updateBookingData = (e) => {
-
         dispatch(updateBookingInfo({ ...bookingData, [e.target.name]: e.target.value }));
-
-        // setBookingData({ ...bookingData, [e.target.name]: e.target.value })
     }
+
+
 
     const navigate = useNavigate()
     const locations = [
@@ -51,46 +50,50 @@ export default function MainSection() {
                             <h1 className='px-2'>{landingPageContent?.mainHeading}</h1>
                             <p className='px-2'>{landingPageContent?.mainText}</p>
                             <div className='bg-white py-3 me-3 w-100 border-circle'>
-                                <form onSubmit={(e) => {
-                                    e.preventDefault();
+                                <form
+                                    onSubmit={(e) => {
+                                        e.preventDefault();
+                                        const { pickUpLocation, dropOffLocation, pickUpDate, dropOffDate, pickUpTime, dropOffTime } = bookingData;
+                                        if (!pickUpLocation) {
+                                            return toast.warning('Please Provide Pick Up Location!');
+                                        } else if (!dropOffLocation) {
+                                            return toast.warning('Please Provide Drop Off Location!');
+                                        } 
 
+                                        const pickupDateTime = new Date(`${pickUpDate}T${pickUpTime}`);
+                                        const dropoffDateTime = new Date(`${dropOffDate}T${dropOffTime}`);
+                                        const currentDate = new Date();
 
-                                    if (!bookingData.pickUpLocation) {
-                                        toast.warning('Please Provide Pick Up Location!');
-                                    } else if (!bookingData.dropOffLocation) {
-                                        toast.warning('Please Provide Drop Off Location !');
-                                    } else {
-                                        const pickUpDate = new Date(bookingData?.pickUpDate);
-                                        const dropOffDate = new Date(bookingData?.dropOffDate);
-
-                                        if (dropOffDate < pickUpDate) {
-                                            toast.warning('Drop off date is earlier than Pick Up Date!')
-                                        } else {
-
-
-                                            // To calculate the time difference
-                                            const timeDiff = Math.abs(dropOffDate.getTime() - pickUpDate.getTime());
-                                            const numberOfDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
-                                            console.log(numberOfDays);
-                                            let priceText;
-                                            if (numberOfDays <= 2) {
-                                                priceText = '1to2daysPrice'
-                                            } else if (numberOfDays >= 3 && numberOfDays <= 6) {
-                                                priceText = '3to6daysPrice'
-                                            } else if (numberOfDays >= 7 && numberOfDays <= 14) {
-                                                priceText = '15plusDaysPrice'
-                                            }
-
-                                            dispatch(setNumberOfDays({
-                                                number: numberOfDays,
-                                                priceText: priceText
-                                            }))
-                                            dispatch(submitPreBooking());
-                                            navigate('/vehicle-guide')
+                                        if (dropoffDateTime <= pickupDateTime) {
+                                            return toast.warning('Drop off date should be later than Pick Up Date!');
                                         }
-                                    }
 
-                                }}>
+                                        const hoursDifference = (pickupDateTime.getTime() - currentDate.getTime()) / (1000 * 60 * 60);
+
+                                        if (hoursDifference <= 48) {
+                                            return toast.warning('Booking cannot be made within 48 hours before pick Up!');
+                                        }
+
+                                        const timeDiff = Math.abs(new Date(dropOffDate).getTime() - new Date(pickUpDate).getTime());
+
+                                        // Check if drop-off time is greater than pick-up time + 2 hours
+                                        if (dropOffDate !== pickUpDate && dropoffDateTime.getHours() >= (pickupDateTime.getHours() + 2)) {
+                                            const numberOfDays = Math.ceil((timeDiff / (1000 * 3600 * 24)) + 1);
+                                            dispatch(setNumberOfDays({ number: numberOfDays, priceText: numberOfDays <= 6 ? '1to6daysPrice' : numberOfDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice' }));
+                                        } else if (dropOffDate === pickUpDate) {
+                                            const numberOfDays = 1;
+                                            dispatch(setNumberOfDays({ number: numberOfDays, priceText: numberOfDays <= 6 ? '1to6daysPrice' : numberOfDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice' }));
+                                        } else {
+                                            const numberOfDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
+                                            dispatch(setNumberOfDays({ number: numberOfDays, priceText: numberOfDays <= 6 ? '1to6daysPrice' : numberOfDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice' }));
+                                        }
+
+                                        dispatch(submitPreBooking());
+                                        navigate('/vehicle-guide');
+                                    }}
+                                >
+
+
                                     <div class="d-flex flex-row flex-wrap">
                                         <div class="m-2">
 
@@ -100,20 +103,18 @@ export default function MainSection() {
                                                 <label for="pickup-location">Pick-up location</label>
                                                 {customPickUp ? (
                                                     <input value={bookingData?.pickUpLocation} onChange={(e) => {
-
-
                                                         updateBookingData(e);
-
                                                     }} type='text' placeholder='Provide Your Location' className="form-control" name='pickUpLocation' required />
                                                 ) : (
 
 
                                                     <Select value={bookingData?.pickUpLocation} onChange={(value) => {
-                                                        // selected is now defined in the scope of this function
-
-
                                                         if (value != 'Custom Location') {
-                                                            dispatch(updateBookingInfo({ ...bookingData, pickUpLocation: value }))
+                                                            if (value === 'Larnaka Airport' || value === 'Pafos Airport') {
+                                                                dispatch(updateBookingInfo({ ...bookingData, pickUpLocation: value, airPortFee: 20 }))
+                                                            } else {
+                                                                dispatch(updateBookingInfo({ ...bookingData, pickUpLocation: value, airPortFee: 0 }))
+                                                            }
 
                                                         } else {
 
@@ -123,12 +124,6 @@ export default function MainSection() {
                                                     }} options={locations} required />
                                                 )}
                                             </div>
-
-
-
-
-
-
                                         </div>
                                         <div class="m-2">
                                             <div class="form-inner">
@@ -199,10 +194,7 @@ export default function MainSection() {
                                                     <label for="date-1696006456045" class="formbuilder-date-label">Drop-off
                                                         date</label>
                                                     <input value={bookingData?.dropOffDate} onChange={(e) => {
-
-
                                                         updateBookingData(e);
-
                                                     }} type="date" class="form-control" name="dropOffDate"
                                                         access="false" id="date-1696006456045" required />
                                                 </div>
@@ -214,10 +206,7 @@ export default function MainSection() {
                                                     <label class="formester-label">
                                                         Drop-off Time</label>
                                                     <input value={bookingData?.dropOffTime} onChange={(e) => {
-
-
                                                         updateBookingData(e);
-
                                                     }} type="time" class="form-control" name="dropOffTime"
                                                         access="false" id="date-1696006456045" required />
                                                 </div>

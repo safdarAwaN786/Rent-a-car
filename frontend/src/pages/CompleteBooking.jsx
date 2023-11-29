@@ -28,7 +28,7 @@ export default function CompleteBooking() {
     const bookingSubmitted = useSelector(state => state.booking.isBookingSubmitted);
     const selectedGroup = useSelector(state => state.group);
 
-
+    const webContent = useSelector(state => state.webContent);
     const bookingData = useSelector(state => state.booking.bookingData);
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -40,7 +40,7 @@ export default function CompleteBooking() {
         if (!bookingSubmitted || !bookingData || !loggedIn) {
             navigate('/');
         }
-        if (!selectedGroup) {
+        if (!selectedGroup || !daysNumber ) {
             navigate('/vehicle-guide')
         }
     });
@@ -62,15 +62,16 @@ export default function CompleteBooking() {
             basicPrice = basicPrice - ((selectedGroup[currentSeason][daysPrice] / 100) * promoCodeObj.discountPercent)
             dispatch(updateBookingInfo({ ...bookingData, promoCode: promoCodeObj, basicPrice: Math.round(basicPrice) }))
         } else {
+
             let basicPrice = selectedGroup[currentSeason][daysPrice] * daysNumber
 
-            
+
 
             dispatch(updateBookingInfo({ ...bookingData, basicPrice: Math.round(basicPrice), promoCode: null }));
         }
 
     }, [promoCodeObj])
-  
+
 
 
     useEffect(() => {
@@ -86,15 +87,15 @@ export default function CompleteBooking() {
 
 
 
-   const reGetExtras = ()=>{
-    axios.get(`/read-extras`).then((res) => {
-        setGettingExtras(false);
-        console.log(res.data)
-        setExtrasArr(res.data.data.Extras);
-    }).catch((e) => {
-        toast.error('Error , Please Refresh!')
-    })
-   }
+    const reGetExtras = () => {
+        axios.get(`/read-extras`).then((res) => {
+            setGettingExtras(false);
+            console.log(res.data)
+            setExtrasArr(res.data.data.Extras);
+        }).catch((e) => {
+            toast.error('Error , Please Refresh!')
+        })
+    }
 
     const [codeValue, setCodeValue] = useState(null);
 
@@ -124,10 +125,10 @@ export default function CompleteBooking() {
                                         <div class="price-model-and-fav-area">
                                             <div class="price-and-model">
                                                 <div class="price">
-                                                {selectedGroup && (
+                                                    {selectedGroup && (
 
-                                                    <h3>€{selectedGroup[currentSeason][daysPrice]}/day</h3>
-                                                )}
+                                                        <h3>€{selectedGroup[currentSeason][daysPrice]}/day</h3>
+                                                    )}
                                                 </div>
 
                                             </div>
@@ -525,7 +526,10 @@ export default function CompleteBooking() {
 
                                                     </div>
                                                     <div class="col-6">
-                                                        <span>€{Math.round(bookingData?.basicPrice / daysNumber)} X {daysNumber}days = <b>{ }</b><strong>€{Math.round(bookingData?.basicPrice)}</strong></span>
+                                                        
+
+                                                            <span>€{selectedGroup[currentSeason][daysPrice]} X {daysNumber}days = <b>{ }</b><strong>€{Math.round(selectedGroup[currentSeason][daysPrice] * daysNumber)}</strong></span>
+                                                        
                                                     </div>
 
                                                 </div>
@@ -582,6 +586,11 @@ export default function CompleteBooking() {
                                                         )}
                                                     </button>
                                                 </form>
+                                            </div>
+                                            <div className='d-flex justify-content-between my-2'>
+                                                <span className=' fs-5'>Airport Fee : </span>
+                                                <span className=' fs-5'>€{bookingData?.airPortFee}</span>
+
                                             </div>
                                             <div class="checkbox-container">
                                                 <h5 class="product-widget-title mb-20">Extras</h5>
@@ -648,11 +657,11 @@ export default function CompleteBooking() {
                                                 <div class="checkbox-container">
                                                     <div class="row g-3">
                                                         <div class="col-6">
-                                                            <li><strong>Total</strong></li>
+                                                            <li className='fw-bold fs-5'>Total</li>
 
                                                         </div>
                                                         <div class="col-6">
-                                                            <span><strong>€ {bookingData?.totalPrice}</strong> </span>
+                                                            <span className='fw-bold fs-5'>€ {bookingData?.totalPrice} </span>
 
                                                         </div>
 
@@ -709,26 +718,29 @@ export default function CompleteBooking() {
                     </div>
                     <div class="faq-wrap">
                         <div class="accordion accordion-flush" id="accordionFlushExample">
-                            <div class="accordion-item">
-                                <h5 class="accordion-header" id="flush-headingOne">
-                                    <button class="accordion-button collapsed" type="button"
-                                        data-bs-toggle="collapse" data-bs-target="#flush-collapseOne"
-                                        aria-expanded="false" aria-controls="flush-collapseOne">
-                                        What documentation is required to rent a car?
-                                    </button>
-                                </h5>
-                                <div id="flush-collapseOne" class="accordion-collapse collapse show"
-                                    aria-labelledby="flush-headingOne"
-                                    data-bs-parent="#accordionFlushExample">
-                                    <div class="accordion-body"><ul>
-                                        <li>Valid driving license</li>
-                                        <li>ID or passport</li>
-                                        <li>A credit card</li>
-                                    </ul>
+
+                            {webContent?.extrasPage?.faqs?.map((faqObj, i) => {
+                                return (
+                                    <div class="accordion-item">
+                                        <h5 class="accordion-header" id="flush-headingOne">
+                                            <button class="accordion-button collapsed" type="button"
+                                                data-bs-toggle="collapse" data-bs-target={`#flush-collapse${i}`}
+                                                aria-expanded="false" aria-controls={`flush-collapse${i}`}>
+                                                {faqObj.question}
+                                            </button>
+                                        </h5>
+                                        <div id={`flush-collapse${i}`} class="accordion-collapse collapse show"
+                                            aria-labelledby={`flush-heading${i}`}
+                                            data-bs-parent="#accordionFlushExample">
+                                            <div class="accordion-body">{faqObj.answer}
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
-                            </div>
-                            <div class="accordion-item">
+                                )
+                            })}
+
+
+                            {/* <div class="accordion-item">
                                 <h5 class="accordion-header" id="flush-headingTwo">
                                     <button class="accordion-button collapsed" type="button"
                                         data-bs-toggle="collapse" data-bs-target="#flush-collapseTwo"
@@ -755,7 +767,7 @@ export default function CompleteBooking() {
                                     data-bs-parent="#accordionFlushExample">
                                     <div class="accordion-body">For on-airport deliveries, vehicles are picked up directly from the airport. There's an additional EUR 20 charge for these pickups. This fee is imposed by the Hermes Airport Authorities for every vehicle collection from the airport.</div>
                                 </div>
-                            </div>
+                            </div> */}
 
                         </div>
                     </div>

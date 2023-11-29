@@ -20,6 +20,7 @@ import ReservationsContent from '../components/ReservationsContent';
 import TermsConditionsContent from '../components/TermsConditionsContent';
 import PrivacyCookiesContent from '../components/PrivacyCookiesContent';
 import ContactUsContent from '../components/ContactUsContent';
+import ExtrasPageContent from '../components/ExtrasPageContent';
 
 export default function Admin({ tab }) {
 
@@ -226,6 +227,15 @@ export default function Admin({ tab }) {
                                         Privacy & Cookies Policy
                                     </a>
                                 </li>
+                                <li onClick={() => {
+                                    navigate('/extras-content')
+                                }} style={{
+                                    transition: 'background-color 0.5s ease'
+                                }} className={` ${tab === 'extras-Content' && 'bg-white'} cursor-pointer px-2 py-1  m-1 border-circle admin-sidebar-li`}>
+                                    <a className={` ${tab === 'extras-Content' ? 'text-dark' : 'text-white'} text-decoration-none`}>
+                                        Extras FAQ's
+                                    </a>
+                                </li>
 
                             </div>
                         )}
@@ -277,6 +287,9 @@ export default function Admin({ tab }) {
                     )}
                     {tab === 'privacy&Cookies-Content' && (
                         <PrivacyCookiesContent />
+                    )}
+                    {tab === 'extras-Content' && (
+                        <ExtrasPageContent />
                     )}
 
                 </div>

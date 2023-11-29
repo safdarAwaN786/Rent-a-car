@@ -89,7 +89,7 @@ export default function ContactUsContent() {
 
 
                         <div className='my-2 px-lg-4 px-2 d-flex justify-content-between'>
-                            {webContent?.contactUsPage?.offices?.length < 8 && (
+                            {webContent?.contactUsPage?.offices?.length < 10 && (
                                 <SlPlus onClick={() => {
                                     const editableContent = { ...webContent };
                                     editableContent.contactUsPage = {
@@ -104,7 +104,7 @@ export default function ContactUsContent() {
                                     dispatch(setWebContent(editableContent));
                                 }} className='fs-3 cursor-pointer' />
                             )}
-                            {webContent?.contactUsPage?.offices?.length > 4 && (
+                            {webContent?.contactUsPage?.offices?.length > 1 && (
                                 <SlMinus onClick={() => {
                                     const editableContent = { ...webContent };
                                     if (editableContent.contactUsPage.offices.length > 0) {
@@ -123,7 +123,7 @@ export default function ContactUsContent() {
                         <h4 className='text-center my-2'>Delivery Locations</h4>
 
 
-                        {webContent?.contactUsPage?.devliveryLocations?.map((locationObj, index) => {
+                        {webContent?.contactUsPage?.deliveryLocations?.map((locationObj, index) => {
                             return (
                                 <>
                                     <label className='d-block w-100'><b>{index + 1}. New Location : </b></label>
@@ -160,7 +160,7 @@ export default function ContactUsContent() {
                                     dispatch(setWebContent(editableContent));
                                 }} className='fs-3 cursor-pointer' />
                             )}
-                            {webContent?.contactUsPage?.deliveryLocations?.length > 6 && (
+                            {webContent?.contactUsPage?.deliveryLocations?.length > 1 && (
                                 <SlMinus onClick={() => {
                                     const editableContent = { ...webContent };
                                     if (editableContent.contactUsPage.deliveryLocations.length > 0) {

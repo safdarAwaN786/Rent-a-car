@@ -175,6 +175,7 @@ function App() {
           <Route path="/reservations-content" element={<Admin tab={'reservations-Content'} />} />
           <Route path="/terms&conditions-content" element={<Admin tab={'terms&Conditions-Content'} />} />
           <Route path="/contactus-content" element={<Admin tab={'contactUs-Content'} />} />
+          <Route path="/extras-content" element={<Admin tab={'extras-Content'} />} />
           <Route path="/privacy&cookies-content" element={<Admin tab={'privacy&Cookies-Content'} />} />
 
           <Route path="/complete-booking" element={<CompleteBooking />} />

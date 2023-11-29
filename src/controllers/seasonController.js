@@ -41,16 +41,13 @@ const updateSeason = async (req, res) => {
     try {
 
         console.log(req.body);
-        const updatedSeason = await Group.findByIdAndUpdate(req.body._id, req.body, {
+        const updatedSeason = await Season.findByIdAndUpdate(req.body._id, req.body, {
             new: true,
         });
-
-
         console.log(updatedSeason);
 
         res.status(200).send({
             status: true, message: "The Extra is Updated!", data: updatedSeason
-
         });
 
     } catch (error) {

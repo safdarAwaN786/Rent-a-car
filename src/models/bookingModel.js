@@ -50,11 +50,19 @@ const bookingSchema = new mongoose.Schema({
         type: String,
         required: true
      },
+     daysNumber: {
+        type: Number,
+        required: true
+     },
     status : {
         type : String,
         required : true,
         default : 'Not Confirmed',
         enum : ['Not Confirmed', 'Confirmed', 'Completed']
+    },
+    airPortFee : {
+        type : Number,
+        required : true
     },
     basicPrice: {
         type: Number,
