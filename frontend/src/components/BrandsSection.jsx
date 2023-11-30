@@ -30,9 +30,14 @@ export default function BrandsSection() {
                                         }} class="car-category text-center text-decoration-none">
                                                 <div style={{
                                                     height : '100px',
-                                                    width : '80%'
+                                                    width : '80%',
+                                                    overflow : 'hidden'
                                                 }} class="icon">
-                                                    <img className='h-100' src={brandObj.logoUrl} alt />
+                                                    <img style={{
+                                                        width : '100%',
+                                                        height : '100%',
+                                                        objectFit : 'contain'
+                                                    }} className='h-100' src={brandObj.logoUrl} alt />
                                                 </div>
                                                 <div class="content">
                                                     <h6>{brandObj.brandName}</h6>
