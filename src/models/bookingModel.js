@@ -52,7 +52,6 @@ const bookingSchema = new mongoose.Schema({
      },
      comment : {
         type : String,
-        required : true
      },
      daysNumber: {
         type: Number,

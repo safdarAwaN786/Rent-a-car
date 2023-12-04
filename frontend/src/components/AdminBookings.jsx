@@ -163,11 +163,11 @@ export default function AdminBookings() {
                         )}
                         <tr>
                           <th>Promo Discount</th>
-                          <td>€{Math.round(bookingToView.group[bookingToView.currentSeason][bookingToView.daysText] / 100) * (bookingToView.promoCode?.discountPercent || 0)}</td>
+                          <td>€{((bookingToView.group[bookingToView.currentSeason][bookingToView.daysText] / 100) * (bookingToView.promoCode?.discountPercent || 0)).toFixed(2)}</td>
                         </tr>
                         <tr>
                           <th>Total VAT added</th>
-                          <td>€{Math.round(bookingToView.group[bookingToView.currentSeason][bookingToView.daysText] / 100) * (bookingToView.vatValue)}</td>
+                          <td>€{((bookingToView.group[bookingToView.currentSeason][bookingToView.daysText] / 100) * (bookingToView.vatValue)).toFixed(2)}</td>
                         </tr>
                         <tr>
                           <th>Grand Total ({bookingToView.daysNumber}days)</th>

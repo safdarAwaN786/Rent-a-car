@@ -20,7 +20,7 @@ const addBooking = async (req, res) => {
     console.log(req.body);
     const group = await Group.findById(req.body.group);
     const vatedPrice = req.body.totalPrice + ((group[req.body.currentSeason][req.body.daysText] / 100) * vat[0].value)
-    const booking = new Booking({ ...req.body, netVatedTotal: Math.round(vatedPrice), vatValue: vat[0].value });
+    const booking = new Booking({ ...req.body, netVatedTotal: (parseFloat(vatedPrice)).toFixed(2), vatValue: vat[0].value });
     await booking.save();
     console.log(booking);
     res.status(200).send({
@@ -236,15 +236,15 @@ const confirmBooking = async (req, res) => {
               
                   <tr>
             <th>Promo Discount:</th>
-            <td>€${Math.round((booking.group[booking.currentSeason][booking.daysText] / 100) * (booking.promoCode?.discountPercent || 0))}</td>
+            <td>€${((parseFloat(booking.group[booking.currentSeason][booking.daysText] / 100)).toFixed(2) * (booking.promoCode?.discountPercent || 0))}</td>
         </tr>
               <tr>
               <th>Total VAT included:</th>
-              <td>€${Math.round((booking.group[booking.currentSeason][booking.daysText] / 100) * booking.vatValue)}</td>
+              <td>€${((parseFloast(booking.group[booking.currentSeason][booking.daysText] / 100) * booking.vatValue)).toFixed(2)}</td>
             </tr>
               <tr>
               <th>Grand Total(${numberOfDays}days):</th>
-              <td>€${Math.round(booking.netVatedTotal)}</td>
+              <td>€${(parseFloat(booking.netVatedTotal)).toFixed(2)}</td>
             </tr>
               </table >
 

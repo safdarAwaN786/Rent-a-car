@@ -57,11 +57,11 @@ export default function CompleteBooking() {
 
 
             basicPrice = basicPrice - ((selectedGroup[currentSeason][daysPrice] / 100) * promoCodeObj.discountPercent)
-            dispatch(updateBookingInfo({ ...bookingData, promoCode: promoCodeObj, basicPrice: Math.round(basicPrice) }))
+            dispatch(updateBookingInfo({ ...bookingData, promoCode: promoCodeObj, basicPrice: (basicPrice).toFixed(2) }))
         } else {
             if(selectedGroup && currentSeason && daysPrice && daysNumber && bookingData){
                 let basicPrice = selectedGroup[currentSeason][daysPrice] * daysNumber
-                dispatch(updateBookingInfo({ ...bookingData, basicPrice: Math.round(basicPrice), promoCode: null }));
+                dispatch(updateBookingInfo({ ...bookingData, basicPrice: (basicPrice).toFixed(2), promoCode: null }));
             }
         }
     }, [promoCodeObj])
@@ -70,13 +70,13 @@ export default function CompleteBooking() {
 
     useEffect(() => {
 
-        let totalPrice = bookingData?.basicPrice;
+        let totalPrice = parseFloat(bookingData?.basicPrice || 0);
         for (let i = 0; i < bookingData?.addedExtras?.length; i++) {
             const extraObj = bookingData.addedExtras[i];
             totalPrice += extraObj.price * extraObj.quantity;
         }
 
-        dispatch(updateBookingInfo({ ...bookingData, totalPrice: Math.round(totalPrice) }));
+        dispatch(updateBookingInfo({ ...bookingData, totalPrice: (totalPrice).toFixed(2) }));
     }, [bookingData?.basicPrice])
 
 
@@ -241,7 +241,7 @@ export default function CompleteBooking() {
 
                                                                     }
 
-                                                                    let totalPrice = bookingData?.basicPrice;
+                                                                    let totalPrice = parseFloat(bookingData?.basicPrice);
 
                                                                     for (let i = 0; i < updatedExtras.length; i++) {
                                                                         const extraObj = updatedExtras[i];
@@ -288,7 +288,7 @@ export default function CompleteBooking() {
 
                                                                     }
 
-                                                                    let totalPrice = bookingData?.basicPrice;
+                                                                    let totalPrice = parseFloat(bookingData?.basicPrice);
 
                                                                     for (let i = 0; i < updatedExtras.length; i++) {
                                                                         const extraObj = updatedExtras[i];
@@ -326,7 +326,7 @@ export default function CompleteBooking() {
                                                                         const extraFound = updatedExtras.find((extraObj) => extraObj.extraName === 'GPS');
                                                                         updatedExtras = updatedExtras.filter((extraObj) => extraObj !== extraFound);
                                                                     }
-                                                                    let totalPrice = bookingData?.basicPrice;
+                                                                    let totalPrice = parseFloat(bookingData?.basicPrice);
 
                                                                     for (let i = 0; i < updatedExtras.length; i++) {
                                                                         const extraObj = updatedExtras[i];
@@ -373,7 +373,7 @@ export default function CompleteBooking() {
                                                                         const extraFound = updatedExtras.find((extraObj) => extraObj.extraName === 'Baby Seat');
                                                                         updatedExtras = updatedExtras.filter((extraObj) => extraObj !== extraFound);
                                                                     }
-                                                                    let totalPrice = bookingData?.basicPrice;
+                                                                    let totalPrice = parseFloat(bookingData?.basicPrice);
 
                                                                     for (let i = 0; i < updatedExtras.length; i++) {
                                                                         const extraObj = updatedExtras[i];
@@ -408,7 +408,7 @@ export default function CompleteBooking() {
                                                                         const extraFound = updatedExtras.find((extraObj) => extraObj.extraName === 'Booster Seat');
                                                                         updatedExtras = updatedExtras.filter((extraObj) => extraObj !== extraFound);
                                                                     }
-                                                                    let totalPrice = bookingData?.basicPrice;
+                                                                    let totalPrice = parseFloat(bookingData?.basicPrice);
 
                                                                     for (let i = 0; i < updatedExtras.length; i++) {
                                                                         const extraObj = updatedExtras[i];
@@ -442,7 +442,7 @@ export default function CompleteBooking() {
                                                                         const extraFound = updatedExtras.find((extraObj) => extraObj.extraName === 'Roof Rack');
                                                                         updatedExtras = updatedExtras.filter((extraObj) => extraObj !== extraFound);
                                                                     }
-                                                                    let totalPrice = bookingData?.basicPrice;
+                                                                    let totalPrice = parseFloat(bookingData?.basicPrice);
 
                                                                     for (let i = 0; i < updatedExtras.length; i++) {
                                                                         const extraObj = updatedExtras[i];
@@ -485,7 +485,7 @@ export default function CompleteBooking() {
                                                                         const extraFound = updatedExtras.find((extraObj) => extraObj.extraName === 'Ski Rack');
                                                                         updatedExtras = updatedExtras.filter((extraObj) => extraObj !== extraFound);
                                                                     }
-                                                                    let totalPrice = bookingData?.basicPrice;
+                                                                    let totalPrice = parseFloat(bookingData?.basicPrice);
 
                                                                     for (let i = 0; i < updatedExtras.length; i++) {
                                                                         const extraObj = updatedExtras[i];
@@ -528,7 +528,7 @@ export default function CompleteBooking() {
                                                             <div class="col-6">
 
 
-                                                                <span>€{selectedGroup[currentSeason][daysPrice]} X {daysNumber}days = <b>{ }</b><strong>€{Math.round(selectedGroup[currentSeason][daysPrice] * daysNumber)}</strong></span>
+                                                                <span>€{selectedGroup[currentSeason][daysPrice]} X {daysNumber}days = <b>{ }</b><strong>€{(selectedGroup[currentSeason][daysPrice] * daysNumber).toFixed(2)}</strong></span>
 
                                                             </div>
 
@@ -625,7 +625,7 @@ export default function CompleteBooking() {
                                                                                                 : extraItem
                                                                                         );
 
-                                                                                        let totalPrice = bookingData?.basicPrice;
+                                                                                        let totalPrice = parseFloat(bookingData?.basicPrice);
 
                                                                                         for (let i = 0; i < updatedExtras.length; i++) {
                                                                                             const extraObj = updatedExtras[i];
@@ -661,7 +661,7 @@ export default function CompleteBooking() {
 
                                                                 </div>
                                                                 <div class="col-6">
-                                                                    <span className='fw-bold fs-5'>€ {bookingData?.totalPrice} </span>
+                                                                    <span className='fw-bold fs-5'>€ {(parseFloat(bookingData?.totalPrice)).toFixed(2)} </span>
 
                                                                 </div>
 
