@@ -309,6 +309,9 @@ export default function AdminPricing() {
                                     <form encType='multipart/form-data' onSubmit={(event) => {
                                         event.preventDefault();
                                         setEditingCode(true);
+                                        if(codeToProcess.startDate > codeToProcess.endDate){
+                                            toast.error('End Date should be later than start Date!')
+                                        }
                                         axios.patch(`/update-code`, codeToProcess)
                                             .then(response => {
                                                 console.log(response)
@@ -365,7 +368,7 @@ export default function AdminPricing() {
                                                 <div>
                                                     <input value={codeToProcess?.endDate} onChange={(e) => {
                                                         setCodeToProcess({ ...codeToProcess, [e.target.name]: e.target.value });
-                                                    }} name='endDate' type='date' className='p-1 mx-2 border border-secondary border-circle mb-1' required />
+                                                    }} min={codeToProcess.startDate} name='endDate' type='date' className='p-1 mx-2 border border-secondary border-circle mb-1' required />
 
                                                 </div>
                                             </div>

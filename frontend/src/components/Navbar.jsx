@@ -345,7 +345,7 @@ export default function Navbar() {
                                             signUpCloseButtonRef.current.click();
                                         }
                                         navigate('/terms-and-conditions');
-                                    }}>‘terms & conditons’</a></p>
+                                    }}>‘terms & conditions’</a></p>
                                 </div>
 
                             </form>
@@ -477,7 +477,7 @@ export default function Navbar() {
                                             signUpCloseButtonRef.current.click();
                                         }
                                         navigate('/terms-and-conditions');
-                                    }}>‘terms & conditons’</a></p>
+                                    }}>‘terms & conditions’</a></p>
                                 </div>
 
                             </form>

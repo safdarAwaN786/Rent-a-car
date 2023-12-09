@@ -31,37 +31,28 @@ export default function CompleteBooking() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const [gettingExtras, setGettingExtras] = useState(true);
-    const daysNumber = useSelector(state => state.numberOfDays?.number)
-
-   
-
 
     const currentSeason = useSelector(state => state.currentSeason)
-    const daysPrice = useSelector(state => state.numberOfDays?.priceText)
     const [promoCodeObj, setPromoCodeObj] = useState(null);
 
-
-    useEffect(()=>{
-        if(!daysPrice || !user || !loggedIn || !currentSeason || !selectedGroup || !bookingData || !daysNumber || !bookingSubmitted){
+    useEffect(() => {
+        if (!user || !loggedIn || !currentSeason || !selectedGroup || !bookingData || !bookingSubmitted) {
             navigate('/')
         }
     }, [])
 
     useEffect(() => {
-
-
-
         if (promoCodeObj) {
-
-            let basicPrice = bookingData.basicPrice;
-
-
-            basicPrice = basicPrice - ((selectedGroup[currentSeason][daysPrice] / 100) * promoCodeObj.discountPercent)
-            dispatch(updateBookingInfo({ ...bookingData, promoCode: promoCodeObj, basicPrice: (basicPrice).toFixed(2) }))
+            let priceToAside = bookingData?.airPortFee + bookingData?.vatValue
+            let basicPrice = bookingData.basicPrice - priceToAside;
+            let discountValue = (basicPrice / 100) * promoCodeObj.discountPercent
+            basicPrice = basicPrice - (discountValue)
+            dispatch(updateBookingInfo({ ...bookingData,promoDiscount : (discountValue),promoCode: promoCodeObj, basicPrice: (basicPrice + priceToAside) }))
         } else {
-            if(selectedGroup && currentSeason && daysPrice && daysNumber && bookingData){
-                let basicPrice = selectedGroup[currentSeason][daysPrice] * daysNumber
-                dispatch(updateBookingInfo({ ...bookingData, basicPrice: (basicPrice).toFixed(2), promoCode: null }));
+            if (selectedGroup && currentSeason && bookingData) {
+                console.log(bookingData);
+                let basicPrice = (selectedGroup['winterPrices'][bookingData?.days.winterBookingDays <= 6 ? '1to6daysPrice' : bookingData?.days.winterBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice'] * bookingData?.days.winterBookingDays) + (selectedGroup['summerPrices'][bookingData?.days.summerBookingDays <= 6 ? '1to6daysPrice' : bookingData?.days.summerBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice'] * bookingData?.days.summerBookingDays) + (selectedGroup['summerHighPrices'][bookingData?.days.summerHighBookingDays <= 6 ? '1to6daysPrice' : bookingData?.days.summerHighBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice'] * bookingData?.days.summerHighBookingDays);
+                dispatch(updateBookingInfo({ ...bookingData, basicPrice: (basicPrice + (bookingData?.airPortFee) + (bookingData?.vatValue)), promoCode: null, promoDiscount : 0 }));
             }
         }
     }, [promoCodeObj])
@@ -70,12 +61,11 @@ export default function CompleteBooking() {
 
     useEffect(() => {
 
-        let totalPrice = parseFloat(bookingData?.basicPrice || 0);
+        let totalPrice = parseFloat(bookingData?.basicPrice);
         for (let i = 0; i < bookingData?.addedExtras?.length; i++) {
             const extraObj = bookingData.addedExtras[i];
             totalPrice += extraObj.price * extraObj.quantity;
         }
-
         dispatch(updateBookingInfo({ ...bookingData, totalPrice: (totalPrice).toFixed(2) }));
     }, [bookingData?.basicPrice])
 
@@ -92,7 +82,6 @@ export default function CompleteBooking() {
     }
 
     const [codeValue, setCodeValue] = useState(null);
-
     const [extrasArr, setExtrasArr] = useState(null);
 
     useEffect(() => {
@@ -106,11 +95,9 @@ export default function CompleteBooking() {
     }, [])
     return (
         <>
-            {(currentSeason && daysNumber && daysPrice && bookingData && submitPreBooking && selectedGroup && user && loggedIn) && (
+            {(currentSeason && bookingData && submitPreBooking && selectedGroup && user && loggedIn) && (
                 <>
-
                     <Navbar />
-
                     <div class="inner-page-banner1 mt-5 pt-4">
                         <div class="banner-wrapper">
                             <div class="container-fluid">
@@ -122,9 +109,34 @@ export default function CompleteBooking() {
                                                 <div class="price-model-and-fav-area">
                                                     <div class="price-and-model">
                                                         <div class="price">
-                                                            {selectedGroup && (
 
-                                                                <h3>€{selectedGroup[currentSeason][daysPrice]}/day</h3>
+
+                                                            {currentSeason === 'winterPrices' && (
+                                                                <>
+                                                                    {bookingData?.days?.winterBookingDays > 0 ? (
+                                                                        <h3>€{selectedGroup[currentSeason][bookingData?.days?.winterBookingDays <= 6 ? '1to6daysPrice' : bookingData?.days?.winterBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice']}/ day</h3>
+                                                                    ) : (
+                                                                        <h3>€{selectedGroup[currentSeason]['1to6daysPrice']}/day</h3>
+                                                                    )}
+                                                                </>
+                                                            )}
+                                                            {currentSeason === 'summerPrices' && (
+                                                                <>
+                                                                    {bookingData?.days?.summerBookingDays > 0 ? (
+                                                                        <h3>€{selectedGroup[currentSeason][bookingData?.days?.summerBookingDays <= 6 ? '1to6daysPrice' : bookingData?.days?.summerBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice']}/ day</h3>
+                                                                    ) : (
+                                                                        <h3>€{selectedGroup[currentSeason]['1to6daysPrice']}/ day</h3>
+                                                                    )}
+                                                                </>
+                                                            )}
+                                                            {currentSeason === 'summerHighPrices' && (
+                                                                <>
+                                                                    {bookingData?.days?.summerHighBookingDays > 0 ? (
+                                                                        <h3>€{selectedGroup[currentSeason][bookingData?.days?.summerHighBookingDays <= 6 ? '1to6daysPrice' : bookingData?.days?.summerHighBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice']}/ day</h3>
+                                                                    ) : (
+                                                                        <h3>€{selectedGroup[currentSeason]['1to6daysPrice']}/ day</h3>
+                                                                    )}
+                                                                </>
                                                             )}
                                                         </div>
 
@@ -234,8 +246,6 @@ export default function CompleteBooking() {
                                                                         })
                                                                     } else {
                                                                         const extraFound = updatedExtras.find((extraObj) => extraObj.extraName === 'Super Collision Damage Waiver (SCDW)');
-
-
 
                                                                         updatedExtras = updatedExtras.filter((extraObj) => extraObj !== extraFound);
 
@@ -511,28 +521,55 @@ export default function CompleteBooking() {
                                                 <p></p>
                                             </div>
                                             <div>
-                                                <textarea value={bookingData?.comment} onChange={(e)=>{
-                                                    dispatch(updateBookingInfo({...bookingData, comment :  e.target.value}))
-                                                }} rows={2} className='border-circle w-100 p-1'  placeholder='Additional Comments'/>
+                                                <textarea value={bookingData?.comment} onChange={(e) => {
+                                                    dispatch(updateBookingInfo({ ...bookingData, comment: e.target.value }))
+                                                }} rows={2} className='border-circle w-100 p-1' placeholder='Additional Comments' />
                                             </div>
 
                                             <div class="product-widget mb-20">
                                                 <div class="check-box-item">
-                                                    <h6 class="product-widget-title mb-20"></h6>
+                                                    <h6 class="product-widget-title mb-20">Basic Rate</h6>
                                                     <div class="checkbox-container">
-                                                        <div class="row g-3">
-                                                            <div class="col-6">
-                                                                <li>
-                                                                    Basic Rate:</li>
+
+                                                        {bookingData?.days?.winterBookingDays > 0 && (
+                                                            <div class="row g-3">
+                                                                <div class="col-6">
+                                                                    <li>Winter Season:</li>
+                                                                </div>
+                                                                <div class="col-6">
+
+                                                                    <span>€{selectedGroup['winterPrices'][bookingData?.days.winterBookingDays <= 6 ? '1to6daysPrice' : bookingData?.days.winterBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice']} X {bookingData?.days.winterBookingDays}days = <b>{ }</b><strong>€{(selectedGroup['winterPrices'][bookingData?.days.winterBookingDays <= 6 ? '1to6daysPrice' : bookingData?.days.winterBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice'] * bookingData?.days.winterBookingDays).toFixed(2)}</strong></span>
+
+                                                                </div>
                                                             </div>
-                                                            <div class="col-6">
+                                                        )}
 
+                                                        {bookingData?.days?.summerBookingDays > 0 && (
+                                                            <div class="row g-3">
+                                                                <div class="col-6">
+                                                                    <li>Summer Season:</li>
+                                                                </div>
+                                                                <div class="col-6">
+                                                                    <span>€{selectedGroup['summerPrices'][bookingData?.days.summerBookingDays <= 6 ? '1to6daysPrice' : bookingData?.days.summerBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice']} X {bookingData?.days.summerBookingDays}days = <b>{ }</b><strong>€{(selectedGroup['summerPrices'][bookingData?.days.summerBookingDays <= 6 ? '1to6daysPrice' : bookingData?.days.summerBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice'] * bookingData?.days.summerBookingDays).toFixed(2)}</strong></span>
 
-                                                                <span>€{selectedGroup[currentSeason][daysPrice]} X {daysNumber}days = <b>{ }</b><strong>€{(selectedGroup[currentSeason][daysPrice] * daysNumber).toFixed(2)}</strong></span>
-
+                                                                </div>
                                                             </div>
+                                                        )}
 
-                                                        </div>
+                                                        {bookingData?.days?.summerHighBookingDays > 0 && (
+                                                            <div class="row g-3">
+                                                                <div class="col-6">
+                                                                    <li>Summer High:</li>
+                                                                </div>
+                                                                <div class="col-6">
+                                                                    <span>€{selectedGroup['summerHighPrices'][bookingData?.days.summerHighBookingDays <= 6 ? '1to6daysPrice' : bookingData?.days.summerHighBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice']} X {bookingData?.days.summerHighBookingDays}days = <b>{ }</b><strong>€{(selectedGroup['summerHighPrices'][bookingData?.days.summerHighBookingDays <= 6 ? '1to6daysPrice' : bookingData?.days.summerHighBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice'] * bookingData?.days.summerHighBookingDays).toFixed(2)}</strong></span>
+
+                                                                </div>
+                                                            </div>
+                                                        )}
+
+
+
                                                     </div>
 
                                                     <div class="form-inner mb-20">
@@ -590,6 +627,11 @@ export default function CompleteBooking() {
                                                     <div className='d-flex justify-content-between my-2'>
                                                         <span className=' fs-5'>Airport Fee : </span>
                                                         <span className=' fs-5'>€{bookingData?.airPortFee}</span>
+
+                                                    </div>
+                                                    <div className='d-flex justify-content-between my-2'>
+                                                        <span className=' fs-5'>VAT value : </span>
+                                                        <span className=' fs-5'>€{bookingData?.vatValue}</span>
 
                                                     </div>
                                                     <div class="checkbox-container">
@@ -675,7 +717,7 @@ export default function CompleteBooking() {
                                                     <div class="form-inner">
                                                         <button onClick={() => {
                                                             setMakingBooking(true);
-                                                            axios.post('/add-booking', bookingData).then((res) => {
+                                                            axios.post(`/add-booking`, bookingData).then((res) => {
                                                                 toast.success('Booking Made Successfully!');
                                                                 setMakingBooking(false);
                                                                 // Adding a 3-second delay before navigating to '/'

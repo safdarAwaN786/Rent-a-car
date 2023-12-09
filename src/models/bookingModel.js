@@ -42,30 +42,27 @@ const bookingSchema = new mongoose.Schema({
     promoCode: {
         type: Object
     },
-    currentSeason: {
+    promoDiscount : {
+        type : Number,
+        required : true,
+        default : 0
+    },
+    comment: {
         type: String,
+    },
+    days: {
+        type: Object,
         required: true
-     },
-     daysText: {
+    },
+    status: {
         type: String,
-        required: true
-     },
-     comment : {
-        type : String,
-     },
-     daysNumber: {
+        required: true,
+        default: 'Not Confirmed',
+        enum: ['Not Confirmed', 'Confirmed', 'Completed']
+    },
+    airPortFee: {
         type: Number,
         required: true
-     },
-    status : {
-        type : String,
-        required : true,
-        default : 'Not Confirmed',
-        enum : ['Not Confirmed', 'Confirmed', 'Completed']
-    },
-    airPortFee : {
-        type : Number,
-        required : true
     },
     basicPrice: {
         type: Number,
@@ -75,18 +72,14 @@ const bookingSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
-    netVatedTotal: {
-        type: Number,
-        required : true
-    },
-    bookingDate : {
-        type : Date,
-        required : true,
-        default : new Date()
+    bookingDate: {
+        type: Date,
+        required: true,
+        default: new Date()
     },
     vatValue: {
-        type : Number,
-        required : true
+        type: Number,
+        required: true
     }
 
 })

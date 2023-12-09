@@ -5,27 +5,46 @@ import { useNavigate } from "react-router-dom"
 import { toast } from 'react-toastify';
 import { useDispatch, useSelector } from 'react-redux';
 import { clearPreSubmission, submitPreBooking, updateBookingInfo } from '../redux/slices/bookingSlices';
-import { setNumberOfDays } from '../redux/slices/daysNumberSlice';
+import { setBookingDays } from '../redux/slices/bookingDaysSlice';
+import axios from 'axios';
 
 
 export default function MainSection() {
 
+    useEffect(() => {
+        axios.get("/get-vat").then((response) => {
+            dispatch(updateBookingInfo({ ...bookingData, vatPercent: response.data[0].value }))
+        }).catch((e) => {
+            updateVat();
+        })
+    }, [])
+    const updateVat = () => {
+        axios.get("/get-vat").then((response) => {
+            dispatch(updateBookingInfo({ ...bookingData, vatPercent: response.data[0].value }))
+        })
+    }
     const [customPickUp, setCustomPickUp] = useState(false);
     const [customDropOff, setCustomDropOff] = useState(false);
-
     const loggedIn = useSelector(state => state.auth.loggedIn);
     const user = useSelector(state => state.auth.user);
     const dispatch = useDispatch();
-
-    const bookingSubmitted = useSelector(state => state.booking.isBookingSubmitted);
     const bookingData = useSelector(state => state.booking.bookingData);
     const landingPageContent = useSelector(state => state.webContent?.landingPage);
-
+    const allSeasons = useSelector(state => state.allSeasons);
     const updateBookingData = (e) => {
         dispatch(updateBookingInfo({ ...bookingData, [e.target.name]: e.target.value }));
     }
+    const getDateRangeArray = (startDate, endDate) => {
+        const dateArray = [];
+        let lastDate = new Date(endDate);
+        let currentDate = new Date(startDate);
 
-
+        while (currentDate < lastDate) {
+            dateArray.push(new Date(currentDate));
+            currentDate.setDate(currentDate.getDate() + 1);
+        }
+        return dateArray;
+    };
 
     const navigate = useNavigate()
     const locations = [
@@ -41,7 +60,8 @@ export default function MainSection() {
     return (
         <>
             <div style={{
-                backgroundImage: `linear-gradient(180deg, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.15) 100%), url(${landingPageContent?.backgroundImageUrl})`
+                backgroundImage: `linear-gradient(180deg, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.15) 100%), url(${landingPageContent?.backgroundImageUrl})`,
+                height: '100vh'
             }} class="banner-section2">
                 <div class="">
                     <div class=" mx-5">
@@ -74,19 +94,45 @@ export default function MainSection() {
                                             return toast.warning('Booking cannot be made within 48 hours before pick Up!');
                                         }
 
-                                        const timeDiff = Math.abs(new Date(dropOffDate).getTime() - new Date(pickUpDate).getTime());
+                                        let bookingDatesArr;
+                                        let winterBookingDays = 0;
+                                        let summerBookingDays = 0;
+                                        let summerHighBookingDays = 0;
+                                        let basicPrice;
 
-                                        // Check if drop-off time is greater than pick-up time + 2 hours
                                         if (dropOffDate !== pickUpDate && dropoffDateTime.getHours() >= (pickupDateTime.getHours() + 2)) {
-                                            const numberOfDays = Math.ceil((timeDiff / (1000 * 3600 * 24)) + 1);
-                                            dispatch(setNumberOfDays({ number: numberOfDays, priceText: numberOfDays <= 6 ? '1to6daysPrice' : numberOfDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice' }));
-                                        } else if (dropOffDate === pickUpDate) {
-                                            const numberOfDays = 1;
-                                            dispatch(setNumberOfDays({ number: numberOfDays, priceText: numberOfDays <= 6 ? '1to6daysPrice' : numberOfDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice' }));
+                                            const newDropOffDate = new Date(dropOffDate);
+                                            newDropOffDate.setDate(newDropOffDate.getDate() + 1);
+                                            bookingDatesArr = getDateRangeArray(pickUpDate, newDropOffDate)
+                                        } else if (pickUpDate === dropOffDate) {
+                                            bookingDatesArr = [new Date(pickUpDate)]
                                         } else {
-                                            const numberOfDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
-                                            dispatch(setNumberOfDays({ number: numberOfDays, priceText: numberOfDays <= 6 ? '1to6daysPrice' : numberOfDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice' }));
+                                            bookingDatesArr = getDateRangeArray(pickUpDate, dropOffDate)
                                         }
+
+
+                                        console.log(bookingDatesArr)
+                                        bookingDatesArr?.map((date, index) => {
+                                            if (date >= new Date(allSeasons.winterSeason.startDate) && date <= new Date(allSeasons.winterSeason.endDate)) {
+                                                console.log('In winter' + date);
+                                                winterBookingDays += 1;
+                                            } else if (date >= new Date(allSeasons.summerSeason.startDate) && date <= new Date(allSeasons.summerSeason.endDate)) {
+                                                console.log('In summer' + date);
+                                                summerBookingDays += 1
+                                            } else if (date >= new Date(allSeasons.summerHighSeason.startDate) && date <= new Date(allSeasons.summerHighSeason.endDate)) {
+                                                console.log('In summer High' + date);
+                                                summerHighBookingDays += 1;
+                                            } else {
+                                                console.log('Not in any season' + date)
+                                            }
+                                        })
+
+                                        axios.get("/get-vat").then((response) => {
+                                            dispatch(updateBookingInfo({ ...bookingData, vatPercent: response.data[0].value }))
+                                        }).catch((e) => {
+                                            updateVat();
+                                        })
+                                        dispatch(setBookingDays({ winterBookingDays, summerBookingDays, summerHighBookingDays }));
 
                                         dispatch(submitPreBooking());
                                         navigate('/vehicle-guide');
@@ -96,7 +142,6 @@ export default function MainSection() {
 
                                     <div class="d-flex flex-row flex-wrap">
                                         <div class="m-2">
-
                                             <div style={{
                                                 width: '200px'
                                             }} class="form-inner d-flex flex-column">
@@ -106,8 +151,6 @@ export default function MainSection() {
                                                         updateBookingData(e);
                                                     }} type='text' placeholder='Provide Your Location' className="form-control" name='pickUpLocation' required />
                                                 ) : (
-
-
                                                     <Select value={bookingData?.pickUpLocation} onChange={(value) => {
                                                         if (value != 'Custom Location') {
                                                             if (value === 'Larnaka Airport' || value === 'Pafos Airport') {
@@ -115,12 +158,9 @@ export default function MainSection() {
                                                             } else {
                                                                 dispatch(updateBookingInfo({ ...bookingData, pickUpLocation: value, airPortFee: 0 }))
                                                             }
-
                                                         } else {
-
                                                             setCustomPickUp(true);
                                                         }
-
                                                     }} options={locations} required />
                                                 )}
                                             </div>
@@ -131,12 +171,8 @@ export default function MainSection() {
                                                     <label for="date-1696006456045" class="formbuilder-date-label">Pick-up
                                                         Date</label>
                                                     <input min={new Date().toISOString().split('T')[0]} value={bookingData?.pickUpDate} onChange={(e) => {
-
-
                                                         updateBookingData(e);
-
-                                                    }} name='pickUpDate' type="date" class="form-control"
-                                                        access="false" id="date-1696006456045" required />
+                                                    }} name='pickUpDate' type="date" class="form-control" required />
                                                 </div>
                                             </div>
                                         </div>
@@ -151,8 +187,7 @@ export default function MainSection() {
 
                                                         updateBookingData(e);
 
-                                                    }} type="time" class="form-control" name="pickUpTime"
-                                                        access="false" id="date-1696006456045" required />
+                                                    }} type="time" class="form-control" name="pickUpTime" required />
                                                 </div>
                                             </div>
 
@@ -164,26 +199,16 @@ export default function MainSection() {
                                                 <label for="pickup-location">Drop-Off location</label>
                                                 {customDropOff ? (
                                                     <input value={bookingData?.dropOffLocation} onChange={(e) => {
-
-
                                                         updateBookingData(e);
-
                                                     }} type='text' placeholder='Provide Your Location' className="form-control" name='dropOffLocation' required />
-
                                                 ) : (
-
                                                     <Select value={bookingData?.dropOffLocation} onChange={(value) => {
                                                         // selected is now defined in the scope of this function
-
-
                                                         if (value != 'Custom Location') {
                                                             dispatch(updateBookingInfo({ ...bookingData, dropOffLocation: value }));
-
                                                         } else {
-
                                                             setCustomDropOff(true);
                                                         }
-
                                                     }} options={locations} required />
                                                 )}
                                             </div>
@@ -195,8 +220,7 @@ export default function MainSection() {
                                                         date</label>
                                                     <input min={bookingData?.pickUpDate ? (new Date(bookingData?.pickUpDate).toISOString().split('T')[0]) : (new Date().toISOString().split('T')[0])} value={bookingData?.dropOffDate} onChange={(e) => {
                                                         updateBookingData(e);
-                                                    }} type="date" class="form-control" name="dropOffDate"
-                                                        access="false" id="date-1696006456045" required />
+                                                    }} type="date" class="form-control" name="dropOffDate" required />
                                                 </div>
                                             </div>
                                         </div>
@@ -207,15 +231,10 @@ export default function MainSection() {
                                                         Drop-off Time</label>
                                                     <input value={bookingData?.dropOffTime} onChange={(e) => {
                                                         updateBookingData(e);
-                                                    }} type="time" class="form-control" name="dropOffTime"
-                                                        access="false" id="date-1696006456045" required />
+                                                    }} type="time" class="form-control" name="dropOffTime" required />
                                                 </div>
                                             </div>
-
                                         </div>
-
-
-
                                         <div className='mt-3'>
                                             <div class="form-inner m-2">
                                                 <button class="primary-btn3" type="submit">

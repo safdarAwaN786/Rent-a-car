@@ -2,7 +2,8 @@ import { configureStore } from '@reduxjs/toolkit';
 import   authReducer  from './slices/authSlice';
 import { bookingReducers, groupReducer } from './slices/bookingSlices';
 import seasonReducer from './slices/seasonSlice';
-import daysReducer from './slices/daysNumberSlice';
+import {allSeasonsReducer} from './slices/seasonSlice';
+import daysReducer from './slices/bookingDaysSlice';
 import webContentReducer from './slices/webContentSlice';
 
 export const store = configureStore({
@@ -11,7 +12,8 @@ export const store = configureStore({
     booking : bookingReducers,
     group : groupReducer,
     currentSeason : seasonReducer,
-    numberOfDays : daysReducer,
-    webContent : webContentReducer
+    bookingDays : daysReducer,
+    webContent : webContentReducer,
+    allSeasons : allSeasonsReducer
   },
 })

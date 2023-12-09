@@ -9,10 +9,7 @@ import { useSelector } from 'react-redux';
 
 export default function ProductsSection() {
     const [allDataArr, setAllDataArr] = useState(null);
-
     const [groupsList, setGroupsList] = useState(null);
-
-
 
     const reGetData = ()=>{
         axios.get('/read-groups').then((res) => {
@@ -24,8 +21,6 @@ export default function ProductsSection() {
             toast.error('Error, Please Refresh!')
         })
     }
-
-
 
     useEffect(() => {
         axios.get('/read-groups').then((res) => {
@@ -62,6 +57,7 @@ export default function ProductsSection() {
     const sixPassengers = allDataArr?.filter(groupObj => groupObj.seats == 6);
     const sevenPassengers = allDataArr?.filter(groupObj => groupObj.seats == 7);
     const eightPassengers = allDataArr?.filter(groupObj => groupObj.seats == 8);
+    const ninePassengers = allDataArr?.filter(groupObj => groupObj.seats == 9);
 
     const [groupCategory, setGroupCategory] = useState(null);
     const [transmissionType, setTransmissionType] = useState(null);
@@ -485,6 +481,16 @@ export default function ProductsSection() {
                                                     <li>
                                                         <label class="containerss">
                                                             <input onChange={(e) => {
+                                                                noOfPassengersFilter(e);
+                                                            }} value={9} className='filterInput' type="radio" name='passengers' />
+
+                                                            <span class="text">9</span>
+                                                            <span class="qty">({ninePassengers?.length})</span>
+                                                        </label>
+                                                    </li>
+                                                    <li>
+                                                        <label class="containerss">
+                                                            <input onChange={(e) => {
                                                                 if (e.target.checked) {
                                                                     setNoOfPassengers(null);
 
@@ -575,7 +581,7 @@ export default function ProductsSection() {
                                                 if (daysPrice) {
                                                     return a[currentSeason][daysPrice] - b[currentSeason][daysPrice];
                                                 }
-                                                return a[currentSeason]['1to2daysPrice'] - b[currentSeason]['1to2daysPrice'];
+                                                return a[currentSeason]['1to6daysPrice'] - b[currentSeason]['1to6daysPrice'];
                                             }).map((groupObj) => {
 
                                                 return (

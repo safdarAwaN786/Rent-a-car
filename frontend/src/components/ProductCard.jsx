@@ -12,21 +12,34 @@ import ACImg from '../assets/img/home4/icon/Resized_svg (9).svg'
 import { toast } from 'react-toastify'
 import { useDispatch, useSelector } from 'react-redux'
 import { selectGroup, selectVehicle, updateBookingInfo } from '../redux/slices/bookingSlices'
-import { setNumberOfDays } from '../redux/slices/daysNumberSlice'
+import { setBookingDays } from '../redux/slices/bookingDaysSlice'
 
 export default function ProductCard({ gridView, groupData }) {
-
+    
     const bookingSubmitted = useSelector(state => state.booking.isBookingSubmitted);
     const loggedIn = useSelector(state => state.auth.loggedIn);
     const user = useSelector(state => state.auth.user);
     const navigate = useNavigate();
     const bookingData = useSelector(state => state.booking.bookingData);
     const dispatch = useDispatch()
-    const numberOfDays = useSelector(state => state.numberOfDays?.number);
-    const daysPrice = useSelector(state => state.numberOfDays?.priceText);
+    const allSeasons = useSelector(state => state.allSeasons);
+    const bookingDays = useSelector(state => state.bookingDays);
     const currentSeason = useSelector(state => state.currentSeason);
+    const getDateRangeArray = (startDate, endDate) => {
+        const dateArray = [];
+        let lastDate = new Date(endDate);
+        let currentDate = new Date(startDate);
+
+        while (currentDate < lastDate) {
+            dateArray.push(new Date(currentDate));
+            currentDate.setDate(currentDate.getDate() + 1);
+        }
+        return dateArray;
+    };
+    
     console.log(currentSeason);
-    console.log(daysPrice);
+    console.log(bookingDays);
+    console.log(groupData);
     return (
         <div class={`product-card ${gridView ? 'gridView' : 'd-flex flex-row columnView'} `}>
             <div class="product-img">
@@ -54,8 +67,33 @@ export default function ProductCard({ gridView, groupData }) {
                 <h5><a className='text-decoration-none cursor-pointer' ><b>{groupData?.vehicleName}</b> | or similar</a></h5>
                 <div class="price-location">
                     <div class="price">
-
-                        <strong>€{daysPrice ? groupData[currentSeason][daysPrice] : groupData[currentSeason]['1to6daysPrice']} per day</strong>
+                        {currentSeason === 'winterPrices' && (
+                            <>
+                                {bookingDays?.winterBookingDays > 0 ? (
+                                    <strong>€{groupData[currentSeason][bookingDays?.winterBookingDays <= 6 ? '1to6daysPrice' : bookingDays?.winterBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice']} per day</strong>
+                                ) : (
+                                    <strong>€{groupData[currentSeason]['1to6daysPrice']} per day</strong>
+                                )}
+                            </>
+                        )}
+                        {currentSeason === 'summerPrices' && (
+                            <>
+                                {bookingDays?.summerBookingDays > 0 ? (
+                                    <strong>€{groupData[currentSeason][bookingDays?.summerBookingDays <= 6 ? '1to6daysPrice' : bookingDays?.summerBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice']} per day</strong>
+                                ) : (
+                                    <strong>€{groupData[currentSeason]['1to6daysPrice']} per day</strong>
+                                )}
+                            </>
+                        )}
+                        {currentSeason === 'summerHighPrices' && (
+                            <>
+                                {bookingDays?.summerHighBookingDays > 0 ? (
+                                    <strong>€{groupData[currentSeason][bookingDays?.summerHighBookingDays <= 6 ? '1to6daysPrice' : bookingDays?.summerHighBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice']} per day</strong>
+                                ) : (
+                                    <strong>€{groupData[currentSeason]['1to6daysPrice']} per day</strong>
+                                )}
+                            </>
+                        )}
                     </div>
 
                 </div>
@@ -117,8 +155,6 @@ export default function ProductCard({ gridView, groupData }) {
                                     return toast.warning('Please Provide Pick Off Date!');
                                 }
 
-
-
                                 const pickupDateTime = new Date(`${pickUpDate}T${pickUpTime}`);
                                 const dropoffDateTime = new Date(`${dropOffDate}T${dropOffTime}`);
                                 const currentDate = new Date();
@@ -132,27 +168,53 @@ export default function ProductCard({ gridView, groupData }) {
                                 if (hoursDifference <= 48) {
                                     return toast.warning('Booking cannot be made within 48 hours before pick Up!');
                                 }
-
-                                const timeDiff = Math.abs(new Date(dropOffDate).getTime() - new Date(pickUpDate).getTime());
+                                let bookingDatesArr;
+                                let winterBookingDays = 0;
+                                let summerBookingDays = 0;
+                                let summerHighBookingDays = 0;
+                                let basicPrice;
 
                                 if (dropOffDate !== pickUpDate && dropoffDateTime.getHours() >= (pickupDateTime.getHours() + 2)) {
-                                    const numberOfDays = Math.ceil((timeDiff / (1000 * 3600 * 24)) + 1);
-                                    dispatch(setNumberOfDays({ number: numberOfDays, priceText: numberOfDays <= 6 ? '1to6daysPrice' : numberOfDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice' }));
-                                } else if (dropOffDate === pickUpDate) {
-                                    const numberOfDays = 1;
-                                    dispatch(setNumberOfDays({ number: numberOfDays, priceText: numberOfDays <= 6 ? '1to6daysPrice' : numberOfDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice' }));
+                                    const newDropOffDate = new Date(dropOffDate);
+                                    newDropOffDate.setDate(newDropOffDate.getDate() + 1);
+                                    bookingDatesArr = getDateRangeArray(pickUpDate, newDropOffDate)
+                                } else if (pickUpDate === dropOffDate) {
+                                    bookingDatesArr = [new Date(pickUpDate)]
                                 } else {
-                                    const numberOfDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
-                                    dispatch(setNumberOfDays({ number: numberOfDays, priceText: numberOfDays <= 6 ? '1to6daysPrice' : numberOfDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice' }));
+                                    bookingDatesArr = getDateRangeArray(pickUpDate, dropOffDate)
                                 }
 
-                                console.log('correct');
-                                dispatch(updateBookingInfo({ ...bookingData, group: groupData._id, basicPrice: ((groupData[currentSeason][daysPrice] * numberOfDays) + bookingData?.airPortFee), currentSeason: currentSeason, daysText: daysPrice, daysNumber: numberOfDays, user: user._id }))
+
+                                console.log(bookingDatesArr)
+                                bookingDatesArr?.map((date, index) => {
+                                    if (date >= new Date(allSeasons.winterSeason.startDate) && date <= new Date(allSeasons.winterSeason.endDate)) {
+                                        console.log('In winter' + date);
+                                        winterBookingDays += 1;
+                                    } else if (date >= new Date(allSeasons.summerSeason.startDate) && date <= new Date(allSeasons.summerSeason.endDate)) {
+                                        console.log('In summer' + date);
+                                        summerBookingDays += 1
+                                    } else if (date >= new Date(allSeasons.summerHighSeason.startDate) && date <= new Date(allSeasons.summerHighSeason.endDate)) {
+                                        console.log('In summer High' + date);
+                                        summerHighBookingDays += 1;
+                                    } else {
+                                        console.log('Not in any season' + date)
+                                    }
+                                })
+
+                               
+                                dispatch(setBookingDays({ winterBookingDays, summerBookingDays, summerHighBookingDays }));
+
+                                basicPrice = (groupData['winterPrices'][winterBookingDays <= 6 ? '1to6daysPrice' : winterBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice'] * winterBookingDays) + (groupData['summerPrices'][summerBookingDays <= 6 ? '1to6daysPrice' : summerBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice'] * summerBookingDays) + (groupData['summerHighPrices'][summerHighBookingDays <= 6 ? '1to6daysPrice' : summerHighBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice'] * summerHighBookingDays)
+
+
+                                
+
+                               
+                                dispatch(updateBookingInfo({ ...bookingData, group: groupData._id, basicPrice: (basicPrice + bookingData?.airPortFee + ((basicPrice/100) * bookingData?.vatPercent)).toFixed(2), vatValue : Number(((basicPrice / 100) * bookingData?.vatPercent).toFixed(2)), days: { winterBookingDays, summerBookingDays, summerHighBookingDays }, user: user._id }))
                                 dispatch(selectGroup(groupData));
                                 navigate('/complete-booking');
                             } else {
                                 dispatch(updateBookingInfo({ ...bookingData, user: user._id }))
-                                dispatch(selectGroup(groupData));
                                 navigate('/');
                             }
 

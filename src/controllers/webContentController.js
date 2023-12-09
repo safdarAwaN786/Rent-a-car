@@ -74,7 +74,7 @@ const updateContent = async (req, res) => {
 }
 const getContent = async (req, res) => {
     try {
-
+        console.log('Request for getting content');
         const content = await Content.findOne();
 
         res.status(200).send({ status: true, message: "The Web Content is !", data: content });

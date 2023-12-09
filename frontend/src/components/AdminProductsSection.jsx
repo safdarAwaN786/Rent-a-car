@@ -81,6 +81,7 @@ export default function AdminProductsSection() {
     const sixPassengers = allDataArr?.filter(groupObj => groupObj.seats == 6);
     const sevenPassengers = allDataArr?.filter(groupObj => groupObj.seats == 7);
     const eightPassengers = allDataArr?.filter(groupObj => groupObj.seats == 8);
+    const ninePassengers = allDataArr?.filter(groupObj => groupObj.seats == 9);
 
     const [groupCategory, setGroupCategory] = useState(null);
     const [transmissionType, setTransmissionType] = useState(null);
@@ -398,6 +399,7 @@ export default function AdminProductsSection() {
                                                     { value: 6, label: <div>6</div> },
                                                     { value: 7, label: <div>7</div> },
                                                     { value: 8, label: <div>8</div> },
+                                                    { value: 9, label: <div>9</div> },
                                                 ]} />
 
                                                 <label className='mt-1'>Big Luggage :</label>
@@ -716,6 +718,15 @@ export default function AdminProductsSection() {
                                                     <li>
                                                         <label class="containerss">
                                                             <input onChange={(e) => {
+                                                                noOfPassengersFilter(e);
+                                                            }} value={9} className='filterInput' type="radio" name='passengers' />
+                                                            <span class="text">9</span>
+                                                            <span class="qty">({ninePassengers?.length})</span>
+                                                        </label>
+                                                    </li>
+                                                    <li>
+                                                        <label class="containerss">
+                                                            <input onChange={(e) => {
                                                                 if (e.target.checked) {
                                                                     setNoOfPassengers(null);
 
@@ -801,9 +812,9 @@ export default function AdminProductsSection() {
 
                                             {groupsList?.sort((a, b) => {
                                                 if (currentSeason) {
-                                                    return a[currentSeason]['1to2daysPrice'] - b[currentSeason]['1to2daysPrice'];
+                                                    return a[currentSeason]['1to6daysPrice'] - b[currentSeason]['1to6daysPrice'];
                                                 }
-                                                return a.winterSeason['1to2daysPrice'] - b.winterSeason['1to2daysPrice'];
+                                                return a.winterSeason['1to6daysPrice'] - b.winterSeason['1to6daysPrice'];
                                             }).map((groupObj) => {
                                                 return (
                                                     <div class={`${gridView ? 'col-lg-6 col-md-6 col-sm-12' : 'col-12'}  wow fadeInUp item`}>

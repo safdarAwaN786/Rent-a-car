@@ -27,5 +27,5 @@ const promoCodeSchema = new mongoose.Schema({
     }
 })
 
-const promoCode = new mongoose.model('promoCode', promoCodeSchema);
-module.exports = promoCode;
+const PromoCode = new mongoose.model('promoCode', promoCodeSchema);
+module.exports = PromoCode;

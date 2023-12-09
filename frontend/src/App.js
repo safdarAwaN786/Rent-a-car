@@ -19,7 +19,7 @@ import Admin from './pages/Admin';
 import CompleteBooking from './pages/CompleteBooking';
 import { useDispatch, useSelector } from 'react-redux';
 import { logInUser } from './redux/slices/authSlice';
-import { setCurrentSeason } from './redux/slices/seasonSlice';
+import { setAllSeasons, setCurrentSeason } from './redux/slices/seasonSlice';
 import { setWebContent } from './redux/slices/webContentSlice';
 import { toast } from 'react-toastify';
 import ChangePassword from './pages/ChangePassword';
@@ -69,7 +69,6 @@ function App() {
   const reGetContent = () => {
     axios.get('/read-content').then((response) => {
       dispatch(setWebContent(response.data.data))
-
     }).catch((e) => {
       console.log(e);
       toast.error('Server Error, Try Reload!')
@@ -84,17 +83,30 @@ function App() {
       const currentDate = new Date(); // Current date
 
       let currentSeason = null;
-
+      let winterSeason;
+      let summerSeason;
+      let summerHighSeason;
       // Loop through the seasons and check if the current date falls within any season
       for (let i = 0; i < seasons.length; i++) {
         const startDate = new Date(seasons[i].startDate);
         const endDate = new Date(seasons[i].endDate);
-
         if (currentDate >= startDate && currentDate <= endDate) {
           currentSeason = seasons[i].seasonName;
           break;
         }
       }
+      for (let i = 0; i < seasons.length; i++) {
+
+        if (seasons[i].seasonName === 'Winter') {
+          winterSeason = seasons[i]
+        } else if (seasons[i].seasonName === 'Summer') {
+          summerSeason = seasons[i]
+        } else {
+          summerHighSeason = seasons[i]
+        }
+      }
+
+      dispatch(setAllSeasons({ winterSeason, summerSeason, summerHighSeason }))
 
       // Output the current season
       if (currentSeason) {
@@ -143,7 +155,7 @@ function App() {
   return (
     <Router>
       <div className="App">
-      
+
         <Routes>
 
 

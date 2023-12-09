@@ -61,25 +61,17 @@ export default function AdminBookings() {
           {viewBooking && (
             <div className='addProductBox justify-content-center pt-5  '>
               <div className='formBox border-circle  mt-5 pt-4 '>
-
-
                 <div data-aos="fade-down" className=' mb-3 myBox mx-auto border-circle p-3'>
                   <div className='d-flex justify-content-end'>
-
                     <AiOutlineCloseSquare className='cursor-pointer fs-4' onClick={() => {
                       setViewBooking(false);
                       setBookingToView(null);
                     }} />
                   </div>
-
-
                   <h1 className='text-center fs-4'>Booking Information</h1>
                   <div className='table-Cover'>
-
                     <table class="table infoTable table-striped table-bordered">
-
                       <tbody>
-
                         <tr>
                           <th>User Name</th>
                           <td>{bookingToView.user.firstName} {bookingToView.user.lastName}</td>
@@ -136,18 +128,28 @@ export default function AdminBookings() {
                     </table>
 
                   </div>
-
-
                   <h4 className='text-center my-2'>Prices</h4>
                   <div className='table-Cover'>
-
                     <table class="table infoTable table-striped table-bordered">
                       <tbody>
-
-                        <tr>
-                          <th>Vehicle Price</th>
-                          <td>€{bookingToView.group[bookingToView.currentSeason][bookingToView.daysText]}</td>
-                        </tr>
+                        {bookingToView?.days.winterBookingDays > 0 && (
+                          <tr>
+                            <th>Winter Basic Price</th>
+                            <td>€{bookingToView.group['winterPrices'][bookingToView.days.winterBookingDays <= 6 ? '1to6daysPrice' : bookingToView.days.winterBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice']} X {bookingToView.days.winterBookingDays} = {(bookingToView.group['winterPrices'][bookingToView.days.winterBookingDays <= 6 ? '1to6daysPrice' : bookingToView.days.winterBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice'] * bookingToView.days.winterBookingDays).toFixed(2)}</td>
+                          </tr>
+                        )}
+                        {bookingToView?.days.summerBookingDays > 0 && (
+                          <tr>
+                            <th>Summer Basic Price</th>
+                            <td>€{bookingToView.group['summerPrices'][bookingToView.days.summerBookingDays <= 6 ? '1to6daysPrice' : bookingToView.days.summerBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice']} X {bookingToView.days.summerBookingDays} = {(bookingToView.group['summerPrices'][bookingToView.days.summerBookingDays <= 6 ? '1to6daysPrice' : bookingToView.days.summerBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice'] * bookingToView.days.summerBookingDays).toFixed(2)}</td>
+                          </tr>
+                        )}
+                        {bookingToView?.days.summerHighBookingDays > 0 && (
+                          <tr>
+                            <th>Summer High Basic Price</th>
+                            <td>€{bookingToView.group['summerHighPrices'][bookingToView.days.summerHighBookingDays <= 6 ? '1to6daysPrice' : bookingToView.days.summerHighBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice']} X {bookingToView.days.summerHighBookingDays} = {(bookingToView.group['summerHighPrices'][bookingToView.days.summerHighBookingDays <= 6 ? '1to6daysPrice' : bookingToView.days.summerHighBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice'] * bookingToView.days.summerHighBookingDays).toFixed(2)}</td>
+                          </tr>
+                        )}
                         <tr>
                           <th>Airport Fee</th>
                           <td>€{bookingToView.airPortFee}</td>
@@ -158,22 +160,20 @@ export default function AdminBookings() {
                               <th>{extraObj.extraName} </th>
                               <td>€{extraObj.price} X {extraObj.quantity}</td>
                             </tr>
-                          )
-                        }
+                          )}
                         )}
                         <tr>
                           <th>Promo Discount</th>
-                          <td>€{((bookingToView.group[bookingToView.currentSeason][bookingToView.daysText] / 100) * (bookingToView.promoCode?.discountPercent || 0)).toFixed(2)}</td>
+                          <td>€{(bookingToView.promoDiscount).toFixed(2)}</td>
                         </tr>
                         <tr>
                           <th>Total VAT added</th>
-                          <td>€{((bookingToView.group[bookingToView.currentSeason][bookingToView.daysText] / 100) * (bookingToView.vatValue)).toFixed(2)}</td>
+                          <td>€{(bookingToView.vatValue).toFixed(2)}</td>
                         </tr>
                         <tr>
-                          <th>Grand Total ({bookingToView.daysNumber}days)</th>
-                          <td>€{bookingToView.netVatedTotal}</td>
+                          <th>Grand Total ({bookingToView.days.winterBookingDays + bookingToView.days.summerBookingDays + bookingToView.days.summerHighBookingDays}days)</th>
+                          <td>€{(bookingToView.totalPrice).toFixed(2)}</td>
                         </tr>
-
                       </tbody>
                     </table>
                   </div>

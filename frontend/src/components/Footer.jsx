@@ -19,7 +19,7 @@ export default function Footer() {
                                     </div>
                                     <div class="menu-container">
                                         <ul>
-                                            <li><a className='text-decoration-none' onClick={()=>{
+                                            <li><a className='text-decoration-none cursor-pointer' onClick={()=>{
                                                 navigate('/')
                                             }}>To provide top-notch car rental services tailored to your
                                                 needs.
@@ -43,7 +43,9 @@ export default function Footer() {
                                             }}>Reservations
                                                 <BsArrowUpRight className='fs-6 ' />
                                             </a></li>
-                                            <li><a className='text-decoration-none' href="car-listing-left-sidebar.html">Vehicle Guide
+                                            <li><a className='text-decoration-none cursor-pointer' onClick={()=>{
+                                                navigate('/vehicle-guide')
+                                            }}>Vehicle Guide
                                                 <BsArrowUpRight className='fs-6 ' />
                                             </a></li>
 
@@ -58,10 +60,12 @@ export default function Footer() {
                                     </div>
                                     <div class="menu-container">
                                         <ul>
-                                            <li><a className='text-decoration-none' href="single-brand-category.html">Price
+                                            {/* <li><a className='text-decoration-none curso' href="single-brand-category.html">Price
                                                 <BsArrowUpRight className='fs-6 ' />
-                                            </a></li>
-                                            <li><a className='text-decoration-none' href="single-brand-category.html">About Us
+                                            </a></li> */}
+                                            <li><a className='text-decoration-none cursor-pointer' onClick={()=>{
+                                                navigate('/contact')
+                                            }}>About Us
                                                 <BsArrowUpRight className='fs-6 ' />
                                             </a></li>
 

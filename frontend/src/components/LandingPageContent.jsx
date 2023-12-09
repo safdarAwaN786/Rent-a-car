@@ -6,10 +6,11 @@ import { BsPlusCircle } from 'react-icons/bs';
 import { SlMinus, SlPlus } from 'react-icons/sl';
 import { useDispatch, useSelector } from 'react-redux';
 import MyDropzone from './MyDropZone';
-import { setWebContent } from '../redux/slices/webContentSlice';
+import { setWebContent, updateBrandLogoUrl, updateChooseUsIconUrl, updateOurFleetImageUrl, updateWorkFlowIconUrl } from '../redux/slices/webContentSlice';
 import uploadToCloudinary from './UploadToCloudinary';
 import { toast } from 'react-toastify';
 import axios from 'axios';
+import { produce } from 'immer'
 
 
 
@@ -17,12 +18,14 @@ export default function LandingPageContent() {
 
     const dispatch = useDispatch();
     const webContent = useSelector(state => state.webContent);
-
+    const contentForUpdation = webContent;
     const [updating, setUpdating] = useState(false);
     const [readyToRequest, setReadyToRequest] = useState(false);
     useEffect(() => {
-        console.log(webContent);
+
+        console.log(readyToRequest);
         if (readyToRequest) {
+
             try {
                 console.log(webContent);
                 axios.patch('/update-content', webContent)
@@ -52,7 +55,7 @@ export default function LandingPageContent() {
                 <form
                     onSubmit={async (e) => {
                         e.preventDefault();
-                        console.log(webContent);
+
                         setUpdating(true);
 
                         try {
@@ -73,14 +76,8 @@ export default function LandingPageContent() {
                                 ...webContent?.landingPage.workFlow.map(async (workObj, index) => {
                                     if (workObj.File) {
                                         const returnedUrl = await uploadToCloudinary(workObj.File);
-                                        const editableContent = { ...webContent };
-                                        editableContent.landingPage = {
-                                            ...editableContent.landingPage,
-                                            workFlow: editableContent.landingPage.workFlow.map((item, i) =>
-                                                i === index ? { ...item, iconUrl: returnedUrl } : item
-                                            ),
-                                        };
-                                        dispatch(setWebContent(editableContent));
+                                        dispatch(updateWorkFlowIconUrl({ index, iconUrl: returnedUrl }));
+
                                     }
                                 })
                             );
@@ -90,14 +87,9 @@ export default function LandingPageContent() {
                                 ...webContent?.landingPage.chooseUs.map(async (chooseObj, index) => {
                                     if (chooseObj.File) {
                                         const returnedUrl = await uploadToCloudinary(chooseObj.File);
-                                        const editableContent = { ...webContent };
-                                        editableContent.landingPage = {
-                                            ...editableContent.landingPage,
-                                            chooseUs: editableContent.landingPage.chooseUs.map((item, i) =>
-                                                i === index ? { ...item, iconUrl: returnedUrl } : item
-                                            ),
-                                        };
-                                        dispatch(setWebContent(editableContent));
+
+                                        dispatch(updateChooseUsIconUrl({ index, iconUrl: returnedUrl }));
+
                                     }
                                 })
                             );
@@ -107,14 +99,10 @@ export default function LandingPageContent() {
                                 ...webContent?.landingPage.brands.map(async (brandObj, index) => {
                                     if (brandObj.File) {
                                         const returnedUrl = await uploadToCloudinary(brandObj.File);
-                                        const editableContent = { ...webContent };
-                                        editableContent.landingPage = {
-                                            ...editableContent.landingPage,
-                                            brands: editableContent.landingPage.brands.map((item, i) =>
-                                                i === index ? { ...item, logoUrl: returnedUrl } : item
-                                            ),
-                                        };
-                                        dispatch(setWebContent(editableContent));
+
+                                        dispatch(updateBrandLogoUrl({ index, logoUrl: returnedUrl }));
+                                    } else {
+                                        console.log('No file detected at -> ' + index)
                                     }
                                 })
                             );
@@ -124,14 +112,9 @@ export default function LandingPageContent() {
                                 ...webContent?.landingPage.ourFleet.map(async (fleetObj, index) => {
                                     if (fleetObj.File) {
                                         const returnedUrl = await uploadToCloudinary(fleetObj.File);
-                                        const editableContent = { ...webContent };
-                                        editableContent.landingPage = {
-                                            ...editableContent.landingPage,
-                                            ourFleet: editableContent.landingPage.ourFleet.map((item, i) =>
-                                                i === index ? { ...item, imageUrl: returnedUrl } : item
-                                            ),
-                                        };
-                                        dispatch(setWebContent(editableContent));
+
+                                        dispatch(updateOurFleetImageUrl({ index, imageUrl: returnedUrl }));
+
                                     }
                                 })
                             );
@@ -140,9 +123,11 @@ export default function LandingPageContent() {
                             await Promise.all(promises);
 
                             // Now all loops are complete, and you can make the axios request
-
+                            console.log('Promises completed')
                             setReadyToRequest(true)
                         } catch (err) {
+                            console.log(err);
+                            setUpdating(false)
                             toast.error('OOps, Try Again!')
                         }
                     }}
@@ -378,7 +363,7 @@ export default function LandingPageContent() {
                                         dispatch(setWebContent(editableContent));
                                     }} />
                                     <label className='d-block w-100'><b>{index + 1}. Brand Name : </b></label>
-                                    <input className='border-circle border-1 border-dark border p-2 w-100' onChange={(e) => {
+                                    <input className='border-circle border-1 border-dark border mb-4 p-2 w-100' onChange={(e) => {
                                         const editableContent = { ...webContent };
                                         editableContent.landingPage = {
                                             ...editableContent.landingPage,
@@ -521,7 +506,7 @@ export default function LandingPageContent() {
                     </div>
 
                 </form>
-            </div >
+            </div>
 
         </>
     )
