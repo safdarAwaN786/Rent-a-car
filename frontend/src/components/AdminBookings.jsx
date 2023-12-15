@@ -13,6 +13,7 @@ export default function AdminBookings() {
   const [bookingToView, setBookingToView] = useState(null);
   const [loading, setLoading] = useState(true);
   const [confirming, setConfirming] = useState(false);
+  const [canceling, setCanceling] = useState(false);
 
   const formatDate = (date) => {
 
@@ -98,7 +99,7 @@ export default function AdminBookings() {
                         </tr>
                         <tr>
                           <th>Current Status</th>
-                          <td className={`fw-bold ${bookingToView.status === 'Not Confirmed' && 'text-danger'} ${bookingToView.status === 'Confirmed' && 'text-success'} ${bookingToView.status === 'Completed' && 'text-success'}`}>{bookingToView.status}</td>
+                          <td className={`fw-bold ${bookingToView.status === 'Not Confirmed' && 'text-warning'} ${bookingToView.status === 'Confirmed' && 'text-success'} ${bookingToView.status === 'Canceled' && 'text-danger'}`}>{bookingToView.status}</td>
                         </tr>
                         <tr>
                           <th>Pick Up Date</th>
@@ -135,19 +136,19 @@ export default function AdminBookings() {
                         {bookingToView?.days.winterBookingDays > 0 && (
                           <tr>
                             <th>Winter Basic Price</th>
-                            <td>€{bookingToView.group['winterPrices'][bookingToView.days.winterBookingDays <= 6 ? '1to6daysPrice' : bookingToView.days.winterBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice']} X {bookingToView.days.winterBookingDays} = {(bookingToView.group['winterPrices'][bookingToView.days.winterBookingDays <= 6 ? '1to6daysPrice' : bookingToView.days.winterBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice'] * bookingToView.days.winterBookingDays).toFixed(2)}</td>
+                            <td>€{bookingToView.group['winterPrices'][bookingToView.days.totalBookingDays <= 6 ? '1to6daysPrice' : bookingToView.days.totalBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice']} X {bookingToView.days.winterBookingDays} = {(bookingToView.group['winterPrices'][bookingToView.days.totalBookingDays <= 6 ? '1to6daysPrice' : bookingToView.days.totalBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice'] * bookingToView.days.winterBookingDays).toFixed(2)}</td>
                           </tr>
                         )}
                         {bookingToView?.days.summerBookingDays > 0 && (
                           <tr>
                             <th>Summer Basic Price</th>
-                            <td>€{bookingToView.group['summerPrices'][bookingToView.days.summerBookingDays <= 6 ? '1to6daysPrice' : bookingToView.days.summerBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice']} X {bookingToView.days.summerBookingDays} = {(bookingToView.group['summerPrices'][bookingToView.days.summerBookingDays <= 6 ? '1to6daysPrice' : bookingToView.days.summerBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice'] * bookingToView.days.summerBookingDays).toFixed(2)}</td>
+                            <td>€{bookingToView.group['summerPrices'][bookingToView.days.totalBookingDays <= 6 ? '1to6daysPrice' : bookingToView.days.totalBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice']} X {bookingToView.days.summerBookingDays} = {(bookingToView.group['summerPrices'][bookingToView.days.totalBookingDays <= 6 ? '1to6daysPrice' : bookingToView.days.totalBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice'] * bookingToView.days.summerBookingDays).toFixed(2)}</td>
                           </tr>
                         )}
                         {bookingToView?.days.summerHighBookingDays > 0 && (
                           <tr>
                             <th>Summer High Basic Price</th>
-                            <td>€{bookingToView.group['summerHighPrices'][bookingToView.days.summerHighBookingDays <= 6 ? '1to6daysPrice' : bookingToView.days.summerHighBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice']} X {bookingToView.days.summerHighBookingDays} = {(bookingToView.group['summerHighPrices'][bookingToView.days.summerHighBookingDays <= 6 ? '1to6daysPrice' : bookingToView.days.summerHighBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice'] * bookingToView.days.summerHighBookingDays).toFixed(2)}</td>
+                            <td>€{bookingToView.group['summerHighPrices'][bookingToView.days.totalBookingDays <= 6 ? '1to6daysPrice' : bookingToView.days.totalBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice']} X {bookingToView.days.summerHighBookingDays} = {(bookingToView.group['summerHighPrices'][bookingToView.days.totalBookingDays <= 6 ? '1to6daysPrice' : bookingToView.days.totalBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice'] * bookingToView.days.summerHighBookingDays).toFixed(2)}</td>
                           </tr>
                         )}
                         <tr>
@@ -160,7 +161,8 @@ export default function AdminBookings() {
                               <th>{extraObj.extraName} </th>
                               <td>€{extraObj.price} X {extraObj.quantity}</td>
                             </tr>
-                          )}
+                          )
+                        }
                         )}
                         <tr>
                           <th>Promo Discount</th>
@@ -171,35 +173,57 @@ export default function AdminBookings() {
                           <td>€{(bookingToView.vatValue).toFixed(2)}</td>
                         </tr>
                         <tr>
-                          <th>Grand Total ({bookingToView.days.winterBookingDays + bookingToView.days.summerBookingDays + bookingToView.days.summerHighBookingDays}days)</th>
+                          <th>Grand Total ({bookingToView.days.totalBookingDays}days)</th>
                           <td>€{(bookingToView.totalPrice).toFixed(2)}</td>
                         </tr>
                       </tbody>
                     </table>
                   </div>
-
                   <div className='border-circle px-2 py-2 d-flex  justify-content-center'>
                     {bookingToView.status !== 'Confirmed' && (
-                      <a onClick={() => {
-                        setConfirming(true);
-                        axios.post(`/confirm-booking/${bookingToView._id}`).then((res) => {
-                          updateData();
-                          setLoading(true);
-                          setConfirming(false);
-                          setViewBooking(false);
-                          setBookingToView(null);
-                          toast.success('Booking is Confirmed!')
-                        }).catch(e => {
-                          setConfirming(false)
-                          toast.error('Booking not Confirmed, Try Again')
-                        })
-                      }} className='btn btn-success'>
-                        {confirming ? (
-                          <Spinner size='sm' />
-                        ) : (
-                          'Confirm'
-                        )}
-                      </a>
+                      <>
+
+                        <a onClick={() => {
+                          setConfirming(true);
+                          axios.post(`/confirm-booking/${bookingToView._id}`).then((res) => {
+                            updateData();
+                            setLoading(true);
+                            setConfirming(false);
+                            setViewBooking(false);
+                            setBookingToView(null);
+                            toast.success('Booking is Confirmed!')
+                          }).catch(e => {
+                            setConfirming(false)
+                            toast.error('Booking not Confirmed, Try Again')
+                          })
+                        }} className='btn btn-success mx-1'>
+                          {confirming ? (
+                            <Spinner size='sm' />
+                          ) : (
+                            'Confirm'
+                          )}
+                        </a>
+                        <a onClick={() => {
+                          setCanceling(true);
+                          axios.post(`/cancel-booking/${bookingToView._id}`).then((res) => {
+                            updateData();
+                            setLoading(true);
+                            setCanceling(false);
+                            setViewBooking(false);
+                            setBookingToView(null);
+                            toast.success('Booking is Canceled!')
+                          }).catch(e => {
+                            setConfirming(false)
+                            toast.error('Booking not Canceled, Try Again')
+                          })
+                        }} className='btn btn-danger mx-1'>
+                          {canceling ? (
+                            <Spinner size='sm' />
+                          ) : (
+                            'Cancel'
+                          )}
+                        </a>
+                      </>
                     )}
                     <a onClick={() => {
                       axios.delete(`/delete-booking/${bookingToView._id}`).then((res) => {
@@ -248,16 +272,12 @@ export default function AdminBookings() {
                   return (
                     <tr>
                       <th scope="row">{index + 1}. {booking.group?.vehicleName}</th>
-                      <td scope='row' className={`${booking.status === 'Not Confirmed' && 'text-danger'} ${booking.status === 'Confirmed' && 'text-success'} `}>{booking.status}</td>
+                      <td scope='row' className={`${booking.status === 'Not Confirmed' && 'text-warning'} ${booking.status === 'Confirmed' && 'text-success'}  ${booking.status === 'Canceled' && 'text-danger'} `}>{booking.status}</td>
                       <td scope="row">{formattedDate}</td>
                       <td><button onClick={() => {
                         setViewBooking(true);
                         setBookingToView(booking);
                       }} className='btn btn-outline-dark px-1'><BsEyeFill className='fs-5' />View</button></td>
-
-
-
-
                     </tr>
                   )
                 })}

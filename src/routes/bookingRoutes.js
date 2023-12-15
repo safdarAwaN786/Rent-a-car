@@ -4,6 +4,7 @@ const bookingController = require('../controllers/bookingController');
 
 router.post('/add-booking/', bookingController.addBooking);
 router.post('/confirm-booking/:bookingId', bookingController.confirmBooking);
+router.post('/cancel-booking/:bookingId', bookingController.cancelBooking);
 
 
 

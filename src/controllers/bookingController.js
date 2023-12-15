@@ -116,7 +116,7 @@ const addBooking = async (req, res) => {
               </tr>
               <tr>
                   <th>Total Days:</th>
-                  <td>${booking.days.winterBookingDays + booking.days.summerBookingDays + booking.days.summerHighBookingDays}</td>
+                  <td>${booking.days.totalBookingDays}</td>
               </tr>
               <tr>
                   <th>Additional Comment:</th>
@@ -151,35 +151,48 @@ const addBooking = async (req, res) => {
               </tr>
           </table>
           <h2>Basic Prices</h2>
-          <table>
-              <tr>
-                  <th></th>
-                  <th>Rate per day</th>
-                  <th>Days</th>
-                  <th>Total Basic</th>
-              </tr>
-              ${booking.days.winterBookingDays > 0 ?
-          `<tr>
-             <th>Winter Price</th>
-            <td>€${group['winterPrices'][booking.days.winterBookingDays <= 6 ? '1to6daysPrice' : booking.days.winterBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice']}</td          
-                <td>${booking.days.winterBookingDays}</td>
-                    <td>€${(group['winterPrices'][booking.days.winterBookingDays <= 6 ? '1to6daysPrice' : booking.days.winterBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice'] * booking.days.winterBookingDays).toFixed(2)}</td>
-                </tr>` : ''}
-                ${booking.days.summerBookingDays > 0 ?
-          `<tr>
-              <th>Summer Price</th>
-              <td>€${group['summerPrices'][booking.days.summerBookingDays <= 6 ? '1to6daysPrice' : booking.days.summerBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice']}</td>
-              <td>${booking.days.summerBookingDays}</td>
-                <td>€${(group['summerPrices'][booking.days.summerBookingDays <= 6 ? '1to6daysPrice' : booking.days.summerBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice'] * booking.days.summerBookingDays).toFixed(2)}</td>
-                  </tr>` : ''}
-                  ${booking.days.summerHighBookingDays > 0 ?
-          `<tr>
+         
+            <table>
+            ${booking.days.totalBookingDays > 3 ? (
+
+          ` <tr>
+                      <th></th>
+                      <th>Rate per day</th>
+                      <th>Days</th>
+                      <th>Total Basic</th>
+                  </tr>
+                  ${booking.days.winterBookingDays > 0 ? (
+            `<tr>
+                    <th>Winter Price</th>
+                    <td>€${group['winterPrices'][booking.days.totalBookingDays <= 6 ? '1to6daysPrice' : booking.days.totalBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice']}</td          
+                    <td>${booking.days.winterBookingDays}</td>
+                    <td>€${(group['winterPrices'][booking.days.totalBookingDays <= 6 ? '1to6daysPrice' : booking.days.totalBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice'] * booking.days.winterBookingDays).toFixed(2)}</td>
+                    </tr>`) : ''}
+                    ${booking.days.summerBookingDays > 0 ? (
+            `<tr>
+                      <th>Summer Price</th>
+                      <td>€${group['summerPrices'][booking.days.totalBookingDays <= 6 ? '1to6daysPrice' : booking.days.totalBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice']}</td>
+                      <td>${booking.days.summerBookingDays}</td>
+                      <td>€${(group['summerPrices'][booking.days.totalBookingDays <= 6 ? '1to6daysPrice' : booking.days.totalBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice'] * booking.days.summerBookingDays).toFixed(2)}</td>
+                      </tr>`) : ''}
+                      ${booking.days.summerHighBookingDays > 0 ? (
+            `<tr>
                         <th>Summer High Price</th>
-                        <td>€${group['summerHighPrices'][booking.days.summerHighBookingDays <= 6 ? '1to6daysPrice' : booking.days.summerHighBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice']}</td>
+                        <td>€${group['summerHighPrices'][booking.days.totalBookingDays <= 6 ? '1to6daysPrice' : booking.days.totalBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice']}</td>
                         <td>${booking.days.summerHighBookingDays}</td>
-                        <td>€${(group['summerHighPrices'][booking.days.summerHighBookingDays <= 6 ? '1to6daysPrice' : booking.days.summerHighBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice'] * booking.days.summerHighBookingDays).toFixed(2)}</td>
-                    </tr>` : ''}
+                        <td>€${(group['summerHighPrices'][booking.days.totalBookingDays <= 6 ? '1to6daysPrice' : booking.days.totalBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice'] * booking.days.summerHighBookingDays).toFixed(2)}</td>
+                        </tr>`) : ''}`
+        ) : ''}
+        <tr>
+                  <th>Promo Code Discount:</th>
+                  <td>€${(booking.promoDiscount).toFixed(2)}</td>
+              </tr>
+                    <tr>
+                    <th>Total Basic Price</th>
+                    <td>€${booking.basicPrice - booking.airPortFee}</td>
+                    </tr>
           </table>
+          
           ${booking.addedExtras.length > 0 && (
           `<h2>Extras Added</h2>
             <table>
@@ -192,6 +205,7 @@ const addBooking = async (req, res) => {
           ${extrasContent}
           </table>`
         )}
+
           <h2>TOTALS</h2>
           <table>
               <tr>
@@ -200,14 +214,11 @@ const addBooking = async (req, res) => {
               </tr>
               <tr>
                   <th>Total VAT included:</th>
-                  <td>€${(parseFloat((group['winterPrices']['1to6daysPrice'] / 100) * booking.vatValue)).toFixed(2)}</td>
+                  <td>€${(parseFloat(booking.vatValue)).toFixed(2)}</td>
               </tr>
+              
               <tr>
-                  <th>Promo Code Discount:</th>
-                  <td>€${(booking.promoDiscount).toFixed(2)}</td>
-              </tr>
-              <tr>
-                  <th>Grand Total(${booking.days.winterBookingDays + booking.days.summerBookingDays + booking.days.summerHighBookingDays}days):</th>
+                  <th>Grand Total(${booking.days.totalBookingDays}days):</th>
                   <td>€${(parseFloat(booking.totalPrice)).toFixed(2)}</td>
               </tr>
           </table>
@@ -301,7 +312,7 @@ const confirmBooking = async (req, res) => {
       path: 'group',
       model: 'Group'
     });
-    // To calculate the time difference
+    const group = await Group.findById(booking.group._id);
 
     let extrasContent = '';
     for (let i = 0; i < booking.addedExtras.length; i++) {
@@ -365,92 +376,99 @@ const confirmBooking = async (req, res) => {
             <h1>Car Booking Confirmation - Your Way Car Hire</h1>
             <p>Dear ${booking.user.firstName} ${booking.user.lastName},</p>
             <p>Thank you for booking with YourWay Car Hire. We are delighted to serve you and ensure you have a smooth and enjoyable driving experience. Here are the details of your reservation:</p>
-            <h2>Booking Confirmation</h2>
-            <p>Date: ${booking.bookingDate.toLocaleDateString('en-GB', {
-        day: '2-digit',
-        month: '2-digit',
-        year: 'numeric',
-      })} </p>
             <h2>Booking Info</h2>
-            <table>
+          <table>
               <tr>
-                <th>Pick up:</th>
-                <td>${booking.pickUpLocation} on ${booking.pickUpDate.toLocaleDateString('en-GB', {
+                  <th>Pick up:</th>
+                  <td>${booking.pickUpLocation} on ${booking.pickUpDate.toLocaleDateString('en-GB', {
         day: '2-digit',
         month: '2-digit',
         year: 'numeric',
       })} | ${booking.pickUpTime} </td>
               </tr>
               <tr>
-                <th>Drop off:</th>
-                <td>${booking.dropOffLocation} on ${booking.dropOffDate.toLocaleDateString('en-GB', {
+                  <th>Drop off:</th>
+                  <td>${booking.dropOffLocation} on ${booking.dropOffDate.toLocaleDateString('en-GB', {
         day: '2-digit',
         month: '2-digit',
         year: 'numeric',
       })} | ${booking.dropOffTime} </td>
               </tr>
               <tr>
-                <th>Payment Method:</th>
-                <td>On Arrival</td>
-              </tr>
-              <tr>
                   <th>Booked Group:</th>
-                  <td>${booking.group.groupName}</td>
+                  <td>${group.groupName}</td>
               </tr>
               <tr>
                   <th>Vehicle Name:</th>
-                  <td>${booking.group.vehicleName}</td>
+                  <td>${group.vehicleName}</td>
               </tr>
               <tr>
                   <th>Total Days:</th>
-                  <td>${booking.days.winterBookingDays + booking.days.summerBookingDays + booking.days.summerHighBookingDays}</td>
+                  <td>${booking.days.totalBookingDays}</td>
               </tr>
               <tr>
                   <th>Additional Comment:</th>
                   <td>${booking.comment || '---'}</td>
               </tr>
-            </table>
-            <h2>Basic Prices</h2>
+          </table>
+          
+          <h2>Basic Prices</h2>
+         
             <table>
-                <tr>
-                    <th></th>
-                    <th>Rate per day</th>
-                    <th>Days</th>
-                    <th>Total Basic</th>
-                </tr>
-                ${booking.days.winterBookingDays > 0 ?
-          `<tr>
-                             <th>Winter Price</th>
-                            <td>€${booking.group['winterPrices'][booking.days.winterBookingDays <= 6 ? '1to6daysPrice' : booking.days.winterBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice']}</td          
-                                <td>${booking.days.winterBookingDays}</td>
-                                    <td>€${(booking.group['winterPrices'][booking.days.winterBookingDays <= 6 ? '1to6daysPrice' : booking.days.winterBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice'] * booking.days.winterBookingDays).toFixed(2)}</td>
-                                </tr>` : ''}
-                                ${booking.days.summerBookingDays > 0 ?
-          `<tr>
-                              <th>Summer Price</th>
-                              <td>€${booking.group['summerPrices'][booking.days.summerBookingDays <= 6 ? '1to6daysPrice' : booking.days.summerBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice']}</td>
-                              <td>${booking.days.summerBookingDays}</td>
-                                <td>€${(booking.group['summerPrices'][booking.days.summerBookingDays <= 6 ? '1to6daysPrice' : booking.days.summerBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice'] * booking.days.summerBookingDays).toFixed(2)}</td>
-                                  </tr>` : ''}
-                                  ${booking.days.summerHighBookingDays > 0 ?
-          `<tr>
-                                        <th>Summer High Price</th>
-                                        <td>€${booking.group['summerHighPrices'][booking.days.summerHighBookingDays <= 6 ? '1to6daysPrice' : booking.days.summerHighBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice']}</td>
-                                        <td>${booking.days.summerHighBookingDays}</td>
-                                        <td>€${(booking.group['summerHighPrices'][booking.days.summerHighBookingDays <= 6 ? '1to6daysPrice' : booking.days.summerHighBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice'] * booking.days.summerHighBookingDays).toFixed(2)}</td>
-                                    </tr>` : ''}
-            </table>
-            <h2>Extras Added</h2>
+            ${booking.days.totalBookingDays > 3 ? (
+
+          ` <tr>
+                      <th></th>
+                      <th>Rate per day</th>
+                      <th>Days</th>
+                      <th>Total Basic</th>
+                  </tr>
+                  ${booking.days.winterBookingDays > 0 ? (
+            `<tr>
+                    <th>Winter Price</th>
+                    <td>€${group['winterPrices'][booking.days.totalBookingDays <= 6 ? '1to6daysPrice' : booking.days.totalBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice']}</td          
+                    <td>${booking.days.winterBookingDays}</td>
+                    <td>€${(group['winterPrices'][booking.days.totalBookingDays <= 6 ? '1to6daysPrice' : booking.days.totalBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice'] * booking.days.winterBookingDays).toFixed(2)}</td>
+                    </tr>`) : ''}
+                    ${booking.days.summerBookingDays > 0 ? (
+            `<tr>
+                      <th>Summer Price</th>
+                      <td>€${group['summerPrices'][booking.days.totalBookingDays <= 6 ? '1to6daysPrice' : booking.days.totalBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice']}</td>
+                      <td>${booking.days.summerBookingDays}</td>
+                      <td>€${(group['summerPrices'][booking.days.totalBookingDays <= 6 ? '1to6daysPrice' : booking.days.totalBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice'] * booking.days.summerBookingDays).toFixed(2)}</td>
+                      </tr>`) : ''}
+                      ${booking.days.summerHighBookingDays > 0 ? (
+            `<tr>
+                        <th>Summer High Price</th>
+                        <td>€${group['summerHighPrices'][booking.days.totalBookingDays <= 6 ? '1to6daysPrice' : booking.days.totalBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice']}</td>
+                        <td>${booking.days.summerHighBookingDays}</td>
+                        <td>€${(group['summerHighPrices'][booking.days.totalBookingDays <= 6 ? '1to6daysPrice' : booking.days.totalBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice'] * booking.days.summerHighBookingDays).toFixed(2)}</td>
+                        </tr>`) : ''}`
+        ) : ''}
+        <tr>
+                  <th>Promo Code Discount:</th>
+                  <td>€${(booking.promoDiscount).toFixed(2)}</td>
+              </tr>
+                    <tr>
+                    <th>Total Basic Price</th>
+                    <td>€${booking.basicPrice - booking.airPortFee}</td>
+                    </tr>
+          </table>
+          
+          ${booking.addedExtras.length > 0 ? (
+          `<h2>Extras Added</h2>
             <table>
-            <tr>
-             <th>Extra Name</th>
-             <th>Price</th>
-             <th>Quantity</th>
-             <th>Total</th>
-            </tr>
-            ${extrasContent}
-            </table>
-            <h2>TOTALS</h2>
+          <tr>
+           <th>Extra Name</th>
+           <th>Price</th>
+           <th>Quantity</th>
+           <th>Total</th>
+          </tr>
+          ${extrasContent}
+          </table>`
+        ) : ''}
+
+          <h2>TOTALS</h2>
           <table>
               <tr>
                   <th>Air Port Fee:</th>
@@ -460,12 +478,9 @@ const confirmBooking = async (req, res) => {
                   <th>Total VAT included:</th>
                   <td>€${(parseFloat(booking.vatValue)).toFixed(2)}</td>
               </tr>
+              
               <tr>
-                  <th>Promo Code Discount:</th>
-                  <td>€${(booking.promoDiscount).toFixed(2)}</td>
-              </tr>
-              <tr>
-                  <th>Grand Total(${booking.days.winterBookingDays + booking.days.summerBookingDays + booking.days.summerHighBookingDays}days):</th>
+                  <th>Grand Total(${booking.days.totalBookingDays}days):</th>
                   <td>€${(parseFloat(booking.totalPrice)).toFixed(2)}</td>
               </tr>
           </table>
@@ -530,92 +545,125 @@ const confirmBooking = async (req, res) => {
             <h1>Car Booking Confirmation - Your Way Car Hire</h1>
             <p>Dear Admin,</p>
             <p>Congratulations, You have just Confirmed a new booking</p>
-            <h2>Booking Confirmation</h2>
-            <p>Date: ${booking.bookingDate.toLocaleDateString('en-GB', {
-        day: '2-digit',
-        month: '2-digit',
-        year: 'numeric',
-      })} </p>
             <h2>Booking Info</h2>
-            <table>
+          <table>
               <tr>
-                <th>Pick up:</th>
-                <td>${booking.pickUpLocation} on ${booking.pickUpDate.toLocaleDateString('en-GB', {
+                  <th>Pick up:</th>
+                  <td>${booking.pickUpLocation} on ${booking.pickUpDate.toLocaleDateString('en-GB', {
         day: '2-digit',
         month: '2-digit',
         year: 'numeric',
       })} | ${booking.pickUpTime} </td>
               </tr>
               <tr>
-                <th>Drop off:</th>
-                <td>${booking.dropOffLocation} on ${booking.dropOffDate.toLocaleDateString('en-GB', {
+                  <th>Drop off:</th>
+                  <td>${booking.dropOffLocation} on ${booking.dropOffDate.toLocaleDateString('en-GB', {
         day: '2-digit',
         month: '2-digit',
         year: 'numeric',
       })} | ${booking.dropOffTime} </td>
               </tr>
               <tr>
-                <th>Payment Method:</th>
-                <td>On Arrival</td>
-              </tr>
-              <tr>
                   <th>Booked Group:</th>
-                  <td>${booking.group.groupName}</td>
+                  <td>${group.groupName}</td>
               </tr>
               <tr>
                   <th>Vehicle Name:</th>
-                  <td>${booking.group.vehicleName}</td>
+                  <td>${group.vehicleName}</td>
               </tr>
               <tr>
                   <th>Total Days:</th>
-                  <td>${booking.days.winterBookingDays + booking.days.summerBookingDays + booking.days.summerHighBookingDays}</td>
+                  <td>${booking.days.totalBookingDays}</td>
               </tr>
               <tr>
                   <th>Additional Comment:</th>
                   <td>${booking.comment || '---'}</td>
               </tr>
-            </table>
-            <h2>Basic Prices</h2>
+          </table>
+          <h2>Booked Group Prices</h2>
+          <table>
+              <tr>
+                  <th></th>
+                  <th>1 - 6 days</th>
+                  <th>7 - 14 days</th>
+                  <th>15+ days</th>
+              </tr>
+              <tr>
+                  <th>Winter Season</th>
+                  <td>€${group['winterPrices']['1to6daysPrice']}</td>
+                  <td>€${group['winterPrices']['7to14daysPrice']}</td>
+                  <td>€${group['winterPrices']['15plusDaysPrice']}</td>
+              </tr>
+              <tr>
+                  <th>Summer Season</th>
+                  <td>€${group['summerPrices']['1to6daysPrice']}</td>
+                  <td>€${group['summerPrices']['7to14daysPrice']}</td>
+                  <td>€${group['summerPrices']['15plusDaysPrice']}</td>
+              </tr>
+              <tr>
+                  <th>Summer High Season</th>
+                  <td>€${group['summerHighPrices']['1to6daysPrice']}</td>
+                  <td>€${group['summerHighPrices']['7to14daysPrice']}</td>
+                  <td>€${group['summerHighPrices']['15plusDaysPrice']}</td>
+              </tr>
+          </table>
+          <h2>Basic Prices</h2>
+         
             <table>
-                <tr>
-                    <th></th>
-                    <th>Rate per day</th>
-                    <th>Days</th>
-                    <th>Total Basic</th>
-                </tr>
-                ${booking.days.winterBookingDays > 0 ?
-          `<tr>
-                     <th>Winter Price</th>
-                    <td>€${booking.group['winterPrices'][booking.days.winterBookingDays <= 6 ? '1to6daysPrice' : booking.days.winterBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice']}</td          
-                        <td>${booking.days.winterBookingDays}</td>
-                            <td>€${(booking.group['winterPrices'][booking.days.winterBookingDays <= 6 ? '1to6daysPrice' : booking.days.winterBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice'] * booking.days.winterBookingDays).toFixed(2)}</td>
-                        </tr>` : ''}
-                        ${booking.days.summerBookingDays > 0 ?
-          `<tr>
+            ${booking.days.totalBookingDays > 3 ? (
+
+          ` <tr>
+                      <th></th>
+                      <th>Rate per day</th>
+                      <th>Days</th>
+                      <th>Total Basic</th>
+                  </tr>
+                  ${booking.days.winterBookingDays > 0 ? (
+            `<tr>
+                    <th>Winter Price</th>
+                    <td>€${group['winterPrices'][booking.days.totalBookingDays <= 6 ? '1to6daysPrice' : booking.days.totalBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice']}</td          
+                    <td>${booking.days.winterBookingDays}</td>
+                    <td>€${(group['winterPrices'][booking.days.totalBookingDays <= 6 ? '1to6daysPrice' : booking.days.totalBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice'] * booking.days.winterBookingDays).toFixed(2)}</td>
+                    </tr>`) : ''}
+                    ${booking.days.summerBookingDays > 0 ? (
+            `<tr>
                       <th>Summer Price</th>
-                      <td>€${booking.group['summerPrices'][booking.days.summerBookingDays <= 6 ? '1to6daysPrice' : booking.days.summerBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice']}</td>
+                      <td>€${group['summerPrices'][booking.days.totalBookingDays <= 6 ? '1to6daysPrice' : booking.days.totalBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice']}</td>
                       <td>${booking.days.summerBookingDays}</td>
-                        <td>€${(booking.group['summerPrices'][booking.days.summerBookingDays <= 6 ? '1to6daysPrice' : booking.days.summerBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice'] * booking.days.summerBookingDays).toFixed(2)}</td>
-                          </tr>` : ''}
-                          ${booking.days.summerHighBookingDays > 0 ?
-          `<tr>
-                                <th>Summer High Price</th>
-                                <td>€${booking.group['summerHighPrices'][booking.days.summerHighBookingDays <= 6 ? '1to6daysPrice' : booking.days.summerHighBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice']}</td>
-                                <td>${booking.days.summerHighBookingDays}</td>
-                                <td>€${(booking.group['summerHighPrices'][booking.days.summerHighBookingDays <= 6 ? '1to6daysPrice' : booking.days.summerHighBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice'] * booking.days.summerHighBookingDays).toFixed(2)}</td>
-                            </tr>` : ''}
-            </table>
-            <h2>Extras Added</h2>
+                      <td>€${(group['summerPrices'][booking.days.totalBookingDays <= 6 ? '1to6daysPrice' : booking.days.totalBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice'] * booking.days.summerBookingDays).toFixed(2)}</td>
+                      </tr>`) : ''}
+                      ${booking.days.summerHighBookingDays > 0 ? (
+            `<tr>
+                        <th>Summer High Price</th>
+                        <td>€${group['summerHighPrices'][booking.days.totalBookingDays <= 6 ? '1to6daysPrice' : booking.days.totalBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice']}</td>
+                        <td>${booking.days.summerHighBookingDays}</td>
+                        <td>€${(group['summerHighPrices'][booking.days.totalBookingDays <= 6 ? '1to6daysPrice' : booking.days.totalBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice'] * booking.days.summerHighBookingDays).toFixed(2)}</td>
+                        </tr>`) : ''}`
+        ) : ''}
+        <tr>
+                  <th>Promo Code Discount:</th>
+                  <td>€${(booking.promoDiscount).toFixed(2)}</td>
+              </tr>
+                    <tr>
+                    <th>Total Basic Price</th>
+                    <td>€${booking.basicPrice - booking.airPortFee}</td>
+                    </tr>
+          </table>
+          
+          ${booking.addedExtras.length > 0 ? (
+          `<h2>Extras Added</h2>
             <table>
-            <tr>
-             <th>Extra Name</th>
-             <th>Price</th>
-             <th>Quantity</th>
-             <th>Total</th>
-            </tr>
-            ${extrasContent}
-            </table>
-            <h2>TOTALS</h2>
+          <tr>
+           <th>Extra Name</th>
+           <th>Price</th>
+           <th>Quantity</th>
+           <th>Total</th>
+          </tr>
+          ${extrasContent}
+          </table>`
+        ) : ''}
+
+          <h2>TOTALS</h2>
           <table>
               <tr>
                   <th>Air Port Fee:</th>
@@ -625,12 +673,9 @@ const confirmBooking = async (req, res) => {
                   <th>Total VAT included:</th>
                   <td>€${(parseFloat(booking.vatValue)).toFixed(2)}</td>
               </tr>
+              
               <tr>
-                  <th>Promo Code Discount:</th>
-                  <td>€${(booking.promoDiscount).toFixed(2)}</td>
-              </tr>
-              <tr>
-                  <th>Grand Total(${booking.days.winterBookingDays + booking.days.summerBookingDays + booking.days.summerHighBookingDays}days):</th>
+                  <th>Grand Total(${booking.days.totalBookingDays}days):</th>
                   <td>€${(parseFloat(booking.totalPrice)).toFixed(2)}</td>
               </tr>
           </table>
@@ -668,8 +713,33 @@ const confirmBooking = async (req, res) => {
   }
 }
 
+const cancelBooking = async (req, res) => {
+  try {
+    const { bookingId } = req.params;
+    const booking = await Booking.findById(bookingId).populate({
+      path: 'user',
+      model: 'User'
+    }).populate({
+      path: 'group',
+      model: 'Group'
+    });
+
+        booking.status = 'Canceled';
+        await booking.save();
+        res.status(200).send({
+          status: true,
+          message: 'The Boooking is Confirmed!',
+          data: booking
+        });
+      
+  } catch (error) {
+    console.log(error);
+    return res.status(500).send({ status: false, message: 'Internal server error' });
+  }
+}
 
 
 
 
-module.exports = { addBooking, getUserBookings, getAllBookings, deleteBooking, confirmBooking };
+
+module.exports = { addBooking, getUserBookings, getAllBookings, deleteBooking, confirmBooking, cancelBooking };

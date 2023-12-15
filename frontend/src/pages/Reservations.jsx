@@ -158,7 +158,7 @@ export default function Reservations() {
                         </tr>
                         <tr>
                           <th>Current Status</th>
-                          <td className={`fw-bold ${bookingToView.status === 'Not Confirmed' && 'text-danger'} ${bookingToView.status === 'Confirmed' && 'text-success'} ${bookingToView.status === 'Completed' && 'text-success'}`}>{bookingToView.status}</td>
+                          <td className={`fw-bold ${bookingToView.status === 'Not Confirmed' && 'text-warning'} ${bookingToView.status === 'Confirmed' && 'text-success'} ${bookingToView.status === 'Canceled' && 'text-danger'}`}>{bookingToView.status}</td>
                         </tr>
                         <tr>
                           <th>Pick Up Date</th>
@@ -194,19 +194,19 @@ export default function Reservations() {
                         {bookingToView?.days.winterBookingDays > 0 && (
                           <tr>
                             <th>Winter Basic Price</th>
-                            <td>€{bookingToView.group['winterPrices'][bookingToView.days.winterBookingDays <= 6 ? '1to6daysPrice' : bookingToView.days.winterBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice']} X {bookingToView.days.winterBookingDays} = {(bookingToView.group['winterPrices'][bookingToView.days.winterBookingDays <= 6 ? '1to6daysPrice' : bookingToView.days.winterBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice'] * bookingToView.days.winterBookingDays).toFixed(2)}</td>
+                            <td>€{bookingToView.group['winterPrices'][bookingToView.days.totalBookingDays <= 6 ? '1to6daysPrice' : bookingToView.days.totalBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice']} X {bookingToView.days.winterBookingDays} = {(bookingToView.group['winterPrices'][bookingToView.days.totalBookingDays <= 6 ? '1to6daysPrice' : bookingToView.days.totalBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice'] * bookingToView.days.winterBookingDays).toFixed(2)}</td>
                           </tr>
                         )}
                         {bookingToView?.days.summerBookingDays > 0 && (
                           <tr>
                             <th>Summer Basic Price</th>
-                            <td>€{bookingToView.group['summerPrices'][bookingToView.days.summerBookingDays <= 6 ? '1to6daysPrice' : bookingToView.days.summerBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice']} X {bookingToView.days.summerBookingDays} = {(bookingToView.group['summerPrices'][bookingToView.days.summerBookingDays <= 6 ? '1to6daysPrice' : bookingToView.days.summerBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice'] * bookingToView.days.summerBookingDays).toFixed(2)}</td>
+                            <td>€{bookingToView.group['summerPrices'][bookingToView.days.totalBookingDays <= 6 ? '1to6daysPrice' : bookingToView.days.totalBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice']} X {bookingToView.days.summerBookingDays} = {(bookingToView.group['summerPrices'][bookingToView.days.totalBookingDays <= 6 ? '1to6daysPrice' : bookingToView.days.totalBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice'] * bookingToView.days.summerBookingDays).toFixed(2)}</td>
                           </tr>
                         )}
                         {bookingToView?.days.summerHighBookingDays > 0 && (
                           <tr>
                             <th>Summer High Basic Price</th>
-                            <td>€{bookingToView.group['summerHighPrices'][bookingToView.days.summerHighBookingDays <= 6 ? '1to6daysPrice' : bookingToView.days.summerHighBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice']} X {bookingToView.days.summerHighBookingDays} = {(bookingToView.group['summerHighPrices'][bookingToView.days.summerHighBookingDays <= 6 ? '1to6daysPrice' : bookingToView.days.summerHighBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice'] * bookingToView.days.summerHighBookingDays).toFixed(2)}</td>
+                            <td>€{bookingToView.group['summerHighPrices'][bookingToView.days.totalBookingDays <= 6 ? '1to6daysPrice' : bookingToView.days.totalBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice']} X {bookingToView.days.summerHighBookingDays} = {(bookingToView.group['summerHighPrices'][bookingToView.days.totalBookingDays <= 6 ? '1to6daysPrice' : bookingToView.days.totalBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice'] * bookingToView.days.summerHighBookingDays).toFixed(2)}</td>
                           </tr>
                         )}
                         <tr>
@@ -231,7 +231,7 @@ export default function Reservations() {
                           <td>€{(bookingToView.vatValue).toFixed(2)}</td>
                         </tr>
                         <tr>
-                          <th>Grand Total ({bookingToView.days.winterBookingDays + bookingToView.days.summerBookingDays + bookingToView.days.summerHighBookingDays}days)</th>
+                          <th>Grand Total ({bookingToView.days.totalBookingDays}days)</th>
                           <td>€{(bookingToView.totalPrice).toFixed(2)}</td>
                         </tr>
                       </tbody>
@@ -257,7 +257,7 @@ export default function Reservations() {
               <tbody>
 
 
-                {bookings?.filter(booking => booking.status !== 'Completed').map((booking, index) => {
+                {bookings?.map((booking, index) => {
 
                   const date = new Date(booking.bookingDate); // Convert to Date object
                   const formattedDate = date.toLocaleDateString('en-GB', {
@@ -268,54 +268,23 @@ export default function Reservations() {
                   return (
                     <tr>
                       <th scope="row">{index + 1}. {booking.group?.vehicleName}</th>
-                      <td scope='row' className={`${booking.status === 'Not Confirmed' && 'text-danger'} ${booking.status === 'Confirmed' && 'text-success'} `}>{booking.status}</td>
+                      <td scope='row' className={`${booking.status === 'Not Confirmed' && 'text-warning'} ${booking.status === 'Confirmed' && 'text-success'}  ${booking.status === 'Canceled' && 'text-danger'}`}>{booking.status}</td>
                       <td scope="row">{formattedDate}</td>
                       <td><button onClick={() => {
                         setViewBooking(true);
                         setBookingToView(booking);
                       }} className='btn btn-outline-dark px-1'><BsEyeFill className='fs-5' />View</button></td>
-
-
-
-
                     </tr>
                   )
                 })}
-                {bookings?.filter(booking => booking.status === 'Completed').map((booking, index) => {
-
-                  const date = new Date(booking.bookingDate); // Convert to Date object
-                  const formattedDate = date.toLocaleDateString('en-GB', {
-                    day: '2-digit',
-                    month: '2-digit',
-                    year: 'numeric',
-                  });
-                  return (
-                    <tr>
-                      <th scope="row">{index + 1}. {booking.group?.vehicleName}</th>
-                      <td scope='row' className={`${booking.status === 'Not Confirmed' && 'text-danger'} ${booking.status === 'Confirmed' && 'text-success'} `}>{booking.status}</td>
-                      <td scope="row">{formattedDate}</td>
-                      <td><button onClick={() => {
-                        setViewBooking(true);
-                        setBookingToView(booking);
-                      }} className='btn btn-outline-dark px-1'><BsEyeFill className='fs-5' />View</button></td>
-
-                    </tr>
-                  )
-                })}
-
                 {!bookings || bookings.length == 0 && (
                   <div className='underTable d-flex justify-content-center py-2'>
-                    <p>No Bookings Found!</p>
+                    <p className='text-center'>No Bookings Found!</p>
                   </div>
                 )}
               </tbody>
             </table>
-
-
           </div>
-
-
-
         </>
       )}
       <Footer />

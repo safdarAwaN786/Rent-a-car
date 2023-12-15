@@ -58,7 +58,7 @@ const bookingSchema = new mongoose.Schema({
         type: String,
         required: true,
         default: 'Not Confirmed',
-        enum: ['Not Confirmed', 'Confirmed', 'Completed']
+        enum: ['Not Confirmed', 'Confirmed', 'Canceled']
     },
     airPortFee: {
         type: Number,

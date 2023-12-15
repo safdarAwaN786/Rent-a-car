@@ -15,7 +15,7 @@ import { selectGroup, selectVehicle, updateBookingInfo } from '../redux/slices/b
 import { setBookingDays } from '../redux/slices/bookingDaysSlice'
 
 export default function ProductCard({ gridView, groupData }) {
-    
+
     const bookingSubmitted = useSelector(state => state.booking.isBookingSubmitted);
     const loggedIn = useSelector(state => state.auth.loggedIn);
     const user = useSelector(state => state.auth.user);
@@ -36,7 +36,7 @@ export default function ProductCard({ gridView, groupData }) {
         }
         return dateArray;
     };
-    
+
     console.log(currentSeason);
     console.log(bookingDays);
     console.log(groupData);
@@ -67,33 +67,13 @@ export default function ProductCard({ gridView, groupData }) {
                 <h5><a className='text-decoration-none cursor-pointer' ><b>{groupData?.vehicleName}</b> | or similar</a></h5>
                 <div class="price-location">
                     <div class="price">
-                        {currentSeason === 'winterPrices' && (
-                            <>
-                                {bookingDays?.winterBookingDays > 0 ? (
-                                    <strong>€{groupData[currentSeason][bookingDays?.winterBookingDays <= 6 ? '1to6daysPrice' : bookingDays?.winterBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice']} per day</strong>
-                                ) : (
-                                    <strong>€{groupData[currentSeason]['1to6daysPrice']} per day</strong>
-                                )}
-                            </>
-                        )}
-                        {currentSeason === 'summerPrices' && (
-                            <>
-                                {bookingDays?.summerBookingDays > 0 ? (
-                                    <strong>€{groupData[currentSeason][bookingDays?.summerBookingDays <= 6 ? '1to6daysPrice' : bookingDays?.summerBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice']} per day</strong>
-                                ) : (
-                                    <strong>€{groupData[currentSeason]['1to6daysPrice']} per day</strong>
-                                )}
-                            </>
-                        )}
-                        {currentSeason === 'summerHighPrices' && (
-                            <>
-                                {bookingDays?.summerHighBookingDays > 0 ? (
-                                    <strong>€{groupData[currentSeason][bookingDays?.summerHighBookingDays <= 6 ? '1to6daysPrice' : bookingDays?.summerHighBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice']} per day</strong>
-                                ) : (
-                                    <strong>€{groupData[currentSeason]['1to6daysPrice']} per day</strong>
-                                )}
-                            </>
-                        )}
+                        <>
+                            {bookingDays?.totalBookingDays > 0 ? (
+                                <strong>€{groupData[currentSeason][bookingDays?.totalBookingDays <= 6 ? '1to6daysPrice' : bookingDays?.totalBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice']} per day</strong>
+                            ) : (
+                                <strong>€{groupData[currentSeason]['1to6daysPrice']} per day</strong>
+                            )}
+                        </>
                     </div>
 
                 </div>
@@ -172,6 +152,7 @@ export default function ProductCard({ gridView, groupData }) {
                                 let winterBookingDays = 0;
                                 let summerBookingDays = 0;
                                 let summerHighBookingDays = 0;
+                                let totalBookingDays = 0;
                                 let basicPrice;
 
                                 if (dropOffDate !== pickUpDate && dropoffDateTime.getHours() >= (pickupDateTime.getHours() + 2)) {
@@ -201,16 +182,19 @@ export default function ProductCard({ gridView, groupData }) {
                                     }
                                 })
 
-                               
-                                dispatch(setBookingDays({ winterBookingDays, summerBookingDays, summerHighBookingDays }));
+                                totalBookingDays = winterBookingDays + summerBookingDays + summerHighBookingDays;
+                                dispatch(setBookingDays({ winterBookingDays, summerBookingDays, summerHighBookingDays, totalBookingDays }));
+                                if (totalBookingDays < 3) {
+                                    if (totalBookingDays === 1) {
+                                        basicPrice = groupData[currentSeason]['1to6daysPrice'] * 3;
+                                    } else {
+                                        basicPrice = (groupData['winterPrices']['1to6daysPrice'] * winterBookingDays) + (groupData['summerPrices']['1to6daysPrice'] * summerBookingDays) + (groupData['summerHighPrices']['1to6daysPrice'] * summerHighBookingDays) + (groupData[currentSeason]['1to6daysPrice'])
+                                    }
+                                } else {
+                                    basicPrice = (groupData['winterPrices'][totalBookingDays <= 6 ? '1to6daysPrice' : totalBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice'] * winterBookingDays) + (groupData['summerPrices'][totalBookingDays <= 6 ? '1to6daysPrice' : totalBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice'] * summerBookingDays) + (groupData['summerHighPrices'][totalBookingDays <= 6 ? '1to6daysPrice' : totalBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice'] * summerHighBookingDays)
+                                }
 
-                                basicPrice = (groupData['winterPrices'][winterBookingDays <= 6 ? '1to6daysPrice' : winterBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice'] * winterBookingDays) + (groupData['summerPrices'][summerBookingDays <= 6 ? '1to6daysPrice' : summerBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice'] * summerBookingDays) + (groupData['summerHighPrices'][summerHighBookingDays <= 6 ? '1to6daysPrice' : summerHighBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice'] * summerHighBookingDays)
-
-
-                                
-
-                               
-                                dispatch(updateBookingInfo({ ...bookingData, group: groupData._id, basicPrice: (basicPrice + bookingData?.airPortFee + ((basicPrice/100) * bookingData?.vatPercent)).toFixed(2), vatValue : Number(((basicPrice / 100) * bookingData?.vatPercent).toFixed(2)), days: { winterBookingDays, summerBookingDays, summerHighBookingDays }, user: user._id }))
+                                dispatch(updateBookingInfo({ ...bookingData, group: groupData._id, basicPrice: (basicPrice + bookingData?.airPortFee).toFixed(2), days: { winterBookingDays, summerBookingDays, summerHighBookingDays, totalBookingDays }, user: user._id }))
                                 dispatch(selectGroup(groupData));
                                 navigate('/complete-booking');
                             } else {

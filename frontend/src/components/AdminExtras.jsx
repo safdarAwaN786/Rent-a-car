@@ -122,8 +122,8 @@ export default function AdminExtras() {
                                                 <p>Max. Quantity : {extraToEdit?.maxQuantity}</p>
                                             </div>
 
-                                            {(extraToEdit.extraName === 'Super Collision Damage Waiver (SCDW)' || extraToEdit.extraName === 'Tyres, Windscreen, Underbody' || extraToEdit.extraName === 'GPS') ? (
-                                                <>                                                    {extraToEdit.priceOfExtra.map((extraPriceObj, index) => {
+                                            {(extraToEdit.extraName === 'Super Collision Damage Waiver (SCDW)' || extraToEdit.extraName === 'Tyres, Windscreen, Underbody') ? (
+                                                <>                                      {extraToEdit.priceOfExtra.map((extraPriceObj, index) => {
                                                     return (
                                                         <div className='extraBox flex-wrap my-2 border-circle p-2 d-flex  justify-content-between'>
                                                             <label class="form-check-label" >{extraPriceObj.groupName} :</label>
@@ -236,7 +236,7 @@ export default function AdminExtras() {
                                                 <p>Max. Quantity : {extraToEdit?.maxQuantity}</p>
                                             </div>
 
-                                            {(extraToEdit.extraName === 'Super Collision Damage Waiver (SCDW)' || extraToEdit.extraName === 'Tyres, Windscreen, Underbody' || extraToEdit.extraName === 'GPS') ? (
+                                            {(extraToEdit.extraName === 'Super Collision Damage Waiver (SCDW)' || extraToEdit.extraName === 'Tyres, Windscreen, Underbody' ) ? (
                                                 <>                                                    {extraToEdit.priceOfExtra.map((extraPriceObj, index) => {
                                                     return (
                                                         <div className='extraBox my-2 border-circle p-2 d-flex  justify-content-between'>
@@ -319,8 +319,6 @@ export default function AdminExtras() {
                                         </tr>
                                     )
                                 })}
-
-
                             </tbody>
                         </table>
                     </div>

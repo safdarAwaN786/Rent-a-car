@@ -98,6 +98,7 @@ export default function MainSection() {
                                         let winterBookingDays = 0;
                                         let summerBookingDays = 0;
                                         let summerHighBookingDays = 0;
+                                        let totalBookingDays = 0;
                                         let basicPrice;
 
                                         if (dropOffDate !== pickUpDate && dropoffDateTime.getHours() >= (pickupDateTime.getHours() + 2)) {
@@ -132,7 +133,8 @@ export default function MainSection() {
                                         }).catch((e) => {
                                             updateVat();
                                         })
-                                        dispatch(setBookingDays({ winterBookingDays, summerBookingDays, summerHighBookingDays }));
+                                        totalBookingDays = winterBookingDays + summerBookingDays + summerHighBookingDays;
+                                        dispatch(setBookingDays({ winterBookingDays, summerBookingDays, summerHighBookingDays, totalBookingDays }));
 
                                         dispatch(submitPreBooking());
                                         navigate('/vehicle-guide');
