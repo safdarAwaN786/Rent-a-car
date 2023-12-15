@@ -59,7 +59,7 @@ export default function CompleteBooking() {
                 } else {
                     basicPrice = (selectedGroup['winterPrices'][bookingData?.days.totalBookingDays <= 6 ? '1to6daysPrice' : bookingData?.days.totalBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice'] * bookingData?.days.winterBookingDays) + (selectedGroup['summerPrices'][bookingData?.days.totalBookingDays <= 6 ? '1to6daysPrice' : bookingData?.days.totalBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice'] * bookingData?.days.summerBookingDays) + (selectedGroup['summerHighPrices'][bookingData?.days.totalBookingDays <= 6 ? '1to6daysPrice' : bookingData?.days.totalBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice'] * bookingData?.days.summerHighBookingDays)
                 }
-                
+
                 dispatch(updateBookingInfo({ ...bookingData, basicPrice: (basicPrice + (bookingData?.airPortFee)), promoCode: null, promoDiscount: 0 }));
             }
         }
@@ -558,7 +558,7 @@ export default function CompleteBooking() {
                                                                 )}
                                                             </>
                                                         )}
-                                                        
+
                                                     </div>
                                                     <div class="form-inner mb-20">
                                                         <form onSubmit={(e) => {
@@ -611,13 +611,14 @@ export default function CompleteBooking() {
                                                         </form>
                                                     </div>
                                                     <div class="d-flex justify-content-between g-3 mt-3">
-                                                            <div >
-                                                                <li className='fs-5'><b>Total :</b></li>
-                                                            </div>
-                                                            <div >
-                                                                <span className='fs-5'><strong>€{(parseFloat(bookingData?.basicPrice - bookingData?.airPortFee)).toFixed(2)}</strong></span>
-                                                            </div>
+                                                        <div>
+                                                            <li className='fs-5'><b>Total :</b></li>
                                                         </div>
+                                                        <div >
+                                                            <span className='fs-5'><strong>€{(parseFloat(bookingData?.basicPrice - bookingData?.airPortFee)).toFixed(2)}</strong></span>
+                                                        </div>
+                                                    </div>
+                                                    <hr></hr>
                                                     <div className='d-flex justify-content-between my-2'>
                                                         <span className=' fs-5'>Airport Fee : </span>
                                                         <span className=' fs-5'>€{bookingData?.airPortFee}</span>
