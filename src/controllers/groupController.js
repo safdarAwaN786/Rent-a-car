@@ -70,7 +70,6 @@ const addGroup = async (req, res) => {
 
       const SCDWObj = extra.Extras.find(obj => obj.extraName === 'Super Collision Damage Waiver (SCDW)');
       const TyresObj = extra.Extras.find(obj => obj.extraName === 'Tyres, Windscreen, Underbody');
-      const GPSObj = extra.Extras.find(obj => obj.extraName === 'GPS');
 
       const foundGroup = SCDWObj.priceOfExtra.find(obj => obj.groupName === req.body.groupName);
 
@@ -89,17 +88,12 @@ const addGroup = async (req, res) => {
           price: 20,
           maxQuantity: 1
         });
-        GPSObj.priceOfExtra.push({
-          groupName: req.body.groupName,
-          price: 20,
-          maxQuantity: 1
-        });
+       
         console.log('Adding Group');
         console.log(extra.Extras[0].priceOfExtra);
 
         await Extra.findByIdAndUpdate(extra._id, extra, {
           new: true,
-
         });
       }
 
@@ -146,7 +140,6 @@ const editGroup = async (req, res) => {
 
       const SCDWObj = extra.Extras.find(obj => obj.extraName === 'Super Collision Damage Waiver (SCDW)');
       const TyresObj = extra.Extras.find(obj => obj.extraName === 'Tyres, Windscreen, Underbody');
-      const GPSObj = extra.Extras.find(obj => obj.extraName === 'GPS');
 
       const updatedSCDWObj = SCDWObj.priceOfExtra.find(groupObj => groupObj.groupName === previousGroup.groupName);
       if(updatedSCDWObj){
@@ -168,17 +161,7 @@ const editGroup = async (req, res) => {
           maxQuantity : 1
         })
       }
-      console.log(GPSObj.priceOfExtra);
-      const updatedGPSObj = GPSObj.priceOfExtra.find(groupObj => groupObj.groupName === previousGroup.groupName);
-      if(updatedGPSObj){
-        updatedGPSObj.groupName = req.body.groupName;
-      } else {
-        GPSObj.priceOfExtra.push({
-          groupName : req.body.groupName,
-          price : 20,
-          maxQuantity : 1
-        })
-      }
+      
       console.log(extra.Extras[0].priceOfExtra);
       await Extra.findByIdAndUpdate(extra._id, extra, {
         new: true,
@@ -214,14 +197,11 @@ const deleteGroup = async (req, res) => {
     let extra = await Extra.findOne();
     const SCDWObj = extra.Extras.find(obj => obj.extraName === 'Super Collision Damage Waiver (SCDW)');
     const TyresObj = extra.Extras.find(obj => obj.extraName === 'Tyres, Windscreen, Underbody');
-    const GPSObj = extra.Extras.find(obj => obj.extraName === 'GPS');
 
     const foundGroup = SCDWObj.priceOfExtra.find(obj => obj.groupName === deletedGroup.groupName);
     if (foundGroup) {
       SCDWObj.priceOfExtra = SCDWObj.priceOfExtra.filter(groupObj => groupObj.groupName !== deletedGroup.groupName);
       TyresObj.priceOfExtra = TyresObj.priceOfExtra.filter(groupObj => groupObj.groupName !== deletedGroup.groupName);
-      GPSObj.priceOfExtra = GPSObj.priceOfExtra.filter(groupObj => groupObj.groupName !== deletedGroup.groupName);
-
 
       console.log('Removing Group from Extras');
       console.log(extra.Extras[0].priceOfExtra);
