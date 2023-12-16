@@ -10291,6 +10291,11 @@ header.style-6 .main-menu ul>li .mega-menu .menu-row .menu-single-item h6 {
 	font-size: 15px;
 	font-weight: 600
 }
+@media (min-width : 800px){
+	.mainSection {
+		height: 100vh !important;
+	}
+}
 
 @media(max-width:991px) {
 	header.style-6 .main-menu ul>li .mega-menu .menu-row .menu-single-item h6 {
@@ -11727,6 +11732,7 @@ header.style-6 .main-menu .hotline-area .content h6 a {
 .gridView{
 	height: 570px !important;
 }
+
 .adminGridView{
 	height: 580px !important;
 }

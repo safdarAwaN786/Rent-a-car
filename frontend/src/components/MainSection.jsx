@@ -61,10 +61,9 @@ export default function MainSection() {
         <>
             <div style={{
                 backgroundImage: `linear-gradient(180deg, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.15) 100%), url(${landingPageContent?.backgroundImageUrl})`,
-                height: '100vh'
-            }} class="banner-section2">
+            }} class="banner-section2 mainSection">
                 <div class="">
-                    <div class=" mx-5">
+                    <div class="mx-sm-2 mx-lg-5">
                         <div class="banner-content">
                             {/* <!-- <h1>Explore Cyprus</h1> --> */}
                             <h1 className='px-2'>{landingPageContent?.mainHeading}</h1>
