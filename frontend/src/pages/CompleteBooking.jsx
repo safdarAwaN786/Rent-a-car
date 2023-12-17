@@ -519,47 +519,7 @@ export default function CompleteBooking() {
 
                                             <div class="product-widget mb-20">
                                                 <div class="check-box-item">
-                                                    <h6 class="product-widget-title mb-20">Basic Price</h6>
-                                                    <div class="checkbox-container">
-                                                        {bookingData?.days?.totalBookingDays > 3 && (
-                                                            <>
-                                                                {bookingData?.days?.winterBookingDays > 0 && (
-                                                                    <div class="row g-3">
-                                                                        <div class="col-6">
-                                                                            <li>Winter Season:</li>
-                                                                        </div>
-                                                                        <div class="col-6">
 
-                                                                            <span>€{selectedGroup['winterPrices'][bookingData?.days.totalBookingDays <= 6 ? '1to6daysPrice' : bookingData?.days.totalBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice']} X {bookingData?.days.winterBookingDays}days = <b>{ }</b><strong>€{(selectedGroup['winterPrices'][bookingData?.days.totalBookingDays <= 6 ? '1to6daysPrice' : bookingData?.days.totalBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice'] * bookingData?.days.winterBookingDays).toFixed(2)}</strong></span>
-                                                                        </div>
-                                                                    </div>
-                                                                )}
-
-                                                                {bookingData?.days?.summerBookingDays > 0 && (
-                                                                    <div class="row g-3">
-                                                                        <div class="col-6">
-                                                                            <li>Summer Season:</li>
-                                                                        </div>
-                                                                        <div class="col-6">
-                                                                            <span>€{selectedGroup['summerPrices'][bookingData?.days.totalBookingDays <= 6 ? '1to6daysPrice' : bookingData?.days.totalBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice']} X {bookingData?.days.summerBookingDays}days = <b>{ }</b><strong>€{(selectedGroup['summerPrices'][bookingData?.days.totalBookingDays <= 6 ? '1to6daysPrice' : bookingData?.days.totalBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice'] * bookingData?.days.summerBookingDays).toFixed(2)}</strong></span>
-                                                                        </div>
-                                                                    </div>
-                                                                )}
-
-                                                                {bookingData?.days?.summerHighBookingDays > 0 && (
-                                                                    <div class="row g-3">
-                                                                        <div class="col-6">
-                                                                            <li>Summer High:</li>
-                                                                        </div>
-                                                                        <div class="col-6">
-                                                                            <span>€{selectedGroup['summerHighPrices'][bookingData?.days.totalBookingDays <= 6 ? '1to6daysPrice' : bookingData?.days.totalBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice']} X {bookingData?.days.summerHighBookingDays}days = <b>{ }</b><strong>€{(selectedGroup['summerHighPrices'][bookingData?.days.totalBookingDays <= 6 ? '1to6daysPrice' : bookingData?.days.totalBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice'] * bookingData?.days.summerHighBookingDays).toFixed(2)}</strong></span>
-                                                                        </div>
-                                                                    </div>
-                                                                )}
-                                                            </>
-                                                        )}
-
-                                                    </div>
                                                     <div class="form-inner mb-20">
                                                         <form onSubmit={(e) => {
                                                             e.preventDefault();
@@ -609,6 +569,46 @@ export default function CompleteBooking() {
                                                                 )}
                                                             </button>
                                                         </form>
+                                                    </div>
+                                                    <h6 class="product-widget-title mb-20">Basic Price</h6>
+                                                    <div class="checkbox-container">
+                                                        {bookingData?.days?.totalBookingDays > 3 && (
+                                                            <>
+                                                                {bookingData?.days?.winterBookingDays > 0 && (
+                                                                    <div class="row g-3">
+                                                                        <div class="col-6">
+                                                                            <li>Winter Season:</li>
+                                                                        </div>
+                                                                        <div class="col-6">
+
+                                                                            <span>€{selectedGroup['winterPrices'][bookingData?.days.totalBookingDays <= 6 ? '1to6daysPrice' : bookingData?.days.totalBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice']} X {bookingData?.days.winterBookingDays}days = <b>{ }</b><strong>€{(selectedGroup['winterPrices'][bookingData?.days.totalBookingDays <= 6 ? '1to6daysPrice' : bookingData?.days.totalBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice'] * bookingData?.days.winterBookingDays).toFixed(2)}</strong></span>
+                                                                        </div>
+                                                                    </div>
+                                                                )}
+
+                                                                {bookingData?.days?.summerBookingDays > 0 && (
+                                                                    <div class="row g-3">
+                                                                        <div class="col-6">
+                                                                            <li>Summer Season:</li>
+                                                                        </div>
+                                                                        <div class="col-6">
+                                                                            <span>€{selectedGroup['summerPrices'][bookingData?.days.totalBookingDays <= 6 ? '1to6daysPrice' : bookingData?.days.totalBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice']} X {bookingData?.days.summerBookingDays}days = <b>{ }</b><strong>€{(selectedGroup['summerPrices'][bookingData?.days.totalBookingDays <= 6 ? '1to6daysPrice' : bookingData?.days.totalBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice'] * bookingData?.days.summerBookingDays).toFixed(2)}</strong></span>
+                                                                        </div>
+                                                                    </div>
+                                                                )}
+
+                                                                {bookingData?.days?.summerHighBookingDays > 0 && (
+                                                                    <div class="row g-3">
+                                                                        <div class="col-6">
+                                                                            <li>Summer High:</li>
+                                                                        </div>
+                                                                        <div class="col-6">
+                                                                            <span>€{selectedGroup['summerHighPrices'][bookingData?.days.totalBookingDays <= 6 ? '1to6daysPrice' : bookingData?.days.totalBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice']} X {bookingData?.days.summerHighBookingDays}days = <b>{ }</b><strong>€{(selectedGroup['summerHighPrices'][bookingData?.days.totalBookingDays <= 6 ? '1to6daysPrice' : bookingData?.days.totalBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice'] * bookingData?.days.summerHighBookingDays).toFixed(2)}</strong></span>
+                                                                        </div>
+                                                                    </div>
+                                                                )}
+                                                            </>
+                                                        )}
                                                     </div>
                                                     <div class="d-flex justify-content-between g-3 mt-3">
                                                         <div>
