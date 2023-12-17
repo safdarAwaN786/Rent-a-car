@@ -92,6 +92,17 @@ export default function AdminSeasons() {
                                             updateSeasons();
                                             return
                                         }
+                                        if (seasonToEdit.endDate >= seasonsToCheck[0].startDate && seasonToEdit.endDate <= seasonsToCheck[0].endDate) {
+                                            toast.warning(`Each season should have unique dates! ${seasonsToCheck[0].seasonName} season already have this date.`);
+                                            updateSeasons();
+
+                                            return
+                                        }
+                                        if (seasonToEdit.startDate >= seasonsToCheck[1].startDate && seasonToEdit.startDate <= seasonsToCheck[1].endDate) {
+                                            toast.warning(`Each season should have unique dates! ${seasonsToCheck[1].seasonName} season already have this date.`);
+                                            updateSeasons();
+                                            return
+                                        }
                                         if (seasonToEdit.endDate >= seasonsToCheck[1].startDate && seasonToEdit.endDate <= seasonsToCheck[1].endDate) {
                                             toast.warning(`Each season should have unique dates! ${seasonsToCheck[1].seasonName} season already have this date.`);
                                             updateSeasons();
@@ -99,12 +110,12 @@ export default function AdminSeasons() {
                                             return
                                         }
 
-                                        if (seasonToEdit.startDate < seasonsToCheck[0].startDate && seasonToEdit.endDate > seasonsToCheck[0].endDate) {
+                                        if (seasonToEdit.startDate <= seasonsToCheck[0].startDate && seasonToEdit.endDate >= seasonsToCheck[0].endDate) {
                                             toast.warning(`Each season should have unique dates!. ${seasonToEdit.seasonName} and ${seasonsToCheck[0].seasonName} repeating dates!`);
                                             updateSeasons()
                                             return
                                         }
-                                        if (seasonToEdit.startDate < seasonsToCheck[1].startDate && seasonToEdit.endDate > seasonsToCheck[1].endDate) {
+                                        if (seasonToEdit.startDate <= seasonsToCheck[1].startDate && seasonToEdit.endDate >= seasonsToCheck[1].endDate) {
                                             toast.warning(`Each season should have unique dates!. ${seasonToEdit.seasonName} and ${seasonsToCheck[1].seasonName} repeating dates!`);
                                             updateSeasons();
                                             return

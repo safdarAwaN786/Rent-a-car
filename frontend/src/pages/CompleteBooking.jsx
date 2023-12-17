@@ -523,8 +523,10 @@ export default function CompleteBooking() {
                                                     <div class="form-inner mb-20">
                                                         <form onSubmit={(e) => {
                                                             e.preventDefault();
-                                                            setApplyingPromo(true)
                                                             e.target.reset();
+                                                            if(codeValue !== bookingData?.promoCode?.code){
+                                                            setApplyingPromo(true)
+
                                                             axios.get(`/get-code/${codeValue}/${bookingData?.group}`).then((res) => {
                                                                 console.log(res);
                                                                 setApplyingPromo(false);
@@ -541,6 +543,10 @@ export default function CompleteBooking() {
                                                                 setPromoCodeObj(null);
                                                                 toast.error('Error on Applying Code!')
                                                             })
+                                                            } else {
+                                                                toast.warning('Code already added!');
+                                                                setApplyingPromo(false)
+                                                            }
                                                         }}>
                                                             <h5 class="product-widget-title mb-20">Promo</h5>
                                                             {promoCodeObj && (

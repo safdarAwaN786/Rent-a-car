@@ -7,9 +7,9 @@ const Vat = require('../models/VAT');
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
-    user: 'yourwaycarhire@gmail.com',
-    pass: 'lyio nmih nues ctxw'
-  }
+      user: "yourwaycarhire@gmail.com",
+       pass: "kvvh fsme ckfc mxjv"
+  },
 });
 
 
@@ -33,7 +33,7 @@ const addBooking = async (req, res) => {
       }
     }
 
-    const mailOptions = {
+    const mailOptionsForOwner = {
       from: 'yourwaycarhire@gmail.com',
       to: 'yourwaycarhire@gmail.com', // Change this to the actual email address of the platform owner
       subject: 'New Booking Received',
@@ -71,7 +71,7 @@ const addBooking = async (req, res) => {
             background-color: #f2f2f2;
         }
         img {
-            width: 100%;
+            width: 60%;
             margin-top: 20px;
         }
         </style>
@@ -230,17 +230,199 @@ const addBooking = async (req, res) => {
           </html>
       `
     };
+    const mailOptionsForUser = {
+      from: 'yourwaycarhire@gmail.com',
+      to: bookingUser.email, // Change this to the actual email address of the platform owner
+      subject: 'Booking Received',
+      html: `
+          <!DOCTYPE html>
+          <html>
+          <head>
+          <meta charset="utf-8">
+          <title>New Booking Received</title>
+          <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 20px;
+        }
+        h1 {
+            color: #333;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+        h1 {
+          text-align: center;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        img {
+            width: 60%;
+            margin-top: 20px;
+        }
+        </style>
+          </head>
+          <body>
+          <h1>Booking Received - Your Way Car Hire</h1>
+          <p>Dear ${bookingUser.firstName} ${bookingUser.lastName},</p>
+          <p>Thank you for choosing our service for your booking. We appreciate your trust in us.</p>
+          <p>We would like to inform you that your booking is currently in a pending status and is awaiting confirmation. Our team is working diligently to process your request and will get back to you with the confirmation details as soon as possible.</p>
 
-    transporter.sendMail(mailOptions, async function (error, info) {
+          <p>Date: ${booking.bookingDate.toLocaleDateString('en-GB', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+      })} </p>
+          
+          <h2>Booking Information</h2>
+          <table>
+              <tr>
+                  <th>Pick up:</th>
+                  <td>${booking.pickUpLocation} on ${booking.pickUpDate.toLocaleDateString('en-GB', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+      })} | ${booking.pickUpTime} </td>
+              </tr>
+              <tr>
+                  <th>Drop off:</th>
+                  <td>${booking.dropOffLocation} on ${booking.dropOffDate.toLocaleDateString('en-GB', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+      })} | ${booking.dropOffTime} </td>
+              </tr>
+              <tr>
+                  <th>Booked Group:</th>
+                  <td>${group.groupName}</td>
+              </tr>
+              <tr>
+                  <th>Vehicle Name:</th>
+                  <td>${group.vehicleName}</td>
+              </tr>
+              <tr>
+                  <th>Total Days:</th>
+                  <td>${booking.days.totalBookingDays}</td>
+              </tr>
+              <tr>
+                  <th>Additional Comment:</th>
+                  <td>${booking.comment || '---'}</td>
+              </tr>
+          </table>
+         
+          <h2>Basic Prices</h2>
+         
+            <table>
+            ${booking.days.totalBookingDays > 3 ? (
+
+          ` <tr>
+                      <th></th>
+                      <th>Rate per day</th>
+                      <th>Days</th>
+                      <th>Total Basic</th>
+                  </tr>
+                  ${booking.days.winterBookingDays > 0 ? (
+            `<tr>
+                    <th>Winter Price</th>
+                    <td>€${group['winterPrices'][booking.days.totalBookingDays <= 6 ? '1to6daysPrice' : booking.days.totalBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice']}</td          
+                    <td>${booking.days.winterBookingDays}</td>
+                    <td>€${(group['winterPrices'][booking.days.totalBookingDays <= 6 ? '1to6daysPrice' : booking.days.totalBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice'] * booking.days.winterBookingDays).toFixed(2)}</td>
+                    </tr>`) : ''}
+                    ${booking.days.summerBookingDays > 0 ? (
+            `<tr>
+                      <th>Summer Price</th>
+                      <td>€${group['summerPrices'][booking.days.totalBookingDays <= 6 ? '1to6daysPrice' : booking.days.totalBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice']}</td>
+                      <td>${booking.days.summerBookingDays}</td>
+                      <td>€${(group['summerPrices'][booking.days.totalBookingDays <= 6 ? '1to6daysPrice' : booking.days.totalBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice'] * booking.days.summerBookingDays).toFixed(2)}</td>
+                      </tr>`) : ''}
+                      ${booking.days.summerHighBookingDays > 0 ? (
+            `<tr>
+                        <th>Summer High Price</th>
+                        <td>€${group['summerHighPrices'][booking.days.totalBookingDays <= 6 ? '1to6daysPrice' : booking.days.totalBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice']}</td>
+                        <td>${booking.days.summerHighBookingDays}</td>
+                        <td>€${(group['summerHighPrices'][booking.days.totalBookingDays <= 6 ? '1to6daysPrice' : booking.days.totalBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice'] * booking.days.summerHighBookingDays).toFixed(2)}</td>
+                        </tr>`) : ''}`
+        ) : ''}
+        <tr>
+                  <th>Promo Code Discount:</th>
+                  <td>€${(booking.promoDiscount).toFixed(2)}</td>
+              </tr>
+                    <tr>
+                    <th>Total Basic Price</th>
+                    <td>€${booking.basicPrice - booking.airPortFee}</td>
+                    </tr>
+          </table>
+          
+          ${booking.addedExtras.length > 0 && (
+          `<h2>Extras Added</h2>
+            <table>
+          <tr>
+           <th>Extra Name</th>
+           <th>Price</th>
+           <th>Quantity</th>
+           <th>Total</th>
+          </tr>
+          ${extrasContent}
+          </table>`
+        )}
+
+          <h2>TOTALS</h2>
+          <table>
+              <tr>
+                  <th>Air Port Fee:</th>
+                  <td>€${booking.airPortFee}</td>
+              </tr>
+              <tr>
+                  <th>Total VAT included:</th>
+                  <td>€${(parseFloat(booking.vatValue)).toFixed(2)}</td>
+              </tr>
+              
+              <tr>
+                  <th>Grand Total(${booking.days.totalBookingDays}days):</th>
+                  <td>€${(parseFloat(booking.totalPrice)).toFixed(2)}</td>
+              </tr>
+          </table>
+          <p>We appreciate your patience and understanding. We look forward to serving you and ensuring a seamless experience.</p>
+          <p>Sincerely,</p>
+          <p>The YourWay Car Hire Team</p>
+          <img src='https://res.cloudinary.com/dzpac6i3a/image/upload/v1699596015/Screenshot_2023-11-09_144507_qgsvra.png' />
+          </body>
+          </html>
+      `
+    };
+
+    
+
+    transporter.sendMail(mailOptionsForOwner, async function (error, info) {
       if (error) {
+        console.log(error);
         res.status(500).send({ status: false, message: 'Internal server error' });
       } else {
-        await booking.save();
-        res.status(200).send({
-          status: true, message: "The Booking is added!", data: booking
+        transporter.sendMail(mailOptionsForUser, async function (error, info) {
+          if (error) {
+            console.log(error);
+            res.status(500).send({ status: false, message: 'Internal server error' });
+          } else {
+            await booking.save();
+            res.status(200).send({
+              status: true, message: "The Booking is added!", data: booking
+            });
+          }
         });
       }
     });
+    
   } catch (error) {
     console.log(error)
     res.status(400).send({ status: false, message: error.message });
@@ -367,7 +549,7 @@ const confirmBooking = async (req, res) => {
             background-color: #f2f2f2;
         }
         img {
-            width: 100%;
+            width: 60%;
             margin-top: 20px;
         }
         </style>
@@ -375,7 +557,7 @@ const confirmBooking = async (req, res) => {
             <body>
             <h1>Car Booking Confirmation - Your Way Car Hire</h1>
             <p>Dear ${booking.user.firstName} ${booking.user.lastName},</p>
-            <p>Thank you for booking with YourWay Car Hire. We are delighted to serve you and ensure you have a smooth and enjoyable driving experience. Here are the details of your reservation:</p>
+            <p>Congtatulations, Your Booking has been Confirmed with "Your Way - Car Hire". We are delighted to serve you and ensure you have a smooth and enjoyable driving experience. Here are the details of your reservation:</p>
             <h2>Booking Info</h2>
           <table>
               <tr>
@@ -498,193 +680,7 @@ const confirmBooking = async (req, res) => {
     };
 
 
-    const mailOptionsForOwner = {
-      from: 'yourwaycarhire@gmail.com',
-      to: 'yourwaycarhire@gmail.com',
-      subject: 'Car Booking Confirmation - YourWay Car Hire',
-      html: `
-            <!DOCTYPE html>
-            <html>
-            <head>
-            <meta charset="utf-8">
-            <title>Car Booking Confirmation - YourWay Car Hire</title>
-            <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            padding: 20px;
-        }
-        h1 {
-            color: #333;
-        }
-        table {
-            border-collapse: collapse;
-            width: 100%;
-            margin-top: 20px;
-        }
-        table, th, td {
-            border: 1px solid #ddd;
-        }
-        th, td {
-            padding: 10px;
-            text-align: left;
-        }
-        h1 {
-          text-align: center;
-        }
-        th {
-            background-color: #f2f2f2;
-        }
-        img {
-            width: 100%;
-            margin-top: 20px;
-        }
-        </style>
-            </head>
-            <body>
-            <h1>Car Booking Confirmation - Your Way Car Hire</h1>
-            <p>Dear Admin,</p>
-            <p>Congratulations, You have just Confirmed a new booking</p>
-            <h2>Booking Info</h2>
-          <table>
-              <tr>
-                  <th>Pick up:</th>
-                  <td>${booking.pickUpLocation} on ${booking.pickUpDate.toLocaleDateString('en-GB', {
-        day: '2-digit',
-        month: '2-digit',
-        year: 'numeric',
-      })} | ${booking.pickUpTime} </td>
-              </tr>
-              <tr>
-                  <th>Drop off:</th>
-                  <td>${booking.dropOffLocation} on ${booking.dropOffDate.toLocaleDateString('en-GB', {
-        day: '2-digit',
-        month: '2-digit',
-        year: 'numeric',
-      })} | ${booking.dropOffTime} </td>
-              </tr>
-              <tr>
-                  <th>Booked Group:</th>
-                  <td>${group.groupName}</td>
-              </tr>
-              <tr>
-                  <th>Vehicle Name:</th>
-                  <td>${group.vehicleName}</td>
-              </tr>
-              <tr>
-                  <th>Total Days:</th>
-                  <td>${booking.days.totalBookingDays}</td>
-              </tr>
-              <tr>
-                  <th>Additional Comment:</th>
-                  <td>${booking.comment || '---'}</td>
-              </tr>
-          </table>
-          <h2>Booked Group Prices</h2>
-          <table>
-              <tr>
-                  <th></th>
-                  <th>1 - 6 days</th>
-                  <th>7 - 14 days</th>
-                  <th>15+ days</th>
-              </tr>
-              <tr>
-                  <th>Winter Season</th>
-                  <td>€${group['winterPrices']['1to6daysPrice']}</td>
-                  <td>€${group['winterPrices']['7to14daysPrice']}</td>
-                  <td>€${group['winterPrices']['15plusDaysPrice']}</td>
-              </tr>
-              <tr>
-                  <th>Summer Season</th>
-                  <td>€${group['summerPrices']['1to6daysPrice']}</td>
-                  <td>€${group['summerPrices']['7to14daysPrice']}</td>
-                  <td>€${group['summerPrices']['15plusDaysPrice']}</td>
-              </tr>
-              <tr>
-                  <th>Summer High Season</th>
-                  <td>€${group['summerHighPrices']['1to6daysPrice']}</td>
-                  <td>€${group['summerHighPrices']['7to14daysPrice']}</td>
-                  <td>€${group['summerHighPrices']['15plusDaysPrice']}</td>
-              </tr>
-          </table>
-          <h2>Basic Prices</h2>
-         
-            <table>
-            ${booking.days.totalBookingDays > 3 ? (
-
-          ` <tr>
-                      <th></th>
-                      <th>Rate per day</th>
-                      <th>Days</th>
-                      <th>Total Basic</th>
-                  </tr>
-                  ${booking.days.winterBookingDays > 0 ? (
-            `<tr>
-                    <th>Winter Price</th>
-                    <td>€${group['winterPrices'][booking.days.totalBookingDays <= 6 ? '1to6daysPrice' : booking.days.totalBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice']}</td          
-                    <td>${booking.days.winterBookingDays}</td>
-                    <td>€${(group['winterPrices'][booking.days.totalBookingDays <= 6 ? '1to6daysPrice' : booking.days.totalBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice'] * booking.days.winterBookingDays).toFixed(2)}</td>
-                    </tr>`) : ''}
-                    ${booking.days.summerBookingDays > 0 ? (
-            `<tr>
-                      <th>Summer Price</th>
-                      <td>€${group['summerPrices'][booking.days.totalBookingDays <= 6 ? '1to6daysPrice' : booking.days.totalBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice']}</td>
-                      <td>${booking.days.summerBookingDays}</td>
-                      <td>€${(group['summerPrices'][booking.days.totalBookingDays <= 6 ? '1to6daysPrice' : booking.days.totalBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice'] * booking.days.summerBookingDays).toFixed(2)}</td>
-                      </tr>`) : ''}
-                      ${booking.days.summerHighBookingDays > 0 ? (
-            `<tr>
-                        <th>Summer High Price</th>
-                        <td>€${group['summerHighPrices'][booking.days.totalBookingDays <= 6 ? '1to6daysPrice' : booking.days.totalBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice']}</td>
-                        <td>${booking.days.summerHighBookingDays}</td>
-                        <td>€${(group['summerHighPrices'][booking.days.totalBookingDays <= 6 ? '1to6daysPrice' : booking.days.totalBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice'] * booking.days.summerHighBookingDays).toFixed(2)}</td>
-                        </tr>`) : ''}`
-        ) : ''}
-        <tr>
-                  <th>Promo Code Discount:</th>
-                  <td>€${(booking.promoDiscount).toFixed(2)}</td>
-              </tr>
-                    <tr>
-                    <th>Total Basic Price</th>
-                    <td>€${booking.basicPrice - booking.airPortFee}</td>
-                    </tr>
-          </table>
-          
-          ${booking.addedExtras.length > 0 ? (
-          `<h2>Extras Added</h2>
-            <table>
-          <tr>
-           <th>Extra Name</th>
-           <th>Price</th>
-           <th>Quantity</th>
-           <th>Total</th>
-          </tr>
-          ${extrasContent}
-          </table>`
-        ) : ''}
-
-          <h2>TOTALS</h2>
-          <table>
-              <tr>
-                  <th>Air Port Fee:</th>
-                  <td>€${booking.airPortFee}</td>
-              </tr>
-              <tr>
-                  <th>Total VAT included:</th>
-                  <td>€${(parseFloat(booking.vatValue)).toFixed(2)}</td>
-              </tr>
-              
-              <tr>
-                  <th>Grand Total(${booking.days.totalBookingDays}days):</th>
-                  <td>€${(parseFloat(booking.totalPrice)).toFixed(2)}</td>
-              </tr>
-          </table>
-          <p>We look forward to serving the customer!</p>
-          <p>Sincerely,</p>
-          <p>The YourWay Car Hire Team</p>
-          <img src='https://res.cloudinary.com/dzpac6i3a/image/upload/v1699596015/Screenshot_2023-11-09_144507_qgsvra.png' />
-`
-    };
+    
 
     transporter.sendMail(mailOptions, async function (error, info) {
       if (error) {
@@ -700,13 +696,7 @@ const confirmBooking = async (req, res) => {
         });
       }
     });
-    transporter.sendMail(mailOptionsForOwner, async function (error, info) {
-      if (error) {
-        res.status(500).send({ status: false, message: 'Internal server error' });
-      } else {
-        console.log('Email sent: ' + info.response)
-      }
-    });
+   
   } catch (error) {
     console.log(error);
     return res.status(500).send({ status: false, message: 'Internal server error' });
