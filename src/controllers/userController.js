@@ -60,7 +60,7 @@ const signup = async (req, res) => {
 // User Login
 const login = async (req, res) => {
     const { email, password } = req.body;
-
+    console.log(req.body);
     try {
         let user = await User.findOne({ email });
 
@@ -89,7 +89,7 @@ const login = async (req, res) => {
             }
         );
     } catch (err) {
-        console.error(err.message);
+        console.error(err);
         res.status(500).send('Server Error');
     }
 };

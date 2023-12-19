@@ -152,37 +152,42 @@ export default function Navbar() {
 
     // User login function
     const handleLogin = () => {
+        if (userDataToSend?.email && userDataToSend?.password) {
         setLoggingIn(true);
         // Perform login API request
-        axios.post('/login', userDataToSend)
-            .then(response => {
 
-                setLoggingIn(false);
-                const { token } = response.data;
-                Cookies.set('userToken', token); // Set the user token in the cookie
-                // console.log(Cookies);
+            axios.post('/login', userDataToSend)
+                .then(response => {
 
-                dispatch(logInUser({
-                    loggedIn: true,
-                    user: userDataToSend
-                }))
-                toast.success("Logged In Successfully!");
-                if (loginCloseButtonRef.current) {
-                    loginCloseButtonRef.current.click();
-                }
+                    setLoggingIn(false);
+                    const { token } = response.data;
+                    Cookies.set('userToken', token); // Set the user token in the cookie
+                    // console.log(Cookies);
 
-            })
-            .catch(error => {
-                setLoggingIn(false);
-                if (error?.response?.status === 400) {
-                    toast.error(error.response.data.message);
+                    dispatch(logInUser({
+                        loggedIn: true,
+                        user: userDataToSend
+                    }))
+                    toast.success("Logged In Successfully!");
+                    if (loginCloseButtonRef.current) {
+                        loginCloseButtonRef.current.click();
+                    }
 
-                } else {
-                    toast.error('Server Error , Try Again !');
+                })
+                .catch(error => {
+                    setLoggingIn(false);
+                    if (error?.response?.status === 400) {
+                        toast.error(error.response.data.message);
 
-                }
-                console.error('Error logging in:', error)
-            });
+                    } else {
+                        toast.error('Server Error , Try Again !');
+
+                    }
+                    console.error('Error logging in:', error)
+                });
+        } else {
+            toast.warning('Kindly type Email and Password!')
+        }
     };
 
     const [openContent, setOpenContent] = useState(false);

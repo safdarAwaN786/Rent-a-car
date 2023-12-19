@@ -166,37 +166,50 @@ export default function ProductCard({ gridView, groupData }) {
                                 }
 
 
-                                console.log(bookingDatesArr)
+                                let outOfRange = false
                                 bookingDatesArr?.map((date, index) => {
-                                    if (date >= new Date(allSeasons.winterSeason.startDate) && date <= new Date(allSeasons.winterSeason.endDate)) {
-                                        console.log('In winter' + date);
-                                        winterBookingDays += 1;
-                                    } else if (date >= new Date(allSeasons.summerSeason.startDate) && date <= new Date(allSeasons.summerSeason.endDate)) {
-                                        console.log('In summer' + date);
-                                        summerBookingDays += 1
-                                    } else if (date >= new Date(allSeasons.summerHighSeason.startDate) && date <= new Date(allSeasons.summerHighSeason.endDate)) {
-                                        console.log('In summer High' + date);
-                                        summerHighBookingDays += 1;
+                                    if (!outOfRange) {
+
+                                        if (date >= new Date(allSeasons.winterSeason.startDate) && date <= new Date(allSeasons.winterSeason.endDate)) {
+                                            console.log('In winter' + date);
+                                            winterBookingDays += 1;
+                                            outOfRange = false
+                                        } else if (date >= new Date(allSeasons.summerSeason.startDate) && date <= new Date(allSeasons.summerSeason.endDate)) {
+                                            console.log('In summer' + date);
+                                            summerBookingDays += 1;
+                                            outOfRange = false
+                                        } else if (date >= new Date(allSeasons.summerHighSeason.startDate) && date <= new Date(allSeasons.summerHighSeason.endDate)) {
+                                            console.log('In summer High' + date);
+                                            summerHighBookingDays += 1;
+                                            outOfRange = false
+                                        } else {
+                                            outOfRange = true
+                                        }
                                     } else {
-                                        console.log('Not in any season' + date)
+                                        return;
                                     }
                                 })
 
-                                totalBookingDays = winterBookingDays + summerBookingDays + summerHighBookingDays;
-                                dispatch(setBookingDays({ winterBookingDays, summerBookingDays, summerHighBookingDays, totalBookingDays }));
-                                if (totalBookingDays < 3) {
-                                    if (totalBookingDays === 1) {
-                                        basicPrice = groupData[currentSeason]['1to6daysPrice'] * 3;
-                                    } else {
-                                        basicPrice = (groupData['winterPrices']['1to6daysPrice'] * winterBookingDays) + (groupData['summerPrices']['1to6daysPrice'] * summerBookingDays) + (groupData['summerHighPrices']['1to6daysPrice'] * summerHighBookingDays) + (groupData[currentSeason]['1to6daysPrice'])
-                                    }
+                                if (outOfRange) {
+                                    toast.error('Sorry, Selected dates are out of Booking Range!')
+                                    return
                                 } else {
-                                    basicPrice = (groupData['winterPrices'][totalBookingDays <= 6 ? '1to6daysPrice' : totalBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice'] * winterBookingDays) + (groupData['summerPrices'][totalBookingDays <= 6 ? '1to6daysPrice' : totalBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice'] * summerBookingDays) + (groupData['summerHighPrices'][totalBookingDays <= 6 ? '1to6daysPrice' : totalBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice'] * summerHighBookingDays)
-                                }
+                                    totalBookingDays = winterBookingDays + summerBookingDays + summerHighBookingDays;
+                                    dispatch(setBookingDays({ winterBookingDays, summerBookingDays, summerHighBookingDays, totalBookingDays }));
+                                    if (totalBookingDays < 3) {
+                                        if (totalBookingDays === 1) {
+                                            basicPrice = groupData[currentSeason]['1to6daysPrice'] * 3;
+                                        } else {
+                                            basicPrice = (groupData['winterPrices']['1to6daysPrice'] * winterBookingDays) + (groupData['summerPrices']['1to6daysPrice'] * summerBookingDays) + (groupData['summerHighPrices']['1to6daysPrice'] * summerHighBookingDays) + (groupData[currentSeason]['1to6daysPrice'])
+                                        }
+                                    } else {
+                                        basicPrice = (groupData['winterPrices'][totalBookingDays <= 6 ? '1to6daysPrice' : totalBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice'] * winterBookingDays) + (groupData['summerPrices'][totalBookingDays <= 6 ? '1to6daysPrice' : totalBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice'] * summerBookingDays) + (groupData['summerHighPrices'][totalBookingDays <= 6 ? '1to6daysPrice' : totalBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice'] * summerHighBookingDays)
+                                    }
 
-                                dispatch(updateBookingInfo({ ...bookingData, group: groupData._id, basicPrice: (basicPrice + bookingData?.airPortFee).toFixed(2), days: { winterBookingDays, summerBookingDays, summerHighBookingDays, totalBookingDays }, user: user._id }))
-                                dispatch(selectGroup(groupData));
-                                navigate('/complete-booking');
+                                    dispatch(updateBookingInfo({ ...bookingData, group: groupData._id, basicPrice: (basicPrice + bookingData?.airPortFee).toFixed(2), days: { winterBookingDays, summerBookingDays, summerHighBookingDays, totalBookingDays }, user: user._id }))
+                                    dispatch(selectGroup(groupData));
+                                    navigate('/complete-booking');
+                                }
                             } else {
                                 dispatch(updateBookingInfo({ ...bookingData, user: user._id }))
                                 navigate('/');

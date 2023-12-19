@@ -24,17 +24,18 @@ const getBase64 = (file) =>
 
 export default function AdminProductsSection() {
 
+    const allowedExtensions = ['.jpg', '.jpeg', '.png'];
 
     const [allDataArr, setAllDataArr] = useState(null);
     const [addingNewGroup, setAddingNewGroup] = useState(false);
     const [loading, setLoading] = useState(true);
-    
+
     const [previewOpen, setPreviewOpen] = useState(false);
     const [previewImage, setPreviewImage] = useState('');
     const [previewTitle, setPreviewTitle] = useState('');
-    const [fileList, setFileList] = useState([
+    const [fileList, setFileList] = useState([]);
+    const [isFileAllowed, setFileAllowed] = useState(false)
 
-    ]);
     const handleCancel = () => setPreviewOpen(false);
     const handlePreview = async (file) => {
         if (!file.url && !file.preview) {
@@ -44,7 +45,11 @@ export default function AdminProductsSection() {
         setPreviewOpen(true);
         setPreviewTitle(file.name || file.url.substring(file.url.lastIndexOf('/') + 1));
     };
-    const handleChange = ({ fileList: newFileList }) => setFileList(newFileList);
+    const handleChange = ({ fileList: newFileList }) => {
+        if (isFileAllowed) {
+            setFileList(newFileList);
+        }
+    }
     const uploadButton = (
         <div>
             <PlusOutlined />
@@ -57,6 +62,19 @@ export default function AdminProductsSection() {
             </div>
         </div>
     );
+
+    const beforeUpload = async (file) => {
+        const isAllowed = allowedExtensions.some(ext => file.name.toLowerCase().endsWith(ext));
+        if (!isAllowed) {
+            setFileAllowed(false)
+            toast.error('Image formats allowed are ".jpg, .jpeg, .png"')
+            return false; // Prevents the file from being added to the fileList
+        }
+
+        setFileAllowed(true)
+
+        return true; // Proceed with the upload
+    };
 
     const saloonManualTransmission = allDataArr?.filter(groupObj => groupObj.groupCategory === 'Saloon Manual Transmission');
 
@@ -225,7 +243,6 @@ export default function AdminProductsSection() {
     useEffect(() => {
         const handleResize = () => {
             setWindowWidth(window.innerWidth);
-
         };
 
         window.addEventListener('resize', handleResize);
@@ -354,6 +371,7 @@ export default function AdminProductsSection() {
                                                     <Upload
 
                                                         listType="picture-card"
+                                                        beforeUpload={beforeUpload}
                                                         fileList={fileList}
                                                         onPreview={handlePreview}
                                                         onChange={handleChange}

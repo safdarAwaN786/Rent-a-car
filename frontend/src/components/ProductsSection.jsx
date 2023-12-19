@@ -11,7 +11,7 @@ export default function ProductsSection() {
     const [allDataArr, setAllDataArr] = useState(null);
     const [groupsList, setGroupsList] = useState(null);
 
-    const reGetData = ()=>{
+    const reGetData = () => {
         axios.get('/read-groups').then((res) => {
             console.log(res);
             setLoading(false)
@@ -248,7 +248,7 @@ export default function ProductsSection() {
                                                     <li>
                                                         <label class="containerss">
                                                             <input onChange={(e) => {
-                                                               groupCategoryFilter(e);
+                                                                groupCategoryFilter(e);
                                                             }} value='Saloon Automatic Transmission' className='filterInput' type="radio" name='vehicleType' />
 
                                                             <span class="text">Saloon Automatic Transmission</span>
@@ -277,7 +277,7 @@ export default function ProductsSection() {
                                                     <li>
                                                         <label class="containerss">
                                                             <input onChange={(e) => {
-                                                               groupCategoryFilter(e);
+                                                                groupCategoryFilter(e);
                                                             }} value='SUV/4WD' className='filterInput' type="radio" name='vehicleType' />
 
                                                             <span class="text">SUV / 4WD</span>
@@ -575,18 +575,24 @@ export default function ProductsSection() {
                                     <div class="list-grid-product-wrap grid-group-wrapper">
                                         <div class="row g-4  mb-40">
 
-                                        
+
 
                                             {groupsList?.sort((a, b) => {
                                                 if (daysPrice) {
                                                     return a[currentSeason][daysPrice] - b[currentSeason][daysPrice];
+                                                } else {
+
+                                                    if (currentSeason) {
+                                                        return a[currentSeason]['1to6daysPrice'] - b[currentSeason]['1to6daysPrice']
+                                                } else {
+                                                        return a['winterPrices']['1to6daysPrice'] - b['winterPrices']['1to6daysPrice']
                                                 }
-                                                return a[currentSeason]['1to6daysPrice'] - b[currentSeason]['1to6daysPrice'];
+                                                }
                                             }).map((groupObj) => {
 
                                                 return (
                                                     <div class={`${gridView ? 'col-lg-6 col-md-6 col-sm-12' : 'col-12'}  wow fadeInUp item`}>
-                                                        <ProductCard  gridView={gridView} groupData={groupObj} />
+                                                        <ProductCard gridView={gridView} groupData={groupObj} />
                                                     </div>
                                                 )
                                             })}

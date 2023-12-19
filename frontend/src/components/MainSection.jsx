@@ -110,33 +110,45 @@ export default function MainSection() {
                                             bookingDatesArr = getDateRangeArray(pickUpDate, dropOffDate)
                                         }
 
+                                        let outOfRange = false
 
-                                        console.log(bookingDatesArr)
                                         bookingDatesArr?.map((date, index) => {
-                                            if (date >= new Date(allSeasons.winterSeason.startDate) && date <= new Date(allSeasons.winterSeason.endDate)) {
-                                                console.log('In winter' + date);
-                                                winterBookingDays += 1;
-                                            } else if (date >= new Date(allSeasons.summerSeason.startDate) && date <= new Date(allSeasons.summerSeason.endDate)) {
-                                                console.log('In summer' + date);
-                                                summerBookingDays += 1
-                                            } else if (date >= new Date(allSeasons.summerHighSeason.startDate) && date <= new Date(allSeasons.summerHighSeason.endDate)) {
-                                                console.log('In summer High' + date);
-                                                summerHighBookingDays += 1;
+                                            if (!outOfRange) {
+
+                                                if (date >= new Date(allSeasons.winterSeason.startDate) && date <= new Date(allSeasons.winterSeason.endDate)) {
+                                                    console.log('In winter' + date);
+                                                    winterBookingDays += 1;
+                                                    outOfRange = false
+                                                } else if (date >= new Date(allSeasons.summerSeason.startDate) && date <= new Date(allSeasons.summerSeason.endDate)) {
+                                                    console.log('In summer' + date);
+                                                    summerBookingDays += 1
+                                                    outOfRange = false
+                                                } else if (date >= new Date(allSeasons.summerHighSeason.startDate) && date <= new Date(allSeasons.summerHighSeason.endDate)) {
+                                                    console.log('In summer High' + date);
+                                                    summerHighBookingDays += 1;
+                                                    outOfRange = false
+                                                } else {
+                                                    outOfRange = true
+                                                }
                                             } else {
-                                                console.log('Not in any season' + date)
+                                                return;
                                             }
                                         })
+                                        if (outOfRange) {
+                                            toast.error('Sorry, Selected dates are out of Booking Range!');
+                                            return
+                                        } else {
+                                            axios.get("/get-vat").then((response) => {
+                                                dispatch(updateBookingInfo({ ...bookingData, vatPercent: response.data[0].value }))
+                                            }).catch((e) => {
+                                                updateVat();
+                                            })
+                                            totalBookingDays = winterBookingDays + summerBookingDays + summerHighBookingDays;
+                                            dispatch(setBookingDays({ winterBookingDays, summerBookingDays, summerHighBookingDays, totalBookingDays }));
 
-                                        axios.get("/get-vat").then((response) => {
-                                            dispatch(updateBookingInfo({ ...bookingData, vatPercent: response.data[0].value }))
-                                        }).catch((e) => {
-                                            updateVat();
-                                        })
-                                        totalBookingDays = winterBookingDays + summerBookingDays + summerHighBookingDays;
-                                        dispatch(setBookingDays({ winterBookingDays, summerBookingDays, summerHighBookingDays, totalBookingDays }));
-
-                                        dispatch(submitPreBooking());
-                                        navigate('/vehicle-guide');
+                                            dispatch(submitPreBooking());
+                                            navigate('/vehicle-guide');
+                                        }
                                     }}
                                 >
 

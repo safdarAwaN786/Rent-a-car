@@ -67,15 +67,12 @@ export default function AdminProductCard({ gridView, groupData, reGetData }) {
         setGroupToEdit({ ...groupToEdit, [e.target.name]: e.target.value })
     }
 
-
+    const allowedExtensions = ['.jpg', '.jpeg', '.png'];
     const [previewOpen, setPreviewOpen] = useState(false);
     const [previewImage, setPreviewImage] = useState('');
     const [previewTitle, setPreviewTitle] = useState('');
-    const [fileList, setFileList] = useState([
-        {
-            url: groupData?.imageUrl
-        }
-    ]);
+    const [isFileAllowed, setFileAllowed] = useState(false)
+    const [fileList, setFileList] = useState([]);
     const handleCancel = () => setPreviewOpen(false);
     const handlePreview = async (file) => {
         if (!file.url && !file.preview) {
@@ -85,7 +82,11 @@ export default function AdminProductCard({ gridView, groupData, reGetData }) {
         setPreviewOpen(true);
         setPreviewTitle(file.name || file.url.substring(file.url.lastIndexOf('/') + 1));
     };
-    const handleChange = ({ fileList: newFileList }) => setFileList(newFileList);
+    const handleChange = ({ fileList: newFileList }) => {
+        if (isFileAllowed) {
+            setFileList(newFileList);
+        }
+    }
     const uploadButton = (
         <div>
             <PlusOutlined />
@@ -98,6 +99,19 @@ export default function AdminProductCard({ gridView, groupData, reGetData }) {
             </div>
         </div>
     );
+    
+
+    const beforeUpload = async (file) => {
+        const isAllowed = allowedExtensions.some(ext => file.name.toLowerCase().endsWith(ext));
+        if (!isAllowed) {
+            setFileAllowed(false)
+            toast.error('Image formats allowed are ".jpg, .jpeg, .png"')
+            return false; // Prevents the file from being added to the fileList
+        }
+
+        setFileAllowed(true)
+        return true; // Proceed with the upload
+    };
 
 
 
@@ -175,6 +189,7 @@ export default function AdminProductCard({ gridView, groupData, reGetData }) {
                                         <Upload
 
                                             listType="picture-card"
+                                            beforeUpload={beforeUpload}
                                             fileList={fileList}
                                             onPreview={handlePreview}
                                             onChange={handleChange}

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useDropzone } from 'react-dropzone';
+import { toast } from 'react-toastify';
 
 const MyDropzone = ({ initialImageLink, onFileUpload }) => {
   const [file, setFile] = useState(null);
@@ -10,13 +11,21 @@ const MyDropzone = ({ initialImageLink, onFileUpload }) => {
   }, [initialImageLink]);
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    accept: 'image/*',
     onDrop: (acceptedFiles) => {
-      // Set the file state when a file is dropped
-      setFile(acceptedFiles[0]);
-      onFileUpload(acceptedFiles[0]);
+      const selectedFile = acceptedFiles[0];
+
+      // Check file type before setting the file
+      if (isImageFile(selectedFile)) {
+        setFile(selectedFile);
+        onFileUpload(selectedFile);
+      } else {
+        toast.error('File formats allowed are ".jpg, .jpeg, .png"')
+      }
     },
   });
+  const isImageFile = (file) => {
+    return file.type.startsWith('image/') && /\.(jpg|jpeg|png)$/i.test(file.name);
+  };
 
   return (
     <div {...getRootProps()} style={dropzoneStyles}>
@@ -46,8 +55,8 @@ const dropzoneStyles = {
   width: '150px',
   cursor: 'pointer',
   position: 'relative',
-  margin : '10px',
-  padding  : '3px'
+  margin: '10px',
+  padding: '3px'
 };
 
 const previewImageStyles = {
