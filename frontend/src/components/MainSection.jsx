@@ -8,7 +8,6 @@ import { clearPreSubmission, submitPreBooking, updateBookingInfo } from '../redu
 import { setBookingDays } from '../redux/slices/bookingDaysSlice';
 import axios from 'axios';
 
-
 export default function MainSection() {
 
     useEffect(() => {
@@ -25,8 +24,6 @@ export default function MainSection() {
     }
     const [customPickUp, setCustomPickUp] = useState(false);
     const [customDropOff, setCustomDropOff] = useState(false);
-    const loggedIn = useSelector(state => state.auth.loggedIn);
-    const user = useSelector(state => state.auth.user);
     const dispatch = useDispatch();
     const bookingData = useSelector(state => state.booking.bookingData);
     const landingPageContent = useSelector(state => state.webContent?.landingPage);
@@ -94,11 +91,7 @@ export default function MainSection() {
                                         }
 
                                         let bookingDatesArr;
-                                        let winterBookingDays = 0;
-                                        let summerBookingDays = 0;
-                                        let summerHighBookingDays = 0;
                                         let totalBookingDays = 0;
-                                        let basicPrice;
 
                                         if (dropOffDate !== pickUpDate && dropoffDateTime.getHours() >= (pickupDateTime.getHours() + 2)) {
                                             const newDropOffDate = new Date(dropOffDate);
@@ -110,41 +103,49 @@ export default function MainSection() {
                                             bookingDatesArr = getDateRangeArray(pickUpDate, dropOffDate)
                                         }
 
-                                        let outOfRange = false
+                                        let outOfSeason = false;
+                                        let bookingDays = [];
 
-                                        bookingDatesArr?.map((date, index) => {
-                                            if (!outOfRange) {
+                                        bookingDatesArr?.forEach((date, index) => {
+                                            if (!outOfSeason) {
+                                                // Use some to check if the date is in any season
+                                                const isInAnySeason = allSeasons.some((seasonObj) => {
+                                                    return date >= new Date(seasonObj.startDate) && date <= new Date(seasonObj.endDate);
+                                                });
 
-                                                if (date >= new Date(allSeasons.winterSeason.startDate) && date <= new Date(allSeasons.winterSeason.endDate)) {
-                                                    console.log('In winter' + date);
-                                                    winterBookingDays += 1;
-                                                    outOfRange = false
-                                                } else if (date >= new Date(allSeasons.summerSeason.startDate) && date <= new Date(allSeasons.summerSeason.endDate)) {
-                                                    console.log('In summer' + date);
-                                                    summerBookingDays += 1
-                                                    outOfRange = false
-                                                } else if (date >= new Date(allSeasons.summerHighSeason.startDate) && date <= new Date(allSeasons.summerHighSeason.endDate)) {
-                                                    console.log('In summer High' + date);
-                                                    summerHighBookingDays += 1;
-                                                    outOfRange = false
+                                                if (isInAnySeason) {
+                                                    allSeasons.forEach((seasonObj) => {
+                                                        if (date >= new Date(seasonObj.startDate) && date <= new Date(seasonObj.endDate)) {
+                                                            const seasonExist = bookingDays.find(daysObj => daysObj.season === seasonObj._id);
+                                                            if (seasonExist) {
+                                                                seasonExist.days += 1;
+                                                            } else {
+                                                                bookingDays.push({
+                                                                    season: seasonObj._id,
+                                                                    days: 1
+                                                                });
+                                                            }
+                                                            totalBookingDays += 1
+                                                        }
+                                                    })
                                                 } else {
-                                                    outOfRange = true
+                                                    outOfSeason = true;
                                                 }
                                             } else {
                                                 return;
                                             }
                                         })
-                                        if (outOfRange) {
+                                        if (outOfSeason) {
                                             toast.error('Sorry, Selected dates are out of Booking Range!');
                                             return
                                         } else {
                                             axios.get("/get-vat").then((response) => {
-                                                dispatch(updateBookingInfo({ ...bookingData, vatPercent: response.data[0].value }))
+                                                dispatch(updateBookingInfo({ ...bookingData, vatPercent: response.data[0].value, totalBookingDays }))
                                             }).catch((e) => {
                                                 updateVat();
                                             })
-                                            totalBookingDays = winterBookingDays + summerBookingDays + summerHighBookingDays;
-                                            dispatch(setBookingDays({ winterBookingDays, summerBookingDays, summerHighBookingDays, totalBookingDays }));
+
+                                            dispatch(setBookingDays(bookingDays));
 
                                             dispatch(submitPreBooking());
                                             navigate('/vehicle-guide');

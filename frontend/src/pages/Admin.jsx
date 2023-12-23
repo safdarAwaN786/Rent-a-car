@@ -21,6 +21,8 @@ import TermsConditionsContent from '../components/TermsConditionsContent';
 import PrivacyCookiesContent from '../components/PrivacyCookiesContent';
 import ContactUsContent from '../components/ContactUsContent';
 import ExtrasPageContent from '../components/ExtrasPageContent';
+import PricingSeasons from '../components/PricingSeasons';
+import GroupsPrices from '../components/GroupsPrices';
 
 export default function Admin({ tab }) {
 
@@ -66,7 +68,7 @@ export default function Admin({ tab }) {
             <Navbar />
 
             <div className='row my-5 pt-5'>
-                <div  ref={adminSidebar} className='col-md-3  bg-dark  p-4 admin-sidebar'>
+                <div ref={adminSidebar} className='col-md-3  bg-dark  p-4 admin-sidebar'>
                     <ul style={{
                         marginBottom: '120px'
                     }} className=' list-unstyled'>
@@ -116,52 +118,17 @@ export default function Admin({ tab }) {
                             </a>
                         </li>
                         <li onClick={() => {
-                            setOpenPricing(!openPricing);
+                            navigate('/seasons-pricing');
                         }} style={{
                             transition: 'background-color 0.5s ease'
-                        }} className={`  cursor-pointer p-2 d-flex justify-content-between  m-1 border-circle admin-sidebar-li`}>
-                            <a className={` text-white text-decoration-none`}>
-                                Groups Pricing
+                        }} className={` ${(tab === 'Seasons-Pricing' || tab === 'Groups-Prices') && 'bg-white'} cursor-pointer p-2  m-1 border-circle admin-sidebar-li`}>
+                            <a className={` ${(tab === 'Seasons-Pricing' || tab === 'Groups-Prices') ? 'text-dark' : 'text-white'} text-decoration-none`}>
+                                Groups Prices
                             </a>
-                            {openPricing ? (
-                                <IoIosArrowDropup className={`fs-4 dropIcon text-white `} />
-                            ) : (
-                                <IoIosArrowDropdown className={`fs-4 dropIcon text-white `} />
-                            )}
                         </li>
 
-                        {openPricing && (
-                            <div className={`animate__animated animate__bounceInDown  animate__faster animate__bounceInUp border-start border-white border-3 ms-3`} >
 
-                                <li onClick={() => {
-                                    navigate('/winter-pricing')
-                                }} style={{
-                                    transition: 'background-color 0.5s ease'
-                                }} className={` ${tab === 'Winter-Pricing' && 'bg-white'} cursor-pointer px-2 py-1  m-1 border-circle admin-sidebar-li`}>
-                                    <a className={` ${tab === 'Winter-Pricing' ? 'text-dark' : 'text-white'} text-decoration-none`}>
-                                        Winter Pricing
-                                    </a>
-                                </li>
-                                <li onClick={() => {
-                                    navigate('/summer-pricing')
-                                }} style={{
-                                    transition: 'background-color 0.5s ease'
-                                }} className={` ${tab === 'Summer-Pricing' && 'bg-white'} cursor-pointer px-2 py-1  m-1 border-circle admin-sidebar-li`}>
-                                    <a className={` ${tab === 'Summer-Pricing' ? 'text-dark' : 'text-white'} text-decoration-none`}>
-                                        Summer Pricing
-                                    </a>
-                                </li>
-                                <li onClick={() => {
-                                    navigate('/summerHigh-pricing')
-                                }} style={{
-                                    transition: 'background-color 0.5s ease'
-                                }} className={` ${tab === 'SummerHigh-Pricing' && 'bg-white'} cursor-pointer px-2 py-1  m-1 border-circle admin-sidebar-li`}>
-                                    <a className={` ${tab === 'SummerHigh-Pricing' ? 'text-dark' : 'text-white'} text-decoration-none`}>
-                                        Summer High Pricing
-                                    </a>
-                                </li>
-                            </div>
-                        )}
+
 
                         <li onClick={() => {
                             setOpenContent(!openContent);
@@ -261,14 +228,11 @@ export default function Admin({ tab }) {
                     {tab === 'Seasons' && (
                         <AdminSeasons />
                     )}
-                    {tab === 'Winter-Pricing' && (
-                        <WinterPricing />
+                    {tab === 'Seasons-Pricing' && (
+                        <PricingSeasons />
                     )}
-                    {tab === 'Summer-Pricing' && (
-                        <SummerPricing />
-                    )}
-                    {tab === 'SummerHigh-Pricing' && (
-                        <SummerHighPricing />
+                    {tab === 'Groups-Prices' && (
+                        <GroupsPrices />
                     )}
                     {tab === 'landingPage-Content' && (
                         <LandingPageContent />

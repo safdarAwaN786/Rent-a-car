@@ -99,7 +99,7 @@ export default function AdminProductCard({ gridView, groupData, reGetData }) {
             </div>
         </div>
     );
-    
+
 
     const beforeUpload = async (file) => {
         const isAllowed = allowedExtensions.some(ext => file.name.toLowerCase().endsWith(ext));
@@ -164,7 +164,7 @@ export default function AdminProductCard({ gridView, groupData, reGetData }) {
                                 data.append('transmissionType', groupToEdit.transmissionType);
                                 data.append('AC', groupToEdit.AC);
                                 data.append('groupCategory', groupToEdit.groupCategory);
-                                data.append('vehicleImage', fileList[0].originFileObj);
+                                data.append('vehicleImage', fileList[0]?.originFileObj);
 
                                 axios.post(`/edit-group/${groupToEdit?._id}`, data)
                                     .then(response => {
@@ -298,7 +298,6 @@ export default function AdminProductCard({ gridView, groupData, reGetData }) {
                                             {editingGroup ? (
                                                 <Spinner animation="border" size="sm" />
                                             ) : (
-
                                                 'UPDATE'
                                             )}
 
@@ -342,9 +341,8 @@ export default function AdminProductCard({ gridView, groupData, reGetData }) {
                     <h5><a className='text-decoration-none cursor-pointer fs-5' >{groupData?.vehicleName}</a> | <span>or similar</span></h5>
                     <div class="price-location">
                         <div class="price">
-                            <strong>€{currentSeason ? groupData[currentSeason]['1to6daysPrice'] : groupData.winterPrices['1to6daysPrice']} per day</strong>
+                            <strong>€{(groupData.prices.find(priceObj => priceObj.season._id === currentSeason._id))?.sixDaysPrice} per day</strong>
                         </div>
-
 
                     </div>
                     <ul class="features">
@@ -407,7 +405,9 @@ export default function AdminProductCard({ gridView, groupData, reGetData }) {
                                         .delete(`/delete-group/${groupData?._id}`)
                                         .then((res) => {
                                             toast.success('Group deleted Successfully!');
-                                            reGetData();
+                                            setTimeout(() => {
+                                                window.location.reload()
+                                            }, 2000)
                                         })
                                         .catch((e) => {
                                             toast.error('Error in Deleting Group! Try Again');
@@ -415,15 +415,12 @@ export default function AdminProductCard({ gridView, groupData, reGetData }) {
                                 },
                                 footer: (_, { OkBtn, CancelBtn }) => (
                                     <>
-
                                         <CancelBtn />
                                         <OkBtn />
                                     </>
                                 ),
                             });
                         }} className='mx-2 fs-4 cursor-pointer productIcon' />
-
-
                     </div>
                 </div>
             </div>

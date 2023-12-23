@@ -341,7 +341,7 @@ export default function AdminProductsSection() {
                                             event.preventDefault();
                                             setAddingNewGroup(true);
                                             const data = new FormData(event.target);
-                                            data.append('vehicleImage', fileList[0].originFileObj);
+                                            data.append('vehicleImage', fileList[0]?.originFileObj);
                                             data.append('AC', AC);
                                             axios.post('/add-group', data)
                                                 .then(response => {
@@ -391,22 +391,22 @@ export default function AdminProductsSection() {
                                                 </div>
 
                                                 <label className='mt-1'>Group Name :</label>
-                                                <input name='groupName' type='text' className='p-1 border border-secondary border-circle mb-1' />
+                                                <input name='groupName' type='text' className='p-1 border border-secondary border-circle mb-1' required/>
                                                 <label className='mt-1'>Vehicle Name :</label>
-                                                <input name='vehicleName' type='text' className='p-1 border border-secondary border-circle mb-1' />
+                                                <input name='vehicleName' type='text' className='p-1 border border-secondary border-circle mb-1' required/>
 
                                                 <label className='mt-1'>Engine Size :</label>
-                                                <input name='engineSize' type='text' className='p-1 border border-secondary border-circle mb-1' />
+                                                <input name='engineSize' type='text' className='p-1 border border-secondary border-circle mb-1' required/>
 
 
                                                 <label className='mt-1'>Adults :</label>
-                                                <input name='adults' type='number' className='p-1 border border-secondary border-circle mb-1' />
+                                                <input name='adults' type='number' className='p-1 border border-secondary border-circle mb-1' required/>
 
                                                 <label className='mt-1'>Doors :</label>
-                                                <input name='doors' type='number' className='p-1 border border-secondary border-circle mb-1' />
+                                                <input name='doors' type='number' className='p-1 border border-secondary border-circle mb-1' required/>
 
                                                 <label className='mt-1'>Children :</label>
-                                                <input name='children' type='number' className='p-1 border border-secondary border-circle mb-1' />
+                                                <input name='children' type='number' className='p-1 border border-secondary border-circle mb-1' required/>
 
                                                 <label className='mt-1'>Seats :</label>
                                                 <Select name='seats' styles={customStyles} options={[
@@ -418,20 +418,18 @@ export default function AdminProductsSection() {
                                                     { value: 7, label: <div>7</div> },
                                                     { value: 8, label: <div>8</div> },
                                                     { value: 9, label: <div>9</div> },
-                                                ]} />
+                                                ]} required/>
 
                                                 <label className='mt-1'>Big Luggage :</label>
-                                                <input name='bigLuggage' type='text' className='p-1 border border-secondary border-circle mb-1' />
+                                                <input name='bigLuggage' type='text' className='p-1 border border-secondary border-circle mb-1' required/>
 
                                                 <label className='mt-1'>Small Luggage :</label>
-                                                <input name='smallLuggage' type='text' className='p-1 border border-secondary border-circle mb-1' />
+                                                <input name='smallLuggage' type='text' className='p-1 border border-secondary border-circle mb-1' required/>
                                                 <label className='mt-1'>Transmission Type :</label>
                                                 <Select name='transmissionType' styles={customStyles} options={[
                                                     { value: 'Automatic', label: <div>Automatic</div> },
                                                     { value: 'Manual', label: <div>Manual</div> },
-                                                ]} />
-
-
+                                                ]} required/>
 
                                                 <div className='my-2'>
                                                     <label className='mt-1'>AC :</label>
@@ -440,13 +438,11 @@ export default function AdminProductsSection() {
                                                     }} style={{
                                                         width: '18px',
                                                         height: '18px'
-                                                    }} type='checkbox' className='m-4 border border-secondary border-circle mb-1' />
+                                                    }} type='checkbox' className='m-4 border border-secondary border-circle mb-1' required/>
                                                 </div>
 
                                                 <label className='mt-2'>group Category :</label>
-                                                <Select name='groupCategory' styles={customStyles} options={groupCategories} />
-
-
+                                                <Select name='groupCategory' styles={customStyles} options={groupCategories} required/>
 
                                                 <div className='d-flex justify-content-center my-4'>
                                                     <button style={{
@@ -830,30 +826,21 @@ export default function AdminProductsSection() {
 
                                             {groupsList?.sort((a, b) => {
                                                 if (currentSeason) {
-                                                    return a[currentSeason]['1to6daysPrice'] - b[currentSeason]['1to6daysPrice'];
+                                                    return (a.prices.find(priceObj => priceObj.season._id === currentSeason._id))?.sixDaysPrice - (b.prices.find(priceObj => priceObj.season._id === currentSeason._id))?.sixDaysPrice
+                                                } else {
+                                                    return a.prices[0]?.sixDaysPrice - b.prices[0]?.sixDaysPrice;
                                                 }
-                                                return a.winterSeason['1to6daysPrice'] - b.winterSeason['1to6daysPrice'];
                                             }).map((groupObj) => {
                                                 return (
                                                     <div class={`${gridView ? 'col-lg-6 col-md-6 col-sm-12' : 'col-12'}  wow fadeInUp item`}>
                                                         <AdminProductCard reGetData={reGetData} groupData={groupObj} gridView={gridView} />
-
                                                     </div>
                                                 )
                                             })}
-
-
-
-
-
-
-
                                         </div>
-
                                     </div>
                                 </div>
                             </div>
-
                         </div>
                     </div>
                 </div>

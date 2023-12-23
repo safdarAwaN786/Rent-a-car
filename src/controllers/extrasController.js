@@ -2,21 +2,13 @@ const Extra = require('../models/extrasModel');
 
 
 const updateExtra = async (req, res) => {
-   
     try {
-
-        
-
         const updatedExtras = await Extra.findByIdAndUpdate(req.body._id, req.body, {
             new: true,
           });
-        
-
           console.log(updatedExtras);
-
         res.status(200).send({
             status: true, message: "The Extra is Updated!", data: updatedExtras
-
         });
     } catch (error) {
         res.status(400).send({ status: false, message: error.message });
@@ -25,19 +17,16 @@ const updateExtra = async (req, res) => {
 
 
 const getExtras = async (req, res) => {
-
-    
     try {
-        const allExtras = await Extra.findOne();
-        
-
-        console.log(allExtras);
-
-
+        const allExtras = await Extra.findOne().populate({
+            path : 'Extras.priceOfExtra.group',
+            model : 'Group'
+        });
         res.status(200).send({
             status: true, message: "The Extras are :", data: allExtras
         });
     } catch (error) {
+        console.log(error);
         res.status(400).send({ status: false, message: error.message });
     }
 }

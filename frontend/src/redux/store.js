@@ -4,6 +4,7 @@ import { bookingReducers, groupReducer } from './slices/bookingSlices';
 import seasonReducer from './slices/seasonSlice';
 import {allSeasonsReducer} from './slices/seasonSlice';
 import daysReducer from './slices/bookingDaysSlice';
+import appReducer from './slices/appSlice';
 import webContentReducer from './slices/webContentSlice';
 
 export const store = configureStore({
@@ -14,6 +15,7 @@ export const store = configureStore({
     currentSeason : seasonReducer,
     bookingDays : daysReducer,
     webContent : webContentReducer,
-    allSeasons : allSeasonsReducer
+    allSeasons : allSeasonsReducer,
+    app : appReducer
   },
 })

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import engineImg from '../assets/img/home4/icon/Resized_svg (2).svg'
 import adultImg from '../assets/img/home4/icon/Resized_svg (4).png'
@@ -37,9 +37,23 @@ export default function ProductCard({ gridView, groupData }) {
         return dateArray;
     };
 
-    console.log(currentSeason);
-    console.log(bookingDays);
-    console.log(groupData);
+    const [morePricesText, setMorePricesText] = useState('');
+    useEffect(() => {
+        if (bookingDays?.length > 0) {
+            let newText = '';
+            console.log(bookingData);
+            bookingDays.forEach((daysObj) => {
+                console.log(daysObj);
+                const pricesObj = groupData.prices?.find((priceObj) => priceObj.season._id === daysObj.season)
+                console.log(pricesObj);
+                newText += `€${bookingData.totalBookingDays <= 6 ? pricesObj?.sixDaysPrice : bookingData.totalBookingDays <= 14 ? pricesObj?.fourteenDaysPrice : pricesObj?.fifteenDaysPrice} per day | `;
+
+            });
+            setMorePricesText(newText);
+        }
+    }, [bookingDays])
+
+
     return (
         <div class={`product-card ${gridView ? 'gridView' : 'd-flex flex-row columnView'} `}>
             <div class="product-img">
@@ -68,10 +82,10 @@ export default function ProductCard({ gridView, groupData }) {
                 <div class="price-location">
                     <div class="price">
                         <>
-                            {bookingDays?.totalBookingDays > 0 ? (
-                                <strong>€{groupData[currentSeason][bookingDays?.totalBookingDays <= 6 ? '1to6daysPrice' : bookingDays?.totalBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice']} per day</strong>
+                            {bookingDays?.length > 0 ? (
+                                <strong>{morePricesText}</strong>
                             ) : (
-                                <strong>€{groupData[currentSeason]['1to6daysPrice']} per day</strong>
+                                <strong>€{(groupData.prices.find(priceObj => priceObj.season._id === currentSeason._id))?.sixDaysPrice} per day</strong>
                             )}
                         </>
                     </div>
@@ -149,11 +163,8 @@ export default function ProductCard({ gridView, groupData }) {
                                     return toast.warning('Booking cannot be made within 48 hours before pick Up!');
                                 }
                                 let bookingDatesArr;
-                                let winterBookingDays = 0;
-                                let summerBookingDays = 0;
-                                let summerHighBookingDays = 0;
                                 let totalBookingDays = 0;
-                                let basicPrice;
+                                let basicPrice = 0;
 
                                 if (dropOffDate !== pickUpDate && dropoffDateTime.getHours() >= (pickupDateTime.getHours() + 2)) {
                                     const newDropOffDate = new Date(dropOffDate);
@@ -166,47 +177,68 @@ export default function ProductCard({ gridView, groupData }) {
                                 }
 
 
-                                let outOfRange = false
+                                let outOfSeason = false;
+                                let bookingDays = [];
                                 bookingDatesArr?.map((date, index) => {
-                                    if (!outOfRange) {
+                                    if (!outOfSeason) {
+                                        // Use some to check if the date is in any season
+                                        const isInAnySeason = allSeasons.some((seasonObj) => {
+                                            return date >= new Date(seasonObj.startDate) && date <= new Date(seasonObj.endDate);
+                                        });
 
-                                        if (date >= new Date(allSeasons.winterSeason.startDate) && date <= new Date(allSeasons.winterSeason.endDate)) {
-                                            console.log('In winter' + date);
-                                            winterBookingDays += 1;
-                                            outOfRange = false
-                                        } else if (date >= new Date(allSeasons.summerSeason.startDate) && date <= new Date(allSeasons.summerSeason.endDate)) {
-                                            console.log('In summer' + date);
-                                            summerBookingDays += 1;
-                                            outOfRange = false
-                                        } else if (date >= new Date(allSeasons.summerHighSeason.startDate) && date <= new Date(allSeasons.summerHighSeason.endDate)) {
-                                            console.log('In summer High' + date);
-                                            summerHighBookingDays += 1;
-                                            outOfRange = false
+                                        if (isInAnySeason) {
+                                            allSeasons.forEach((seasonObj) => {
+                                                if (date >= new Date(seasonObj.startDate) && date <= new Date(seasonObj.endDate)) {
+                                                    const seasonExist = bookingDays.find(daysObj => daysObj.season === seasonObj._id);
+                                                    if (seasonExist) {
+                                                        seasonExist.days += 1;
+                                                    } else {
+                                                        bookingDays.push({
+                                                            season: seasonObj._id,
+                                                            days: 1
+                                                        });
+                                                    }
+                                                    totalBookingDays += 1
+                                                }
+                                            })
                                         } else {
-                                            outOfRange = true
+                                            outOfSeason = true;
                                         }
                                     } else {
                                         return;
                                     }
                                 })
 
-                                if (outOfRange) {
-                                    toast.error('Sorry, Selected dates are out of Booking Range!')
+                                if (outOfSeason) {
+                                    toast.error('Sorry, Selected dates are out of Booking Range!');
                                     return
                                 } else {
-                                    totalBookingDays = winterBookingDays + summerBookingDays + summerHighBookingDays;
-                                    dispatch(setBookingDays({ winterBookingDays, summerBookingDays, summerHighBookingDays, totalBookingDays }));
+
                                     if (totalBookingDays < 3) {
                                         if (totalBookingDays === 1) {
-                                            basicPrice = groupData[currentSeason]['1to6daysPrice'] * 3;
+                                            basicPrice = (groupData.prices.find(priceObj => priceObj.season._id === currentSeason._id)).sixDaysPrice * 3;
                                         } else {
-                                            basicPrice = (groupData['winterPrices']['1to6daysPrice'] * winterBookingDays) + (groupData['summerPrices']['1to6daysPrice'] * summerBookingDays) + (groupData['summerHighPrices']['1to6daysPrice'] * summerHighBookingDays) + (groupData[currentSeason]['1to6daysPrice'])
+                                            bookingDays.forEach(daysObj => {
+                                                const pricesObj = groupData.prices.find(priceObj => priceObj.season._id === daysObj.season);
+                                                basicPrice += (pricesObj.sixDaysPrice * daysObj.days);
+                                            })
+                                            basicPrice += (groupData.prices.find(priceObj => priceObj.season._id === currentSeason._id)).sixDaysPrice;
                                         }
                                     } else {
-                                        basicPrice = (groupData['winterPrices'][totalBookingDays <= 6 ? '1to6daysPrice' : totalBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice'] * winterBookingDays) + (groupData['summerPrices'][totalBookingDays <= 6 ? '1to6daysPrice' : totalBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice'] * summerBookingDays) + (groupData['summerHighPrices'][totalBookingDays <= 6 ? '1to6daysPrice' : totalBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice'] * summerHighBookingDays)
+                                        bookingDays.forEach(daysObj => {
+                                            const pricesObj = groupData.prices.find(priceObj => priceObj.season._id === daysObj.season);
+                                            if (totalBookingDays <= 6) {
+                                                basicPrice += (pricesObj.sixDaysPrice * daysObj.days);
+                                            } else if (totalBookingDays <= 14) {
+                                                basicPrice += (pricesObj.fourteenDaysPrice * daysObj.days);
+                                            } else {
+                                                basicPrice += (pricesObj.fifteenDaysPrice * daysObj.days);
+                                            }
+                                        })
                                     }
+                                    dispatch(setBookingDays(bookingDays))
 
-                                    dispatch(updateBookingInfo({ ...bookingData, group: groupData._id, basicPrice: (basicPrice + bookingData?.airPortFee).toFixed(2), days: { winterBookingDays, summerBookingDays, summerHighBookingDays, totalBookingDays }, user: user._id }))
+                                    dispatch(updateBookingInfo({ ...bookingData, group: groupData._id, basicPrice: (basicPrice).toFixed(2), totalBookingDays , days: bookingDays, user: user._id }))
                                     dispatch(selectGroup(groupData));
                                     navigate('/complete-booking');
                                 }
@@ -214,7 +246,6 @@ export default function ProductCard({ gridView, groupData }) {
                                 dispatch(updateBookingInfo({ ...bookingData, user: user._id }))
                                 navigate('/');
                             }
-
                         } else {
                             toast.warning("Please Log In or Sign Up!");
 

@@ -574,38 +574,23 @@ export default function ProductsSection() {
                                 <div class="list-grid-main">
                                     <div class="list-grid-product-wrap grid-group-wrapper">
                                         <div class="row g-4  mb-40">
-
-
-
                                             {groupsList?.sort((a, b) => {
-                                                if (daysPrice) {
-                                                    return a[currentSeason][daysPrice] - b[currentSeason][daysPrice];
+                                                if (currentSeason) {
+                                                    return (a.prices.find(priceObj => priceObj.season._id === currentSeason._id))?.sixDaysPrice - (b.prices.find(priceObj => priceObj.season._id === currentSeason._id))?.sixDaysPrice
                                                 } else {
-
-                                                    if (currentSeason) {
-                                                        return a[currentSeason]['1to6daysPrice'] - b[currentSeason]['1to6daysPrice']
-                                                } else {
-                                                        return a['winterPrices']['1to6daysPrice'] - b['winterPrices']['1to6daysPrice']
-                                                }
+                                                    return a.prices[0]?.sixDaysPrice - b.prices[0]?.sixDaysPrice;
                                                 }
                                             }).map((groupObj) => {
-
                                                 return (
                                                     <div class={`${gridView ? 'col-lg-6 col-md-6 col-sm-12' : 'col-12'}  wow fadeInUp item`}>
                                                         <ProductCard gridView={gridView} groupData={groupObj} />
                                                     </div>
                                                 )
                                             })}
-
-
-
-
                                         </div>
-
                                     </div>
                                 </div>
                             </div>
-
                         </div>
                     </div>
                 </div>

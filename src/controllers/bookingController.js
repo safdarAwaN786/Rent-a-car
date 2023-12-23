@@ -7,8 +7,8 @@ const Vat = require('../models/VAT');
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
-      user: "yourwaycarhire@gmail.com",
-       pass: "kvvh fsme ckfc mxjv"
+    user: "yourwaycarhire@gmail.com",
+    pass: "kvvh fsme ckfc mxjv"
   },
 });
 
@@ -16,22 +16,51 @@ const transporter = nodemailer.createTransport({
 const addBooking = async (req, res) => {
   try {
     const bookingUser = await User.findById(req.body.user);
-    const group = await Group.findById(req.body.group);
+    const group = await Group.findById(req.body.group).populate({
+      path: 'prices.season',
+      model: 'season'
+    });
     const booking = new Booking({ ...req.body });
     let extrasContent = '';
-    for (let i = 0; i < booking.addedExtras.length; i++) {
-      const extraObj = booking.addedExtras[i];
-      if (extraObj) {
-        extrasContent += `
+    booking.addedExtras.forEach(extraObj => {
+      extrasContent += `
             <tr>
                 <td>${extraObj.extraName}</td>
                 <td>€${extraObj.price}</td>
                 <td>${extraObj.quantity}</td>
-                <td>€${extraObj.price * extraObj.quantity}</td>
+                <td>${(extraObj.extraName === 'Super Collision Damage Waiver (SCDW)' || extraObj.extraName === 'Tyres, Windscreen, Underbody') ? booking.totalBookingDays : '-'}</td>
+                <td>€${(extraObj.extraName === 'Super Collision Damage Waiver (SCDW)' || extraObj.extraName === 'Tyres, Windscreen, Underbody') ? extraObj.price * extraObj.quantity * booking.totalBookingDays : extraObj.price * extraObj.quantity}</td>
             </tr>
         `;
-      }
-    }
+    })
+    let groupPrices = '';
+    group.prices.forEach(priceObj => {
+      groupPrices += `
+            <tr>
+                <td>${priceObj.season.seasonName}</td>
+                <td>€${priceObj.sixDaysPrice}</td>
+                <td>${priceObj.fourteenDaysPrice}</td>
+                <td>€${priceObj.fifteenDaysPrice}</td>
+            </tr>
+        `;
+    })
+    let basicPrices = '';
+    console.log(group.prices)
+    console.log(booking.days)
+    booking.days.forEach(dayObj => {
+      const priceObj = group.prices.find(priceObj => priceObj.season?._id.equals(dayObj.season));
+      console.log(priceObj)
+      basicPrices += `
+            <tr>
+                <td>${priceObj.season.seasonName}</td>
+                <td>€${booking.totalBookingDays <= 6 ? priceObj.sixDaysPrice : booking.totalBookingDays <= 14 ? priceObj.fourteenDaysPrice : priceObj.fifteenDaysPrice}</td>
+                <td>${dayObj.days}</td>
+                <td>€${(booking.totalBookingDays <= 6 ? priceObj?.sixDaysPrice : booking.totalBookingDays <= 14 ? priceObj?.fourteenDaysPrice : priceObj?.fifteenDaysPrice) * dayObj.days}</td>
+            </tr>
+        `;
+    })
+
+
 
     const mailOptionsForOwner = {
       from: 'yourwaycarhire@gmail.com',
@@ -116,7 +145,7 @@ const addBooking = async (req, res) => {
               </tr>
               <tr>
                   <th>Total Days:</th>
-                  <td>${booking.days.totalBookingDays}</td>
+                  <td>${booking.totalBookingDays}</td>
               </tr>
               <tr>
                   <th>Additional Comment:</th>
@@ -126,34 +155,17 @@ const addBooking = async (req, res) => {
           <h2>Booked Group Prices</h2>
           <table>
               <tr>
-                  <th></th>
+                  <th>Season</th>
                   <th>1 - 6 days</th>
                   <th>7 - 14 days</th>
                   <th>15+ days</th>
               </tr>
-              <tr>
-                  <th>Winter Season</th>
-                  <td>€${group['winterPrices']['1to6daysPrice']}</td>
-                  <td>€${group['winterPrices']['7to14daysPrice']}</td>
-                  <td>€${group['winterPrices']['15plusDaysPrice']}</td>
-              </tr>
-              <tr>
-                  <th>Summer Season</th>
-                  <td>€${group['summerPrices']['1to6daysPrice']}</td>
-                  <td>€${group['summerPrices']['7to14daysPrice']}</td>
-                  <td>€${group['summerPrices']['15plusDaysPrice']}</td>
-              </tr>
-              <tr>
-                  <th>Summer High Season</th>
-                  <td>€${group['summerHighPrices']['1to6daysPrice']}</td>
-                  <td>€${group['summerHighPrices']['7to14daysPrice']}</td>
-                  <td>€${group['summerHighPrices']['15plusDaysPrice']}</td>
-              </tr>
+              ${groupPrices}
           </table>
           <h2>Basic Prices</h2>
          
             <table>
-            ${booking.days.totalBookingDays > 3 ? (
+            ${booking.totalBookingDays > 3 ? (
 
           ` <tr>
                       <th></th>
@@ -161,27 +173,8 @@ const addBooking = async (req, res) => {
                       <th>Days</th>
                       <th>Total Basic</th>
                   </tr>
-                  ${booking.days.winterBookingDays > 0 ? (
-            `<tr>
-                    <th>Winter Price</th>
-                    <td>€${group['winterPrices'][booking.days.totalBookingDays <= 6 ? '1to6daysPrice' : booking.days.totalBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice']}</td          
-                    <td>${booking.days.winterBookingDays}</td>
-                    <td>€${(group['winterPrices'][booking.days.totalBookingDays <= 6 ? '1to6daysPrice' : booking.days.totalBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice'] * booking.days.winterBookingDays).toFixed(2)}</td>
-                    </tr>`) : ''}
-                    ${booking.days.summerBookingDays > 0 ? (
-            `<tr>
-                      <th>Summer Price</th>
-                      <td>€${group['summerPrices'][booking.days.totalBookingDays <= 6 ? '1to6daysPrice' : booking.days.totalBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice']}</td>
-                      <td>${booking.days.summerBookingDays}</td>
-                      <td>€${(group['summerPrices'][booking.days.totalBookingDays <= 6 ? '1to6daysPrice' : booking.days.totalBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice'] * booking.days.summerBookingDays).toFixed(2)}</td>
-                      </tr>`) : ''}
-                      ${booking.days.summerHighBookingDays > 0 ? (
-            `<tr>
-                        <th>Summer High Price</th>
-                        <td>€${group['summerHighPrices'][booking.days.totalBookingDays <= 6 ? '1to6daysPrice' : booking.days.totalBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice']}</td>
-                        <td>${booking.days.summerHighBookingDays}</td>
-                        <td>€${(group['summerHighPrices'][booking.days.totalBookingDays <= 6 ? '1to6daysPrice' : booking.days.totalBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice'] * booking.days.summerHighBookingDays).toFixed(2)}</td>
-                        </tr>`) : ''}`
+                  ${basicPrices}
+                      `
         ) : ''}
         <tr>
                   <th>Promo Code Discount:</th>
@@ -189,7 +182,7 @@ const addBooking = async (req, res) => {
               </tr>
                     <tr>
                     <th>Total Basic Price</th>
-                    <td>€${booking.basicPrice - booking.airPortFee}</td>
+                    <td>€${booking.basicPrice}</td>
                     </tr>
           </table>
           
@@ -200,6 +193,7 @@ const addBooking = async (req, res) => {
            <th>Extra Name</th>
            <th>Price</th>
            <th>Quantity</th>
+           <th>Days</th>
            <th>Total</th>
           </tr>
           ${extrasContent}
@@ -218,7 +212,7 @@ const addBooking = async (req, res) => {
               </tr>
               
               <tr>
-                  <th>Grand Total(${booking.days.totalBookingDays}days):</th>
+                  <th>Grand Total(${booking.totalBookingDays}days):</th>
                   <td>€${(parseFloat(booking.totalPrice)).toFixed(2)}</td>
               </tr>
           </table>
@@ -313,7 +307,7 @@ const addBooking = async (req, res) => {
               </tr>
               <tr>
                   <th>Total Days:</th>
-                  <td>${booking.days.totalBookingDays}</td>
+                  <td>${booking.totalBookingDays}</td>
               </tr>
               <tr>
                   <th>Additional Comment:</th>
@@ -324,7 +318,7 @@ const addBooking = async (req, res) => {
           <h2>Basic Prices</h2>
          
             <table>
-            ${booking.days.totalBookingDays > 3 ? (
+            ${booking.totalBookingDays > 3 ? (
 
           ` <tr>
                       <th></th>
@@ -332,27 +326,9 @@ const addBooking = async (req, res) => {
                       <th>Days</th>
                       <th>Total Basic</th>
                   </tr>
-                  ${booking.days.winterBookingDays > 0 ? (
-            `<tr>
-                    <th>Winter Price</th>
-                    <td>€${group['winterPrices'][booking.days.totalBookingDays <= 6 ? '1to6daysPrice' : booking.days.totalBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice']}</td          
-                    <td>${booking.days.winterBookingDays}</td>
-                    <td>€${(group['winterPrices'][booking.days.totalBookingDays <= 6 ? '1to6daysPrice' : booking.days.totalBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice'] * booking.days.winterBookingDays).toFixed(2)}</td>
-                    </tr>`) : ''}
-                    ${booking.days.summerBookingDays > 0 ? (
-            `<tr>
-                      <th>Summer Price</th>
-                      <td>€${group['summerPrices'][booking.days.totalBookingDays <= 6 ? '1to6daysPrice' : booking.days.totalBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice']}</td>
-                      <td>${booking.days.summerBookingDays}</td>
-                      <td>€${(group['summerPrices'][booking.days.totalBookingDays <= 6 ? '1to6daysPrice' : booking.days.totalBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice'] * booking.days.summerBookingDays).toFixed(2)}</td>
-                      </tr>`) : ''}
-                      ${booking.days.summerHighBookingDays > 0 ? (
-            `<tr>
-                        <th>Summer High Price</th>
-                        <td>€${group['summerHighPrices'][booking.days.totalBookingDays <= 6 ? '1to6daysPrice' : booking.days.totalBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice']}</td>
-                        <td>${booking.days.summerHighBookingDays}</td>
-                        <td>€${(group['summerHighPrices'][booking.days.totalBookingDays <= 6 ? '1to6daysPrice' : booking.days.totalBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice'] * booking.days.summerHighBookingDays).toFixed(2)}</td>
-                        </tr>`) : ''}`
+                  
+                    ${basicPrices}
+                      `
         ) : ''}
         <tr>
                   <th>Promo Code Discount:</th>
@@ -360,7 +336,7 @@ const addBooking = async (req, res) => {
               </tr>
                     <tr>
                     <th>Total Basic Price</th>
-                    <td>€${booking.basicPrice - booking.airPortFee}</td>
+                    <td>€${booking.basicPrice}</td>
                     </tr>
           </table>
           
@@ -371,6 +347,7 @@ const addBooking = async (req, res) => {
            <th>Extra Name</th>
            <th>Price</th>
            <th>Quantity</th>
+           <th>Days</th>
            <th>Total</th>
           </tr>
           ${extrasContent}
@@ -389,7 +366,7 @@ const addBooking = async (req, res) => {
               </tr>
               
               <tr>
-                  <th>Grand Total(${booking.days.totalBookingDays}days):</th>
+                  <th>Grand Total(${booking.totalBookingDays}days):</th>
                   <td>€${(parseFloat(booking.totalPrice)).toFixed(2)}</td>
               </tr>
           </table>
@@ -402,7 +379,7 @@ const addBooking = async (req, res) => {
       `
     };
 
-    
+
 
     transporter.sendMail(mailOptionsForOwner, async function (error, info) {
       if (error) {
@@ -422,7 +399,7 @@ const addBooking = async (req, res) => {
         });
       }
     });
-    
+
   } catch (error) {
     console.log(error)
     res.status(400).send({ status: false, message: error.message });
@@ -437,10 +414,14 @@ const getUserBookings = async (req, res) => {
       model: 'User'
     }).populate({
       path: 'group',
-      model: 'Group'
+      model: 'Group',
+      populate: {
+        path: 'prices.season',
+        model: 'season'
+      }
     }).populate({
-      path: 'group',
-      model: 'Group'
+      path: 'days.season',
+      model: 'season'
     });
     res.status(200).send({ status: true, message: "The Following are the User Bookings!", data: userBookings });
 
@@ -457,7 +438,14 @@ const getAllBookings = async (req, res) => {
       model: 'User'
     }).populate({
       path: 'group',
-      model: 'Group'
+      model: 'Group',
+      populate: {
+        path: 'prices.season',
+        model: 'season'
+      }
+    }).populate({
+      path: 'days.season',
+      model: 'season'
     });
 
     console.log(allBookings);
@@ -492,24 +480,47 @@ const confirmBooking = async (req, res) => {
       model: 'User'
     }).populate({
       path: 'group',
-      model: 'Group'
+      model: 'Group',
+      populate: {
+        path: 'prices.season',
+        model: 'season'
+      }
+    }).populate({
+      path: 'days.season',
+      model: 'season'
     });
-    const group = await Group.findById(booking.group._id);
+    const group = await Group.findById(booking.group._id).populate({
+      path: 'prices.season',
+      model: 'season'
+    });
 
     let extrasContent = '';
-    for (let i = 0; i < booking.addedExtras.length; i++) {
-      const extraObj = booking.addedExtras[i];
-      if (extraObj) {
-        extrasContent += `
+    booking.addedExtras.forEach(extraObj => {
+      extrasContent += `
             <tr>
                 <td>${extraObj.extraName}</td>
-                <td>${extraObj.quantity}</td>
                 <td>€${extraObj.price}</td>
-                <td>€${extraObj.price * extraObj.quantity}</td>
+                <td>${extraObj.quantity}</td>
+                <td>${(extraObj.extraName === 'Super Collision Damage Waiver (SCDW)' || extraObj.extraName === 'Tyres, Windscreen, Underbody') ? booking.totalBookingDays : '-'}</td>
+                <td>€${(extraObj.extraName === 'Super Collision Damage Waiver (SCDW)' || extraObj.extraName === 'Tyres, Windscreen, Underbody') ? extraObj.price * extraObj.quantity * booking.totalBookingDays : extraObj.price * extraObj.quantity}</td>
             </tr>
         `;
-      }
-    }
+    })
+
+
+
+    let basicPrices = '';
+    booking.days.forEach(dayObj => {
+      const priceObj = group.prices.find(priceObj => priceObj.season?._id.equals(dayObj.season?._id));
+      basicPrices += `
+            <tr>
+                <td>${dayObj.season.seasonName}</td>
+                <td>€${booking.totalBookingDays <= 6 ? priceObj?.sixDaysPrice : booking.totalBookingDays <= 14 ? priceObj?.fourteenDaysPrice : priceObj?.fifteenDaysPrice}</td>
+                <td>${dayObj.days}</td>
+                <td>€${(booking.totalBookingDays <= 6 ? priceObj?.sixDaysPrice : booking.totalBookingDays <= 14 ? priceObj?.fourteenDaysPrice : priceObj?.fifteenDaysPrice) * dayObj.days}</td>
+            </tr>
+        `;
+    })
 
     const mailOptions = {
       from: 'yourwaycarhire@gmail.com',
@@ -586,18 +597,16 @@ const confirmBooking = async (req, res) => {
               </tr>
               <tr>
                   <th>Total Days:</th>
-                  <td>${booking.days.totalBookingDays}</td>
+                  <td>${booking.totalBookingDays}</td>
               </tr>
               <tr>
                   <th>Additional Comment:</th>
                   <td>${booking.comment || '---'}</td>
               </tr>
           </table>
-          
-          <h2>Basic Prices</h2>
-         
-            <table>
-            ${booking.days.totalBookingDays > 3 ? (
+          <h2>Basic Prices</h2>      
+      <table>
+            ${booking.totalBookingDays > 3 ? (
 
           ` <tr>
                       <th></th>
@@ -605,27 +614,8 @@ const confirmBooking = async (req, res) => {
                       <th>Days</th>
                       <th>Total Basic</th>
                   </tr>
-                  ${booking.days.winterBookingDays > 0 ? (
-            `<tr>
-                    <th>Winter Price</th>
-                    <td>€${group['winterPrices'][booking.days.totalBookingDays <= 6 ? '1to6daysPrice' : booking.days.totalBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice']}</td          
-                    <td>${booking.days.winterBookingDays}</td>
-                    <td>€${(group['winterPrices'][booking.days.totalBookingDays <= 6 ? '1to6daysPrice' : booking.days.totalBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice'] * booking.days.winterBookingDays).toFixed(2)}</td>
-                    </tr>`) : ''}
-                    ${booking.days.summerBookingDays > 0 ? (
-            `<tr>
-                      <th>Summer Price</th>
-                      <td>€${group['summerPrices'][booking.days.totalBookingDays <= 6 ? '1to6daysPrice' : booking.days.totalBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice']}</td>
-                      <td>${booking.days.summerBookingDays}</td>
-                      <td>€${(group['summerPrices'][booking.days.totalBookingDays <= 6 ? '1to6daysPrice' : booking.days.totalBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice'] * booking.days.summerBookingDays).toFixed(2)}</td>
-                      </tr>`) : ''}
-                      ${booking.days.summerHighBookingDays > 0 ? (
-            `<tr>
-                        <th>Summer High Price</th>
-                        <td>€${group['summerHighPrices'][booking.days.totalBookingDays <= 6 ? '1to6daysPrice' : booking.days.totalBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice']}</td>
-                        <td>${booking.days.summerHighBookingDays}</td>
-                        <td>€${(group['summerHighPrices'][booking.days.totalBookingDays <= 6 ? '1to6daysPrice' : booking.days.totalBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice'] * booking.days.summerHighBookingDays).toFixed(2)}</td>
-                        </tr>`) : ''}`
+                    ${basicPrices}
+                      `
         ) : ''}
         <tr>
                   <th>Promo Code Discount:</th>
@@ -633,7 +623,7 @@ const confirmBooking = async (req, res) => {
               </tr>
                     <tr>
                     <th>Total Basic Price</th>
-                    <td>€${booking.basicPrice - booking.airPortFee}</td>
+                    <td>€${booking.basicPrice}</td>
                     </tr>
           </table>
           
@@ -644,6 +634,7 @@ const confirmBooking = async (req, res) => {
            <th>Extra Name</th>
            <th>Price</th>
            <th>Quantity</th>
+           <th>Days</th>
            <th>Total</th>
           </tr>
           ${extrasContent}
@@ -662,7 +653,7 @@ const confirmBooking = async (req, res) => {
               </tr>
               
               <tr>
-                  <th>Grand Total(${booking.days.totalBookingDays}days):</th>
+                  <th>Grand Total(${booking.totalBookingDays}days):</th>
                   <td>€${(parseFloat(booking.totalPrice)).toFixed(2)}</td>
               </tr>
           </table>
@@ -679,9 +670,6 @@ const confirmBooking = async (req, res) => {
 `
     };
 
-
-    
-
     transporter.sendMail(mailOptions, async function (error, info) {
       if (error) {
         res.status(500).send({ status: false, message: 'Internal server error' });
@@ -696,7 +684,7 @@ const confirmBooking = async (req, res) => {
         });
       }
     });
-   
+
   } catch (error) {
     console.log(error);
     return res.status(500).send({ status: false, message: 'Internal server error' });
@@ -712,16 +700,19 @@ const cancelBooking = async (req, res) => {
     }).populate({
       path: 'group',
       model: 'Group'
+    }).populate({
+      path: 'days.season',
+      model: 'season'
     });
 
-        booking.status = 'Canceled';
-        await booking.save();
-        res.status(200).send({
-          status: true,
-          message: 'The Boooking is Confirmed!',
-          data: booking
-        });
-      
+    booking.status = 'Canceled';
+    await booking.save();
+    res.status(200).send({
+      status: true,
+      message: 'The Boooking is Canceled!',
+      data: booking
+    });
+
   } catch (error) {
     console.log(error);
     return res.status(500).send({ status: false, message: 'Internal server error' });

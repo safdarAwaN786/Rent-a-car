@@ -42,16 +42,27 @@ const bookingSchema = new mongoose.Schema({
     promoCode: {
         type: Object
     },
-    promoDiscount : {
-        type : Number,
-        required : true,
-        default : 0
+    promoDiscount: {
+        type: Number,
+        required: true,
+        default: 0
     },
     comment: {
         type: String,
     },
-    days: {
-        type: Object,
+    days: [
+        {
+            season: {
+              type : mongoose.Schema.Types.ObjectId,
+              ref : 'season'
+            },
+            days: {
+                type: Number
+            }
+        }
+    ],
+    totalBookingDays: {
+        type: Number,
         required: true
     },
     status: {

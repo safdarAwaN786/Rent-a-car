@@ -36,6 +36,7 @@ export default function AdminExtras() {
 
         }).catch((e) => {
             console.log(e);
+            setLoading(false)
             toast.error('Error , Please Refresh!')
         })
     }
@@ -126,7 +127,7 @@ export default function AdminExtras() {
                                                 <>                                      {extraToEdit.priceOfExtra.map((extraPriceObj, index) => {
                                                     return (
                                                         <div className='extraBox flex-wrap my-2 border-circle p-2 d-flex  justify-content-between'>
-                                                            <label class="form-check-label" >{extraPriceObj.groupName} :</label>
+                                                            <label class="form-check-label" >{extraPriceObj.group?.groupName} :</label>
                                                             <div>
 
                                                                 <span> Price(€) : </span>
@@ -137,7 +138,7 @@ export default function AdminExtras() {
 
 
                                                                     if (foundExtra) {
-                                                                        const foundPrice = foundExtra.priceOfExtra.find((item) => item.groupName === extraPriceObj.groupName);
+                                                                        const foundPrice = foundExtra.priceOfExtra.find((item) => item.group._id === extraPriceObj.group._id);
                                                                         if (foundPrice) {
                                                                             foundPrice.price = e.target.value;
                                                                         }
@@ -169,9 +170,6 @@ export default function AdminExtras() {
                                                                 foundExtra.priceOfExtra = e.target.value
                                                             }
                                                             setExtraToEdit(foundExtra)
-
-
-
                                                             setExtrasArr(updatedExtras)
                                                         }} type='number' className='p-1 mx-2 border border-secondary border-circle mb-1' required />
                                                     </div>
@@ -226,10 +224,6 @@ export default function AdminExtras() {
 
                                     <form encType='multipart/form-data' onSubmit={(event) => {
                                         event.preventDefault();
-
-
-
-
                                     }}>
                                         <div className='d-flex flex-column'>
                                             <div className='d-flex justify-content-end'>
@@ -242,66 +236,36 @@ export default function AdminExtras() {
                                                         <div className='extraBox my-2 border-circle p-2 d-flex  justify-content-between'>
 
 
-                                                            <label class="form-check-label" >{extraPriceObj.groupName} :</label>
+                                                            <label class="form-check-label" >{extraPriceObj.group?.groupName} :</label>
 
-                                                            <input value={extraPriceObj.price} onChange={(e) => {
-                                                                const updatedExtras = [...extrasArr];
-
-                                                                updateExtras.find({ extraName: extraToEdit.extraName }).priceOfExtra.find({ groupName: extraPriceObj.groupName }).price = e.target.value
-
-                                                                setExtrasArr(updatedExtras)
-                                                            }} type='number' className='p-1 mx-2 border border-secondary border-circle mb-1' required readOnly />
+                                                            <input value={extraPriceObj.price}  type='number' className='p-1 mx-2 border border-secondary border-circle mb-1' required readOnly />
                                                         </div>
                                                     )
                                                 })}
                                                 </>
                                             ) : (
                                                 <div className='extraBox my-2 border-circle p-2 d-flex  justify-content-between'>
-
-
                                                     <label class="form-check-label" >All Groups :</label>
-
-                                                    <input value={extraToEdit.priceOfExtra} onChange={(e) => {
-                                                        const updatedExtras = [...extrasArr];
-                                                        updatedExtras.find({ extraName: extraToEdit.extraName }).priceOfExtra = e.target.value
-
-                                                        setExtrasArr(updatedExtras)
-                                                    }} type='number' className='p-1 mx-2 border border-secondary border-circle mb-1' required readOnly />
+                                                    <input value={extraToEdit.priceOfExtra}  type='number' className='p-1 mx-2 border border-secondary border-circle mb-1' required readOnly />
                                                 </div>
 
                                             )}
-
-
-
-
-
                                         </div>
                                     </form>
-
                                 </div>
-
-
                             </div>
                         </div>
                     )}
 
-
-
-
                     <div className='table-Cover'>
-
-
                         <table class="table table-striped">
                             <thead>
                                 <tr>
-
                                     <th scope="col"># Extra</th>
-
                                     <th scope="col">Price</th>
                                 </tr>
                             </thead>
                             <tbody>
-
                                 {extrasArr?.map((extraObj, index) => {
                                     return (
                                         <tr>
@@ -312,7 +276,6 @@ export default function AdminExtras() {
                                                 setExtraToEdit(extraObj);
                                             }} className='fs-5 cursor-pointer' /> <AiOutlineEye className='fs-5 cursor-pointer' onClick={() => {
                                                 setViewPrices(true);
-
                                                 setExtraToEdit(extraObj);
                                             }} /></td>
 

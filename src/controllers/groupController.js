@@ -2,6 +2,7 @@ const Group = require('../models/groupModel');
 require('dotenv').config()
 const cloudinary = require('cloudinary').v2;
 const Extra = require('../models/extrasModel');
+const Season = require('../models/seasonModel');
 
 
 
@@ -64,14 +65,25 @@ const addGroup = async (req, res) => {
         ...req.body,
         imageUrl: imageUrl
       });
+      group.prices = [];
 
-      let extra = await Extra.findOne();
+      const seasons = await Season.find();
+      seasons.map(seasonObj => {
+        group.prices.push({ season: seasonObj._id })
+      })
+
+      await group.save();
+
+      let extra = await Extra.findOne().populate({
+        path: 'Extras.priceOfExtra.group',
+        model: 'Group'
+      });
 
 
       const SCDWObj = extra.Extras.find(obj => obj.extraName === 'Super Collision Damage Waiver (SCDW)');
       const TyresObj = extra.Extras.find(obj => obj.extraName === 'Tyres, Windscreen, Underbody');
 
-      const foundGroup = SCDWObj.priceOfExtra.find(obj => obj.groupName === req.body.groupName);
+      const foundGroup = SCDWObj.priceOfExtra?.find(obj => obj.group?._id === group._id);
 
 
       if (foundGroup) {
@@ -79,40 +91,30 @@ const addGroup = async (req, res) => {
 
       } else {
         SCDWObj.priceOfExtra.push({
-          groupName: req.body.groupName,
+          group: group._id,
           price: 20,
           maxQuantity: 1
         });
         TyresObj.priceOfExtra.push({
-          groupName: req.body.groupName,
+          group: group._id,
           price: 20,
           maxQuantity: 1
         });
-       
-        console.log('Adding Group');
-        console.log(extra.Extras[0].priceOfExtra);
 
         await Extra.findByIdAndUpdate(extra._id, extra, {
           new: true,
         });
       }
-
-      await group.save();
-
       console.log('Added successfully!');
 
       res.status(200).send({
         status: true, message: "The group is added!", data: group
       });
     }
-
-
   } catch (error) {
     console.log(error);
     res.status(400).send({ status: false, message: error.message });
-
   }
-
 }
 
 
@@ -132,41 +134,6 @@ const editGroup = async (req, res) => {
       updateFields.imageUrl = imageUrl;
     }
 
-    const previousGroup = await Group.findById(req.params.groupId)
-
-    if (previousGroup.groupName !== req.body.groupName) {
-
-      let extra = await Extra.findOne();
-
-      const SCDWObj = extra.Extras.find(obj => obj.extraName === 'Super Collision Damage Waiver (SCDW)');
-      const TyresObj = extra.Extras.find(obj => obj.extraName === 'Tyres, Windscreen, Underbody');
-
-      const updatedSCDWObj = SCDWObj.priceOfExtra.find(groupObj => groupObj.groupName === previousGroup.groupName);
-      if(updatedSCDWObj){
-        updatedSCDWObj.groupName = req.body.groupName;
-      } else {
-        SCDWObj.priceOfExtra.push({
-          groupName : req.body.groupName,
-          price : 20,
-          maxQuantity : 1
-        })
-      }
-      const updatedTyresObj = TyresObj.priceOfExtra.find(groupObj => groupObj.groupName === previousGroup.groupName);
-      if(updatedTyresObj){
-        updatedTyresObj.groupName = req.body.groupName;
-      } else {
-        TyresObj.priceOfExtra.push({
-          groupName : req.body.groupName,
-          price : 20,
-          maxQuantity : 1
-        })
-      }
-      
-      console.log(extra.Extras[0].priceOfExtra);
-      await Extra.findByIdAndUpdate(extra._id, extra, {
-        new: true,
-      });
-    }
     const updatedGroup = await Group.findByIdAndUpdate(req.params.groupId, updateFields, {
       new: true,
     });
@@ -190,28 +157,22 @@ const editGroup = async (req, res) => {
 
 
 const deleteGroup = async (req, res) => {
-
-
   try {
     const deletedGroup = await Group.findByIdAndDelete(req.params.groupId);
-    let extra = await Extra.findOne();
+    let extra = await Extra.findOne().populate({
+      path: 'Extras.priceOfExtra.group',
+      model: 'Group'
+    });
     const SCDWObj = extra.Extras.find(obj => obj.extraName === 'Super Collision Damage Waiver (SCDW)');
     const TyresObj = extra.Extras.find(obj => obj.extraName === 'Tyres, Windscreen, Underbody');
+    console.log(TyresObj.priceOfExtra);
 
-    const foundGroup = SCDWObj.priceOfExtra.find(obj => obj.groupName === deletedGroup.groupName);
-    if (foundGroup) {
-      SCDWObj.priceOfExtra = SCDWObj.priceOfExtra.filter(groupObj => groupObj.groupName !== deletedGroup.groupName);
-      TyresObj.priceOfExtra = TyresObj.priceOfExtra.filter(groupObj => groupObj.groupName !== deletedGroup.groupName);
+    SCDWObj.priceOfExtra = SCDWObj.priceOfExtra?.filter(groupObj => groupObj.group?._id !== req.params.groupId);
+    TyresObj.priceOfExtra = TyresObj.priceOfExtra?.filter(groupObj => groupObj.group?._id !== req.params.groupId);
 
-      console.log('Removing Group from Extras');
-      console.log(extra.Extras[0].priceOfExtra);
-
-      await Extra.findByIdAndUpdate(extra._id, extra, {
-        new: true,
-      });
-    }
-
-
+    await Extra.findByIdAndUpdate(extra._id, extra, {
+      new: true,
+    });
     console.log('Deleted successfully!');
     return res.status(200).send({
       status: true,
@@ -227,19 +188,15 @@ const deleteGroup = async (req, res) => {
 
 
 const readGroups = async (req, res) => {
-
   try {
-
-    const groups = await Group.find();
-
+    const groups = await Group.find().populate({
+      path: 'prices.season',
+      model: 'season'
+    });
     res.status(200).send({ status: true, message: "The Following are the Groups!", data: groups });
-
-
-
   } catch (error) {
     res.status(400).send({ status: false, message: error.message });
   }
-
 }
 
 module.exports = { addGroup, readGroups, editGroup, deleteGroup };

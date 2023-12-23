@@ -24,9 +24,6 @@ import { setWebContent } from './redux/slices/webContentSlice';
 import { toast } from 'react-toastify';
 import ChangePassword from './pages/ChangePassword';
 
-
-
-
 function App() {
 
   useEffect(() => {
@@ -35,14 +32,9 @@ function App() {
     });
   }, []);
 
-  const loggedIn = useSelector(state => state.auth.loggedIn);
-  const user = useSelector(state => state.auth.user);
   const dispatch = useDispatch();
 
-
   const bookingData = useSelector(state => state.booking.bookingData);
-  const bookingSubmitted = useSelector(state => state.booking.isBookingSubmitted);
-  const selectedVehicle = useSelector(state => state.vehicle);
   const webContent = useSelector(state => state.webContent);
 
   useEffect(() => {
@@ -52,11 +44,6 @@ function App() {
     console.log(bookingData);
   }, [bookingData])
 
-
-  useEffect(() => {
-    console.log(selectedVehicle);
-  }, [selectedVehicle])
-
   useEffect(() => {
     axios.get('/read-content').then((response) => {
       dispatch(setWebContent(response.data.data))
@@ -64,7 +51,6 @@ function App() {
       reGetContent();
     })
   }, [])
-
 
   const reGetContent = () => {
     axios.get('/read-content').then((response) => {
@@ -75,51 +61,21 @@ function App() {
     })
   }
 
-
-
   useEffect(() => {
     axios.get('/read-seasons').then((res) => {
-      const seasons = res.data.data.Seasons;
+      const seasons = res.data.data;
       const currentDate = new Date(); // Current date
 
-      let currentSeason = null;
-      let winterSeason;
-      let summerSeason;
-      let summerHighSeason;
-      // Loop through the seasons and check if the current date falls within any season
-      for (let i = 0; i < seasons.length; i++) {
+      for (let i = 0; i < seasons?.length; i++) {
         const startDate = new Date(seasons[i].startDate);
         const endDate = new Date(seasons[i].endDate);
         if (currentDate >= startDate && currentDate <= endDate) {
-          currentSeason = seasons[i].seasonName;
+          dispatch(setCurrentSeason(seasons[i]));
           break;
         }
       }
-      for (let i = 0; i < seasons.length; i++) {
+      dispatch(setAllSeasons(seasons))
 
-        if (seasons[i].seasonName === 'Winter') {
-          winterSeason = seasons[i]
-        } else if (seasons[i].seasonName === 'Summer') {
-          summerSeason = seasons[i]
-        } else {
-          summerHighSeason = seasons[i]
-        }
-      }
-
-      dispatch(setAllSeasons({ winterSeason, summerSeason, summerHighSeason }))
-
-      // Output the current season
-      if (currentSeason) {
-        if (currentSeason === 'Winter') {
-          dispatch(setCurrentSeason('winterPrices'));
-        } else if (currentSeason === 'Summer') {
-          dispatch(setCurrentSeason('summerPrices'));
-        } else {
-          dispatch(setCurrentSeason('summerHighPrices'));
-        }
-      } else {
-        dispatch(setCurrentSeason('winterPrices'))
-      }
     })
   }, [])
 
@@ -133,15 +89,10 @@ function App() {
     console.log(days);
   }, [days])
 
-
   // Check if the user is logged in
   useEffect(() => {
     const userToken = Cookies.get('userToken');
-
-
     if (userToken) {
-      console.log(userToken);
-      // Make a request to the backend to verify the user token and get user information
       axios.get('/user/verify-user', { headers: { Authorization: `Bearer ${userToken}` } })
         .then(response => {
           dispatch(logInUser({ loggedIn: true, user: response.data }))
@@ -150,52 +101,33 @@ function App() {
     }
   }, []);
 
-
-
   return (
     <Router>
       <div className="App">
-
         <Routes>
-
-
           <Route path="/" element={<Home />} />
-
           <Route path="/reservations" element={<Reservations />} />
-
           <Route path="/contact" element={<ContactUs />} />
-
           <Route path="/terms-and-conditions" element={<TermsConditions />} />
-
           <Route path="/privacy-and-cookies" element={<PrivacyCookiesPolicy />} />
-
           <Route path="/vehicle-guide" element={<VehicleGuide />} />
-
           <Route path="/admin-vehicles" element={<Admin tab={'Vehicles'} />} />
-
           <Route path="/admin-extras" element={<Admin tab={'Extras'} />} />
-
           <Route path="/admin-bookings" element={<Admin tab={'Bookings'} />} />
-
           <Route path="/admin-pricing" element={<Admin tab={'Pricing'} />} />
           <Route path="/admin-bookings" element={<Admin tab={'Bookings'} />} />
           <Route path="/admin-seasons" element={<Admin tab={'Seasons'} />} />
-          <Route path="/winter-pricing" element={<Admin tab={'Winter-Pricing'} />} />
-          <Route path="/summer-pricing" element={<Admin tab={'Summer-Pricing'} />} />
-          <Route path="/summerHigh-pricing" element={<Admin tab={'SummerHigh-Pricing'} />} />
+          <Route path="/seasons-pricing" element={<Admin tab={'Seasons-Pricing'} />} />
+          <Route path="/groups-prices" element={<Admin tab={'Groups-Prices'} />} />
           <Route path="/landingPage-content" element={<Admin tab={'landingPage-Content'} />} />
           <Route path="/reservations-content" element={<Admin tab={'reservations-Content'} />} />
           <Route path="/terms&conditions-content" element={<Admin tab={'terms&Conditions-Content'} />} />
           <Route path="/contactus-content" element={<Admin tab={'contactUs-Content'} />} />
           <Route path="/extras-content" element={<Admin tab={'extras-Content'} />} />
           <Route path="/privacy&cookies-content" element={<Admin tab={'privacy&Cookies-Content'} />} />
-
           <Route path="/complete-booking" element={<CompleteBooking />} />
           <Route path="/reset-password/:userId" element={<ChangePassword />} />
-
-
-          {/* <Route component={NotFound} /> */}
-
+          
         </Routes>
       </div>
     </Router>

@@ -41,26 +41,37 @@ export default function CompleteBooking() {
 
     useEffect(() => {
         if (promoCodeObj) {
-            let priceToAside = bookingData?.airPortFee;
-            let basicPrice = bookingData.basicPrice - priceToAside;
+            let basicPrice = bookingData.basicPrice;
             let discountValue = (basicPrice / 100) * promoCodeObj.discountPercent
             basicPrice = basicPrice - (discountValue)
-            dispatch(updateBookingInfo({ ...bookingData, promoDiscount: (discountValue).toFixed(2), promoCode: promoCodeObj, basicPrice: (basicPrice + priceToAside) }))
+            dispatch(updateBookingInfo({ ...bookingData, promoDiscount: (discountValue).toFixed(2), promoCode: promoCodeObj, basicPrice: (basicPrice).toFixed(2) }))
         } else {
             if (selectedGroup && currentSeason && bookingData) {
                 console.log(bookingData);
                 let basicPrice = 0;
-                if (bookingData?.days.totalBookingDays < 3) {
-                    if (bookingData?.days.totalBookingDays === 1) {
-                        basicPrice = selectedGroup[currentSeason]['1to6daysPrice'] * 3;
+                if (bookingData?.totalBookingDays < 3) {
+                    if (bookingData?.totalBookingDays === 1) {
+                        basicPrice = (selectedGroup.prices.find(priceObj => priceObj.season._id === currentSeason._id)).sixDaysPrice * 3;
                     } else {
-                        basicPrice = (selectedGroup['winterPrices']['1to6daysPrice'] * bookingData?.days.winterBookingDays) + (selectedGroup['summerPrices']['1to6daysPrice'] * bookingData?.days.summerBookingDays) + (selectedGroup['summerHighPrices']['1to6daysPrice'] * bookingData?.days.summerHighBookingDays) + (selectedGroup[currentSeason]['1to6daysPrice'])
+                        bookingData?.days.forEach(daysObj => {
+                            const pricesObj = selectedGroup.prices.find(priceObj => priceObj.season._id === daysObj.season)
+                            basicPrice += (pricesObj.sixDaysPrice * daysObj.days);
+                        })
+                        basicPrice += (selectedGroup.prices.find(priceObj => priceObj.season._id === currentSeason._id)).sixDaysPrice;
                     }
                 } else {
-                    basicPrice = (selectedGroup['winterPrices'][bookingData?.days.totalBookingDays <= 6 ? '1to6daysPrice' : bookingData?.days.totalBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice'] * bookingData?.days.winterBookingDays) + (selectedGroup['summerPrices'][bookingData?.days.totalBookingDays <= 6 ? '1to6daysPrice' : bookingData?.days.totalBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice'] * bookingData?.days.summerBookingDays) + (selectedGroup['summerHighPrices'][bookingData?.days.totalBookingDays <= 6 ? '1to6daysPrice' : bookingData?.days.totalBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice'] * bookingData?.days.summerHighBookingDays)
+                    bookingData.days.forEach(daysObj => {
+                        const pricesObj = selectedGroup.prices.find(priceObj => priceObj.season._id === daysObj.season);
+                        if (bookingData?.totalBookingDays <= 6) {
+                            basicPrice += (pricesObj.sixDaysPrice * daysObj.days);
+                        } else if (bookingData?.totalBookingDays <= 14) {
+                            basicPrice += (pricesObj.fourteenDaysPrice * daysObj.days);
+                        } else {
+                            basicPrice += (pricesObj.fifteenDaysPrice * daysObj.days);
+                        }
+                    })
                 }
-
-                dispatch(updateBookingInfo({ ...bookingData, basicPrice: (basicPrice + (bookingData?.airPortFee)), promoCode: null, promoDiscount: 0 }));
+                dispatch(updateBookingInfo({ ...bookingData, basicPrice: (basicPrice).toFixed(2), promoCode: null, promoDiscount: 0 }));
             }
         }
     }, [promoCodeObj])
@@ -70,14 +81,17 @@ export default function CompleteBooking() {
         dispatch(updateBookingInfo({ ...bookingData, vatValue: vatValue }))
     }, [bookingData?.totalPrice])
 
-
     useEffect(() => {
         let totalPrice = parseFloat(bookingData?.basicPrice);
         for (let i = 0; i < bookingData?.addedExtras?.length; i++) {
             const extraObj = bookingData.addedExtras[i];
-            totalPrice += extraObj.price * extraObj.quantity;
+            if (extraObj.extraName === 'Super Collision Damage Waiver (SCDW)' || extraObj.extraName === 'Tyres, Windscreen, Underbody') {
+                totalPrice += (extraObj.price * extraObj.quantity) * bookingData?.totalBookingDays;
+            } else {
+                totalPrice += extraObj.price * extraObj.quantity;
+            }
         }
-        dispatch(updateBookingInfo({ ...bookingData, totalPrice: (totalPrice).toFixed(2) }));
+        dispatch(updateBookingInfo({ ...bookingData, totalPrice: (totalPrice + bookingData?.airPortFee).toFixed(2) }));
     }, [bookingData?.basicPrice])
 
 
@@ -88,6 +102,7 @@ export default function CompleteBooking() {
             console.log(res.data)
             setExtrasArr(res.data.data.Extras);
         }).catch((e) => {
+            console.log(e);
             toast.error('Error , Please Refresh!')
         })
     }
@@ -104,6 +119,33 @@ export default function CompleteBooking() {
             reGetExtras();
         })
     }, [])
+
+    const updateExtras = (updatedExtras) => {
+        let totalPrice = parseFloat(bookingData?.basicPrice);
+        updatedExtras.forEach((extraObj) => {
+            if (extraObj.extraName === 'Super Collision Damage Waiver (SCDW)' || extraObj.extraName === 'Tyres, Windscreen, Underbody') {
+                totalPrice += (extraObj.price * extraObj.quantity) * bookingData?.totalBookingDays;
+            } else {
+                totalPrice += extraObj.price * extraObj.quantity;
+            }
+        })
+        dispatch(updateBookingInfo({ ...bookingData, addedExtras: updatedExtras, totalPrice : totalPrice + bookingData?.airPortFee }))
+    }
+
+    const [morePricesText, setMorePricesText] = useState('');
+    useEffect(() => {
+        if (bookingData?.days?.length > 0) {
+            let newText = '';
+            bookingData?.days?.forEach((daysObj) => {
+                const pricesObj = selectedGroup.prices?.find((priceObj) => priceObj.season._id === daysObj.season)
+                newText += `€${bookingData.totalBookingDays <= 6 ? pricesObj?.sixDaysPrice : bookingData.totalBookingDays <= 14 ? pricesObj?.fourteenDaysPrice : pricesObj?.fifteenDaysPrice}/day | `;
+            });
+            setMorePricesText(newText);
+        } else {
+            navigate('/')
+        }
+
+    }, [selectedGroup, bookingData?.days])
     return (
         <>
             {(currentSeason && bookingData && submitPreBooking && selectedGroup && user && loggedIn) && (
@@ -120,23 +162,15 @@ export default function CompleteBooking() {
                                                 <div class="price-model-and-fav-area">
                                                     <div class="price-and-model">
                                                         <div class="price">
-
-
-
                                                             <>
-                                                                {bookingData?.days?.winterBookingDays > 0 ? (
-                                                                    <h3>€{selectedGroup[currentSeason][bookingData?.days?.totalBookingDays <= 6 ? '1to6daysPrice' : bookingData?.days?.totalBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice']}/ day</h3>
+                                                                {bookingData?.days?.length > 0 ? (
+                                                                    <h3>{morePricesText}</h3>
                                                                 ) : (
-                                                                    <h3>€{selectedGroup[currentSeason]['1to6daysPrice']}/day</h3>
+                                                                    <h3>€{(selectedGroup.prices.find(priceObj => priceObj.season._id === currentSeason._id))?.sixDaysPrice}/day</h3>
                                                                 )}
                                                             </>
-
-
-
                                                         </div>
-
                                                     </div>
-
                                                 </div>
                                                 <h1>{selectedGroup?.vehiclename}</h1>
                                                 <div class="location-and-notification">
@@ -233,7 +267,7 @@ export default function CompleteBooking() {
                                                                     if (e.target.checked) {
                                                                         updatedExtras.push({
                                                                             extraName: 'Super Collision Damage Waiver (SCDW)',
-                                                                            price: extrasArr.find((extraObj) => extraObj.extraName === 'Super Collision Damage Waiver (SCDW)').priceOfExtra.find((priceObj) => priceObj.groupName === selectedGroup.groupName).price,
+                                                                            price: extrasArr.find((extraObj) => extraObj.extraName === 'Super Collision Damage Waiver (SCDW)').priceOfExtra.find((priceObj) => priceObj.group?._id === selectedGroup._id)?.price,
                                                                             quantity: 1
                                                                         })
                                                                     } else {
@@ -242,27 +276,12 @@ export default function CompleteBooking() {
                                                                         updatedExtras = updatedExtras.filter((extraObj) => extraObj !== extraFound);
 
                                                                     }
-
-                                                                    let totalPrice = parseFloat(bookingData?.basicPrice);
-
-                                                                    for (let i = 0; i < updatedExtras.length; i++) {
-                                                                        const extraObj = updatedExtras[i];
-                                                                        totalPrice += extraObj.price * extraObj.quantity;
-                                                                    }
-
-                                                                    dispatch(updateBookingInfo({ ...bookingData, addedExtras: updatedExtras, totalPrice }))
-
-
-
+                                                                    updateExtras(updatedExtras)
                                                                 }} type="checkbox" />
                                                                 <h6>Super Collision Damage Waiver(SCDW)</h6>
 
-
                                                             </div>
                                                         </li>
-
-
-
 
                                                         <li>
                                                             <div class="icon">
@@ -280,7 +299,7 @@ export default function CompleteBooking() {
                                                                     if (e.target.checked) {
                                                                         updatedExtras.push({
                                                                             extraName: 'Tyres, Windscreen, Underbody',
-                                                                            price: extrasArr.find((extraObj) => extraObj.extraName === 'Tyres, Windscreen, Underbody').priceOfExtra.find((priceObj) => priceObj.groupName === selectedGroup.groupName).price,
+                                                                            price: extrasArr.find((extraObj) => extraObj.extraName === 'Tyres, Windscreen, Underbody').priceOfExtra.find((priceObj) => priceObj.group?._id === selectedGroup._id).price,
                                                                             quantity: 1
                                                                         })
                                                                     } else {
@@ -289,21 +308,11 @@ export default function CompleteBooking() {
                                                                         updatedExtras = updatedExtras.filter((extraObj) => extraObj !== extraFound);
 
                                                                     }
-
-                                                                    let totalPrice = parseFloat(bookingData?.basicPrice);
-
-                                                                    for (let i = 0; i < updatedExtras.length; i++) {
-                                                                        const extraObj = updatedExtras[i];
-                                                                        totalPrice += extraObj.price * extraObj.quantity;
-                                                                    }
-
-                                                                    dispatch(updateBookingInfo({ ...bookingData, addedExtras: updatedExtras, totalPrice }))
+                                                                    updateExtras(updatedExtras)
                                                                 }} type="checkbox" />
                                                                 <h6>Tyres, Windscreen, Underbody</h6>
-
                                                             </div>
                                                         </li>
-
 
                                                         <li>
                                                             <div class="icon">
@@ -317,6 +326,7 @@ export default function CompleteBooking() {
                                                                     } else {
                                                                         updatedExtras = [];
                                                                     }
+                                                                    
                                                                     if (e.target.checked) {
                                                                         updatedExtras.push({
                                                                             extraName: 'GPS',
@@ -327,14 +337,7 @@ export default function CompleteBooking() {
                                                                         const extraFound = updatedExtras.find((extraObj) => extraObj.extraName === 'GPS');
                                                                         updatedExtras = updatedExtras.filter((extraObj) => extraObj !== extraFound);
                                                                     }
-                                                                    let totalPrice = parseFloat(bookingData?.basicPrice);
-
-                                                                    for (let i = 0; i < updatedExtras.length; i++) {
-                                                                        const extraObj = updatedExtras[i];
-                                                                        totalPrice += extraObj.price * extraObj.quantity;
-                                                                    }
-
-                                                                    dispatch(updateBookingInfo({ ...bookingData, addedExtras: updatedExtras, totalPrice }))
+                                                                    updateExtras(updatedExtras)
                                                                 }} type="checkbox" />
                                                                 <h6>GPS</h6>
                                                             </div>
@@ -367,21 +370,12 @@ export default function CompleteBooking() {
                                                                             extraName: 'Baby Seat',
                                                                             price: extrasArr.find((extraObj) => extraObj.extraName === 'Baby Seat').priceOfExtra,
                                                                             quantity: 1
-
-
                                                                         })
                                                                     } else {
                                                                         const extraFound = updatedExtras.find((extraObj) => extraObj.extraName === 'Baby Seat');
                                                                         updatedExtras = updatedExtras.filter((extraObj) => extraObj !== extraFound);
                                                                     }
-                                                                    let totalPrice = parseFloat(bookingData?.basicPrice);
-
-                                                                    for (let i = 0; i < updatedExtras.length; i++) {
-                                                                        const extraObj = updatedExtras[i];
-                                                                        totalPrice += extraObj.price * extraObj.quantity;
-                                                                    }
-
-                                                                    dispatch(updateBookingInfo({ ...bookingData, addedExtras: updatedExtras, totalPrice }))
+                                                                    updateExtras(updatedExtras)
                                                                 }} type="checkbox" />
                                                                 <h6>Baby Seat</h6>
                                                             </div>
@@ -403,20 +397,12 @@ export default function CompleteBooking() {
                                                                             extraName: 'Booster Seat',
                                                                             price: extrasArr.find((extraObj) => extraObj.extraName === 'Booster Seat').priceOfExtra,
                                                                             quantity: 1
-
                                                                         })
                                                                     } else {
                                                                         const extraFound = updatedExtras.find((extraObj) => extraObj.extraName === 'Booster Seat');
                                                                         updatedExtras = updatedExtras.filter((extraObj) => extraObj !== extraFound);
                                                                     }
-                                                                    let totalPrice = parseFloat(bookingData?.basicPrice);
-
-                                                                    for (let i = 0; i < updatedExtras.length; i++) {
-                                                                        const extraObj = updatedExtras[i];
-                                                                        totalPrice += extraObj.price * extraObj.quantity;
-                                                                    }
-
-                                                                    dispatch(updateBookingInfo({ ...bookingData, addedExtras: updatedExtras, totalPrice }))
+                                                                    updateExtras(updatedExtras)
                                                                 }} type="checkbox" />
                                                                 <h6>Booster Seat</h6>
                                                             </div>
@@ -443,14 +429,7 @@ export default function CompleteBooking() {
                                                                         const extraFound = updatedExtras.find((extraObj) => extraObj.extraName === 'Roof Rack');
                                                                         updatedExtras = updatedExtras.filter((extraObj) => extraObj !== extraFound);
                                                                     }
-                                                                    let totalPrice = parseFloat(bookingData?.basicPrice);
-
-                                                                    for (let i = 0; i < updatedExtras.length; i++) {
-                                                                        const extraObj = updatedExtras[i];
-                                                                        totalPrice += extraObj.price * extraObj.quantity;
-                                                                    }
-
-                                                                    dispatch(updateBookingInfo({ ...bookingData, addedExtras: updatedExtras, totalPrice }))
+                                                                    updateExtras(updatedExtras)
                                                                 }} type="checkbox" />
                                                                 <h6>Roof Rack</h6>
                                                             </div>
@@ -486,14 +465,7 @@ export default function CompleteBooking() {
                                                                         const extraFound = updatedExtras.find((extraObj) => extraObj.extraName === 'Ski Rack');
                                                                         updatedExtras = updatedExtras.filter((extraObj) => extraObj !== extraFound);
                                                                     }
-                                                                    let totalPrice = parseFloat(bookingData?.basicPrice);
-
-                                                                    for (let i = 0; i < updatedExtras.length; i++) {
-                                                                        const extraObj = updatedExtras[i];
-                                                                        totalPrice += extraObj.price * extraObj.quantity;
-                                                                    }
-
-                                                                    dispatch(updateBookingInfo({ ...bookingData, addedExtras: updatedExtras, totalPrice }))
+                                                                    updateExtras(updatedExtras)
                                                                 }} type="checkbox" />
                                                                 <h6>Ski Rack</h6>
                                                             </div>
@@ -524,38 +496,39 @@ export default function CompleteBooking() {
                                                         <form onSubmit={(e) => {
                                                             e.preventDefault();
                                                             e.target.reset();
-                                                            if(codeValue !== bookingData?.promoCode?.code){
-                                                            setApplyingPromo(true)
+                                                            if (codeValue !== bookingData?.promoCode?.code) {
+                                                                setApplyingPromo(true)
 
-                                                            axios.get(`/get-code/${codeValue}/${bookingData?.group}`).then((res) => {
-                                                                console.log(res);
-                                                                setApplyingPromo(false);
-                                                                if (res.status === 201) {
-                                                                    toast.error(res.data.message)
-                                                                } else {
-                                                                    setPromoCodeObj(res.data.data);
-                                                                    setCodeValue(null)
-                                                                    toast.success('Promo Code Activated !');
-                                                                }
-                                                            }).catch(err => {
-                                                                setApplyingPromo(false);
-                                                                console.log(err);
-                                                                setPromoCodeObj(null);
-                                                                toast.error('Error on Applying Code!')
-                                                            })
+                                                                axios.get(`/get-code/${codeValue}/${selectedGroup._id}`).then((res) => {
+                                                                    console.log(res);
+                                                                    setApplyingPromo(false);
+                                                                    if (res.status === 201) {
+                                                                        toast.error(res.data.message)
+                                                                    } else {
+                                                                        setPromoCodeObj(res.data.data);
+                                                                        setCodeValue(null)
+                                                                        toast.success('Promo Code Activated !');
+                                                                    }
+                                                                }).catch(err => {
+                                                                    setApplyingPromo(false);
+                                                                    console.log(err);
+                                                                    setPromoCodeObj(null);
+                                                                    toast.error('Error on Applying Code!')
+                                                                })
                                                             } else {
                                                                 toast.warning('Code already added!');
                                                                 setApplyingPromo(false)
                                                             }
                                                         }}>
                                                             <h5 class="product-widget-title mb-20">Promo</h5>
-                                                            {promoCodeObj && (
+                                                            {bookingData?.promoCode && (
                                                                 <div className=' px-2 my-2 d-flex justify-content-between'>
-                                                                    <span>{promoCodeObj.code}</span>
+                                                                    <span>{bookingData.promoCode.code}</span>
                                                                     <div>
                                                                         <span><BiMinus />€{bookingData?.promoDiscount}</span>
                                                                         <AiOutlineCloseCircle className='mx-2 cursor-pointer fs-5' onClick={() => {
                                                                             setPromoCodeObj(null);
+                                                                            dispatch(updateBookingInfo({...bookingData, promoCode : null, promoDiscount : 0}))
                                                                             toast.success('Promo Code Removed!')
                                                                         }} />
                                                                     </div>
@@ -578,41 +551,27 @@ export default function CompleteBooking() {
                                                     </div>
                                                     <h6 class="product-widget-title mb-20">Basic Price</h6>
                                                     <div class="checkbox-container">
-                                                        {bookingData?.days?.totalBookingDays > 3 && (
+                                                        {bookingData?.totalBookingDays > 3 && (
                                                             <>
-                                                                {bookingData?.days?.winterBookingDays > 0 && (
-                                                                    <div class="row g-3">
-                                                                        <div class="col-6">
-                                                                            <li>Winter Season:</li>
+                                                                {bookingData?.days.map(daysObj => {
+                                                                    const priceObj = selectedGroup.prices.find(priceObj => priceObj.season._id === daysObj.season);
+                                                                    return (
+                                                                        <div class="row g-3">
+                                                                            <div class="col-6">
+                                                                                <li>{priceObj.season.seasonName} Season:</li>
+                                                                            </div>
+                                                                            <div class="col-6">
+                                                                                <span>€{bookingData?.totalBookingDays <= 6 ? priceObj?.sixDaysPrice : bookingData?.totalBookingDays <= 14 ? priceObj?.fourteenDaysPrice : priceObj?.fifteenDaysPrice} X {daysObj.days}days = <strong>€
+                                                                                    {
+                                                                                        ((bookingData?.totalBookingDays <= 6 ? priceObj?.sixDaysPrice : bookingData?.totalBookingDays <= 14 ? priceObj?.fourteenDaysPrice : priceObj?.fifteenDaysPrice) * daysObj.days).toFixed(2)
+                                                                                    }
+                                                                                </strong></span>
+                                                                            </div>
                                                                         </div>
-                                                                        <div class="col-6">
+                                                                    )
 
-                                                                            <span>€{selectedGroup['winterPrices'][bookingData?.days.totalBookingDays <= 6 ? '1to6daysPrice' : bookingData?.days.totalBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice']} X {bookingData?.days.winterBookingDays}days = <b>{ }</b><strong>€{(selectedGroup['winterPrices'][bookingData?.days.totalBookingDays <= 6 ? '1to6daysPrice' : bookingData?.days.totalBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice'] * bookingData?.days.winterBookingDays).toFixed(2)}</strong></span>
-                                                                        </div>
-                                                                    </div>
-                                                                )}
+                                                                })}
 
-                                                                {bookingData?.days?.summerBookingDays > 0 && (
-                                                                    <div class="row g-3">
-                                                                        <div class="col-6">
-                                                                            <li>Summer Season:</li>
-                                                                        </div>
-                                                                        <div class="col-6">
-                                                                            <span>€{selectedGroup['summerPrices'][bookingData?.days.totalBookingDays <= 6 ? '1to6daysPrice' : bookingData?.days.totalBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice']} X {bookingData?.days.summerBookingDays}days = <b>{ }</b><strong>€{(selectedGroup['summerPrices'][bookingData?.days.totalBookingDays <= 6 ? '1to6daysPrice' : bookingData?.days.totalBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice'] * bookingData?.days.summerBookingDays).toFixed(2)}</strong></span>
-                                                                        </div>
-                                                                    </div>
-                                                                )}
-
-                                                                {bookingData?.days?.summerHighBookingDays > 0 && (
-                                                                    <div class="row g-3">
-                                                                        <div class="col-6">
-                                                                            <li>Summer High:</li>
-                                                                        </div>
-                                                                        <div class="col-6">
-                                                                            <span>€{selectedGroup['summerHighPrices'][bookingData?.days.totalBookingDays <= 6 ? '1to6daysPrice' : bookingData?.days.totalBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice']} X {bookingData?.days.summerHighBookingDays}days = <b>{ }</b><strong>€{(selectedGroup['summerHighPrices'][bookingData?.days.totalBookingDays <= 6 ? '1to6daysPrice' : bookingData?.days.totalBookingDays <= 14 ? '7to14daysPrice' : '15plusDaysPrice'] * bookingData?.days.summerHighBookingDays).toFixed(2)}</strong></span>
-                                                                        </div>
-                                                                    </div>
-                                                                )}
                                                             </>
                                                         )}
                                                     </div>
@@ -621,7 +580,7 @@ export default function CompleteBooking() {
                                                             <li className='fs-5'><b>Total :</b></li>
                                                         </div>
                                                         <div >
-                                                            <span className='fs-5'><strong>€{(parseFloat(bookingData?.basicPrice - bookingData?.airPortFee)).toFixed(2)}</strong></span>
+                                                            <span className='fs-5'><strong>€{(parseFloat(bookingData?.basicPrice)).toFixed(2)}</strong></span>
                                                         </div>
                                                     </div>
                                                     <hr></hr>
@@ -645,7 +604,11 @@ export default function CompleteBooking() {
                                                                         <div class="col-6">
                                                                             {(extraObj.extraName !== 'Booster Seat' && extraObj.extraName !== 'Baby Seat') ? (
                                                                                 <>
-                                                                                    <span><strong>€{extraObj.price}</strong> X {extraObj.quantity}</span>
+                                                                                    {(extraObj.extraName === 'Super Collision Damage Waiver (SCDW)' || extraObj.extraName === 'Tyres, Windscreen, Underbody') ? (
+                                                                                        <span><strong>€{extraObj.price}</strong> X {extraObj.quantity} X {bookingData?.totalBookingDays}days</span>
+                                                                                    ) : (
+                                                                                        <span><strong>€{extraObj.price}</strong> X {extraObj.quantity}</span>
+                                                                                    )}
                                                                                 </>
 
                                                                             ) : (
@@ -663,14 +626,7 @@ export default function CompleteBooking() {
                                                                                                 : extraItem
                                                                                         );
 
-                                                                                        let totalPrice = parseFloat(bookingData?.basicPrice);
-
-                                                                                        for (let i = 0; i < updatedExtras.length; i++) {
-                                                                                            const extraObj = updatedExtras[i];
-                                                                                            totalPrice += extraObj.price * extraObj.quantity;
-                                                                                        }
-
-                                                                                        dispatch(updateBookingInfo({ ...bookingData, addedExtras: updatedExtras, totalPrice }))
+                                                                                        updateExtras(updatedExtras)
 
                                                                                     }} options={[
                                                                                         { value: 1, label: 1 },

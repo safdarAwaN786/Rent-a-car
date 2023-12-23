@@ -7,7 +7,6 @@ const extrasSchema = new mongoose.Schema({
         {
             extraName: {
                 type: String,
-                
             },
             maxQuantity: {
                 type: Number,
@@ -15,7 +14,9 @@ const extrasSchema = new mongoose.Schema({
                 default : 1
                 
             },
-            priceOfExtra : {},
+            priceOfExtra: {
+                type: mongoose.Schema.Types.Mixed,
+            }
 
         }
     ],
