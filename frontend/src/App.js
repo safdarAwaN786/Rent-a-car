@@ -23,6 +23,8 @@ import { setAllSeasons, setCurrentSeason } from './redux/slices/seasonSlice';
 import { setWebContent } from './redux/slices/webContentSlice';
 import { toast } from 'react-toastify';
 import ChangePassword from './pages/ChangePassword';
+import Prices from './pages/Prices';
+import SeasonPrices from './pages/SeasonPrices';
 
 function App() {
 
@@ -108,6 +110,8 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/reservations" element={<Reservations />} />
           <Route path="/contact" element={<ContactUs />} />
+          <Route path="/prices-seasons" element={<Prices />} />
+          <Route path="/prices-groups" element={<SeasonPrices />} />
           <Route path="/terms-and-conditions" element={<TermsConditions />} />
           <Route path="/privacy-and-cookies" element={<PrivacyCookiesPolicy />} />
           <Route path="/vehicle-guide" element={<VehicleGuide />} />

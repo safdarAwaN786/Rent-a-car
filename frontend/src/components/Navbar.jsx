@@ -52,17 +52,12 @@ export default function Navbar() {
         setValidationMessage('Password is valid!');
     }
 
-
     const [showLoginPassword, setShowLoginPassword] = useState(false);
-
-
     const [userDataToSend, setUserDataToSend] = useState(null);
 
     // Check if the user is logged in
     useEffect(() => {
         const userToken = Cookies.get('userToken');
-
-
         if (userToken) {
             console.log(userToken);
             // Make a request to the backend to verify the user token and get user information
@@ -72,7 +67,6 @@ export default function Navbar() {
                         loggedIn: true,
                         user: response.data
                     }))
-
                     if (response.data.IsAdmin) {
                         navigate('/admin-vehicles')
                     }
@@ -83,8 +77,6 @@ export default function Navbar() {
     // Check if the user is logged in
     useEffect(() => {
         const userToken = Cookies.get('userToken');
-
-
         if (userToken) {
             console.log(userToken);
             // Make a request to the backend to verify the user token and get user information
@@ -103,14 +95,11 @@ export default function Navbar() {
         }
     }, [loggedIn]);
 
-
     const [forgotPassword, setForgotPassword] = useState(false);
     const [sendingMail, setSendingMail] = useState(false);
 
     const [signingUp, setSigningUp] = useState(false);
     const [loggingIn, setLoggingIn] = useState(false);
-
-
     // User sign up function
     const handleSignup = () => {
         setSigningUp(true);
@@ -130,8 +119,6 @@ export default function Navbar() {
                 if (signUpCloseButtonRef.current) {
                     signUpCloseButtonRef.current.click();
                 }
-
-
             })
             .catch(error => {
                 setSigningUp(false);
@@ -139,31 +126,24 @@ export default function Navbar() {
                 console.log(error);
                 if (error.response.status === 400) {
                     toast.error(error.response.data.message);
-
                 } else {
                     toast.error('Server Error , Try Again !');
 
                 }
-
             });
     };
-
-
 
     // User login function
     const handleLogin = () => {
         if (userDataToSend?.email && userDataToSend?.password) {
         setLoggingIn(true);
         // Perform login API request
-
             axios.post('/login', userDataToSend)
                 .then(response => {
-
                     setLoggingIn(false);
                     const { token } = response.data;
                     Cookies.set('userToken', token); // Set the user token in the cookie
                     // console.log(Cookies);
-
                     dispatch(logInUser({
                         loggedIn: true,
                         user: userDataToSend
@@ -172,16 +152,13 @@ export default function Navbar() {
                     if (loginCloseButtonRef.current) {
                         loginCloseButtonRef.current.click();
                     }
-
                 })
                 .catch(error => {
                     setLoggingIn(false);
                     if (error?.response?.status === 400) {
                         toast.error(error.response.data.message);
-
                     } else {
                         toast.error('Server Error , Try Again !');
-
                     }
                     console.error('Error logging in:', error)
                 });
@@ -197,7 +174,6 @@ export default function Navbar() {
         dispatch(logOutUser())
         toast.success("Logged Out Successfully!");
         navigate('/');
-
     };
     const [emailForgetten, setEmailForgotten] = useState(null);
 
@@ -205,14 +181,12 @@ export default function Navbar() {
         setUserDataToSend({ ...userDataToSend, [e.target.name]: e.target.value })
     }
     const navigate = useNavigate()
-
     useEffect(() => {
         console.log(user);
         if (user?.IsAdmin) {
             navigate('/admin-vehicles');
         }
     }, [user])
-
 
     return (
         <>
@@ -238,9 +212,7 @@ export default function Navbar() {
                                 e.preventDefault();
                                 e.target.reset();
                                 if (userDataToSend.password === confirmPassword) {
-
                                     if (validationMessage === 'Password is valid!') {
-
                                         handleSignup();
                                     } else {
                                         toast.warning(validationMessage)
@@ -278,20 +250,16 @@ export default function Navbar() {
                                         <div class="form-inner">
                                             <label>Password*</label>
                                             <div className='d-felx flex-row justify-content-between passwordBox'>
-
                                                 <input value={userDataToSend?.password} onChange={(e) => {
                                                     updateUserData(e);
                                                     CheckPassword(e.target.value);
                                                 }} name='password' id="password" type={`${showPassword ? 'text' : 'password'}`} placeholder="*** ***" />
-
-
-
+                                                
                                                 {showPassword ? (
                                                     <AiOutlineEyeInvisible onClick={() => {
                                                         setShowPassword(false);
                                                     }} className='fs-5 text-dark' />
                                                 ) : (
-
                                                     <AiOutlineEye onClick={() => {
                                                         setShowPassword(true);
                                                     }} className='fs-5 text-dark' />
@@ -306,21 +274,14 @@ export default function Navbar() {
                                         <div class="form-inner">
                                             <label>Confirm Password*</label>
                                             <div className='d-felx flex-row justify-content-between passwordBox'>
-
                                                 <input value={confirmPassword} onChange={(e) => {
                                                     setConfirmPassword(e.target.value)
                                                 }} id="password2" type={`${showConfirmPassword ? 'text' : 'password'}`} placeholder="*** ***" />
-
-
                                                 {showConfirmPassword ? (
-
-
                                                     <AiOutlineEyeInvisible onClick={() => {
                                                         setShowConfirmPassword(false);
                                                     }} className='fs-5 text-dark' />
-
                                                 ) : (
-
                                                     <AiOutlineEye onClick={() => {
                                                         setShowConfirmPassword(true);
                                                     }} className='fs-5 text-dark' />
@@ -334,7 +295,6 @@ export default function Navbar() {
                                                 {signingUp ? (
                                                     <Spinner animation="border" size="sm" />
                                                 ) : (
-
                                                     'Sign Up Now'
                                                 )}
                                             </button>
@@ -352,15 +312,11 @@ export default function Navbar() {
                                         navigate('/terms-and-conditions');
                                     }}>‘terms & conditions’</a></p>
                                 </div>
-
                             </form>
                         </div>
                     </div>
                 </div>
             </div>
-
-
-
             <div class="modal signUp-modal fade" id="logInModal01" tabindex="-1" aria-labelledby="logInModal01Label"
                 aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered">
@@ -372,8 +328,6 @@ export default function Navbar() {
                             <button onClick={() => {
                                 setUserDataToSend(null);
                                 setLoggingIn(false);
-
-
                             }} ref={loginCloseButtonRef} type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"><i
                                 class="bi bi-x"></i></button>
                         </div>
@@ -395,12 +349,7 @@ export default function Navbar() {
                                         <div class="form-inner">
                                             <label>Password*</label>
                                             <div className='d-felx flex-row justify-content-between passwordBox'>
-
-
-
-
-                                                {
-                                                    showLoginPassword ? (
+                                                {showLoginPassword ? (
                                                         <input
                                                             onChange={(e) => {
                                                                 updateUserData(e);
@@ -417,7 +366,6 @@ export default function Navbar() {
                                                         <input
                                                             onChange={(e) => {
                                                                 updateUserData(e);
-
                                                             }}
                                                             value={userDataToSend?.password}
                                                             name='password'
@@ -428,17 +376,11 @@ export default function Navbar() {
                                                         />
                                                     )
                                                 }
-
-
                                                 {showLoginPassword ? (
-
-
                                                     <AiOutlineEyeInvisible onClick={() => {
                                                         setShowLoginPassword(false);
                                                     }} className='fs-5 text-dark' />
-
                                                 ) : (
-
                                                     <AiOutlineEye onClick={() => {
                                                         setShowLoginPassword(true);
                                                     }} className='fs-5 text-dark' />
@@ -449,7 +391,6 @@ export default function Navbar() {
                                     <div class="col-lg-12">
                                         <div class="form-agreement form-inner d-flex justify-content-between flex-wrap">
                                             <div>
-
                                             </div>
                                             <a onClick={() => {
                                                 if (loginCloseButtonRef.current) {
@@ -462,13 +403,11 @@ export default function Navbar() {
                                     <div class="col-md-12">
                                         <div class="form-inner">
                                             <button class="primary-btn2" type="submit">
-
                                                 {loggingIn ? (
                                                     <Spinner animation="border" size="sm" />
                                                 ) : (
                                                     'Log In'
                                                 )}
-
                                             </button>
                                         </div>
                                     </div>
@@ -484,14 +423,11 @@ export default function Navbar() {
                                         navigate('/terms-and-conditions');
                                     }}>‘terms & conditions’</a></p>
                                 </div>
-
                             </form>
                         </div>
                     </div>
                 </div>
             </div>
-
-
             {forgotPassword && (
                 <div className='addProductBox justify-content-center pt-5  '>
                     <div className='formBox border-circle  mt-5 pt-4 '>
@@ -505,8 +441,6 @@ export default function Navbar() {
                             <form onSubmit={(e) => {
                                 e.preventDefault();
                                 setSendingMail(true);
-
-
                                 axios.post('/forgot-password', { email: emailForgetten }).then((res) => {
                                     setSendingMail(false);
                                     toast.success('Password Reset Email Sended Successfully!');
@@ -516,14 +450,12 @@ export default function Navbar() {
                                     if (err.response.status === 400) {
                                         toast.error(err.response.data.message)
                                     } else {
-
                                         toast.error('Error in sending Email, Try Again !');
                                     }
                                     setSendingMail(false);
                                 })
                             }}>
                                 <div className='d-flex flex-column'>
-
                                     <label className='mt-1'>Your Email :</label>
                                     <input onChange={(e) => {
                                         setEmailForgotten(e.target.value);
@@ -535,10 +467,8 @@ export default function Navbar() {
                                             {sendingMail ? (
                                                 <Spinner animation="border" size="sm" />
                                             ) : (
-
                                                 'SEND EMAIL'
                                             )}
-
                                         </button>
                                     </div>
                                 </div>
@@ -546,10 +476,7 @@ export default function Navbar() {
                         </div>
                     </div>
                 </div>
-
             )}
-
-
             <div class="topbar-header">
                 <div class="top-bar style-2 d-flex justify-content-between">
                     <div class="company-logo">
@@ -559,7 +486,6 @@ export default function Navbar() {
                     </div>
                     <div class="top-bar-items">
                         <ul class="menu-list">
-
                             {user?.IsAdmin ? (
                                 null
                             ) : (
@@ -568,54 +494,38 @@ export default function Navbar() {
                                         navigate('/')
                                     }} className='cursor-pointer'>
                                         <a className='text-decoration-none cursor-pointer' >Home</a>
-
                                     </li>
                                     <li onClick={() => {
                                         navigate('/reservations')
                                     }}>
                                         <a class="text-decoration-none cursor-pointer">Reservations</a>
-
                                     </li>
                                     <li>
                                         <a onClick={() => {
                                             navigate('/vehicle-guide')
                                         }} class="text-decoration-none cursor-pointer">Vehicle Guide</a>
-
                                     </li>
-                                    {/* <li>
-                                        <a href="#" class="text-decoration-none cursor-pointer">Price</a>
-
-                                    </li> */}
+                                    <li>
+                                        <a onClick={() => {
+                                            navigate('/prices-seasons')
+                                        }}  class="text-decoration-none cursor-pointer">Prices</a>
+                                    </li>
                                     <li>
                                         <a onClick={() => {
                                             navigate('/terms-and-conditions')
                                         }} class="text-decoration-none cursor-pointer">Terms & Conditions</a>
-
                                     </li>
-
                                     <li>
                                         <a onClick={() => {
                                             navigate('/contact')
                                         }} class="text-decoration-none cursor-pointer">CONTACT US</a>
                                     </li>
-
-
-
                                 </>
-
                             )}
-
-
-
-
                         </ul>
-
                     </div>
                     <div className='d-flex flex-row gap-2'>
-
                         <div>
-
-
                             {loggedIn ? (
                                 <button onClick={() => {
                                     handleLogout();
@@ -624,7 +534,6 @@ export default function Navbar() {
                                     LOG OUT
                                 </button>
                             ) : (
-
                                 <button ref={loginButtonRef} type="button" class="primary-btn6 p-sm-2 p-1 " data-bs-toggle="modal" data-bs-target="#signUpModal01">
                                     <VscAccount className='fs-6' />
                                     LOGIN / SIGN UP
@@ -633,21 +542,17 @@ export default function Navbar() {
                             <div class="sidebar-button mobile-menu-btn ">
                                 <span></span>
                             </div>
-
-
                         </div>
                         <div className='nav-sidebar'>
                             <Button variant="dark" className='text-white' onClick={handleShow}>
                                 <SlMenu />
                             </Button>
-
                             <Offcanvas show={show} onHide={handleClose}>
                                 <Offcanvas.Header closeButton>
                                     <Offcanvas.Title><img src={blackLogo} /></Offcanvas.Title>
                                 </Offcanvas.Header>
                                 <Offcanvas.Body>
                                     <ul class="menu-list list-unstyled p-2">
-
                                         {user?.IsAdmin ? (
                                             <>
                                                 <li onClick={() => {
@@ -657,7 +562,6 @@ export default function Navbar() {
                                                     transition: 'background-color 0.5s ease'
                                                 }} className='cursor-pointer p-1 border-circle sidebar-li'>
                                                     <a className='text-decoration-none cursor-pointer text-dark fs-5' >Groups</a>
-
                                                 </li>
                                                 <li onClick={() => {
                                                     navigate('/admin-extras');
@@ -666,7 +570,6 @@ export default function Navbar() {
                                                     transition: 'background-color 0.5s ease'
                                                 }} className='cursor-pointer p-1 border-circle sidebar-li'>
                                                     <a class="text-decoration-none cursor-pointer text-dark fs-5">Extras</a>
-
                                                 </li>
                                                 <li onClick={() => {
                                                     navigate('/admin-pricing');
@@ -675,7 +578,6 @@ export default function Navbar() {
                                                     transition: 'background-color 0.5s ease'
                                                 }} className='cursor-pointer p-1 border-circle sidebar-li'>
                                                     <a class="text-decoration-none cursor-pointer text-dark fs-5">VAT & Codes</a>
-
                                                 </li>
                                                 <li onClick={() => {
                                                     navigate('/admin-bookings');
@@ -684,7 +586,6 @@ export default function Navbar() {
                                                     transition: 'background-color 0.5s ease'
                                                 }} className='cursor-pointer p-1 border-circle sidebar-li'>
                                                     <a class="text-decoration-none cursor-pointer text-dark fs-5">Bookings</a>
-
                                                 </li>
                                                 <li onClick={() => {
                                                     navigate('/admin-seasons');
@@ -693,7 +594,6 @@ export default function Navbar() {
                                                     transition: 'background-color 0.5s ease'
                                                 }} className='cursor-pointer p-1 border-circle sidebar-li'>
                                                     <a class="text-decoration-none cursor-pointer text-dark fs-5">Seasons</a>
-
                                                 </li>
                                                 <li onClick={() => {
                                                     setOpenPricing(!openPricing);
@@ -703,16 +603,12 @@ export default function Navbar() {
                                                     <a class="text-decoration-none cursor-pointer text-dark fs-5">Groups Pricing</a>
                                                     {openPricing ? (
                                                         <IoIosArrowDropup className={`fs-4 dropResponsive text-dark `} />
-
                                                     ) : (
-
                                                         <IoIosArrowDropdown className={`fs-4 dropResponsive text-dark `} />
                                                     )}
                                                 </li>
                                                 {openPricing && (
                                                     <div data-aos="fade-down" className='border-start border-dark ms-3 px-2 border-3' >
-
-
                                                         <li onClick={() => {
                                                             navigate('/winter-pricing')
                                                         }} style={{
@@ -742,7 +638,6 @@ export default function Navbar() {
                                                         </li>
                                                     </div>
                                                 )}
-
                                                 <li onClick={() => {
                                                     setOpenContent(!openContent);
                                                 }} style={{
@@ -751,17 +646,12 @@ export default function Navbar() {
                                                     <a class="text-decoration-none cursor-pointer text-dark fs-5">Web content</a>
                                                     {openContent ? (
                                                         <IoIosArrowDropup className={`fs-4 dropResponsive text-dark `} />
-
                                                     ) : (
-
                                                         <IoIosArrowDropdown className={`fs-4 dropResponsive text-dark `} />
                                                     )}
                                                 </li>
-
                                                 {openContent && (
                                                     <div data-aos="fade-down" className='border-start border-dark ms-3 px-2 border-3' >
-
-
                                                         <li onClick={() => {
                                                             navigate('/landingPage-content');
                                                             handleClose();
@@ -827,8 +717,6 @@ export default function Navbar() {
                                             </>
                                         ) : (
                                             <>
-
-
                                                 <li onClick={() => {
                                                     navigate('/')
                                                 }} style={{
@@ -843,7 +731,6 @@ export default function Navbar() {
                                                     transition: 'background-color 0.5s ease'
                                                 }} className='cursor-pointer p-1 border-circle sidebar-li'>
                                                     <a class="text-decoration-none cursor-pointer text-dark fs-5">Reservations</a>
-
                                                 </li>
                                                 <li onClick={() => {
                                                     navigate('/vehicle-guide')
@@ -853,12 +740,14 @@ export default function Navbar() {
                                                     <a class="text-decoration-none cursor-pointer text-dark fs-5">Vehicle Guide</a>
 
                                                 </li>
-                                                {/* <li style={{
+                                                <li onClick={() => {
+                                                    navigate('/prices-seasons')
+                                                }} style={{
                                                     transition: 'background-color 0.5s ease'
                                                 }} className='cursor-pointer p-1 border-circle sidebar-li '>
-                                                    <a href="#" class="text-decoration-none cursor-pointer text-dark fs-5">Price</a>
+                                                    <a href="#" class="text-decoration-none cursor-pointer text-dark fs-5">Prices</a>
 
-                                                </li> */}
+                                                </li>
                                                 <li onClick={() => {
                                                     navigate('/terms-and-conditions')
                                                 }} style={{

@@ -6,7 +6,6 @@ export default function Footer() {
     const navigate = useNavigate()
     return (
         <>
-
             <footer class="style-2">
                 <div class="container-fluid">
                     <div class="footer-top">
@@ -25,8 +24,6 @@ export default function Footer() {
                                                 needs.
                                                 <BsArrowUpRight className='fs-2' />
                                             </a></li>
-
-
                                         </ul>
                                     </div>
                                 </div>
@@ -48,7 +45,6 @@ export default function Footer() {
                                             }}>Vehicle Guide
                                                 <BsArrowUpRight className='fs-6 ' />
                                             </a></li>
-
                                         </ul>
                                     </div>
                                 </div>
@@ -60,9 +56,11 @@ export default function Footer() {
                                     </div>
                                     <div class="menu-container">
                                         <ul>
-                                            {/* <li><a className='text-decoration-none curso' href="single-brand-category.html">Price
+                                            <li><a className='text-decoration-none cursor-pointer' onClick={()=>{
+                                                navigate('/prices-seasons')
+                                            }}>Prices
                                                 <BsArrowUpRight className='fs-6 ' />
-                                            </a></li> */}
+                                            </a></li>
                                             <li><a className='text-decoration-none cursor-pointer' onClick={()=>{
                                                 navigate('/contact')
                                             }}>About Us

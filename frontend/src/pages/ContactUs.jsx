@@ -21,8 +21,6 @@ export default function ContactUs({ loggedIn, user, setLoggedIn, setUser }) {
             <Navbar />
             <div class="contact-page pt-100 mb-10 mt-5">
                 <div class="container">
-
-
                     <div class="row g-4 mb-10">
                         <div class="section-title mb-20">
                             <h4>{contactUsPageContent?.mainHeading}</h4>
