@@ -43,7 +43,7 @@ export default function ProductCard({ gridView, groupData }) {
             let newText = '';
             console.log(bookingData);
             bookingDays.forEach((daysObj) => {
-                const pricesObj = groupData.prices?.find((priceObj) => priceObj.season._id === daysObj.season)
+                const pricesObj = groupData.prices?.find((priceObj) => priceObj.season?._id === daysObj.season)
                 newText += `€${bookingData.totalBookingDays <= 6 ? pricesObj?.sixDaysPrice : bookingData.totalBookingDays <= 14 ? pricesObj?.fourteenDaysPrice : pricesObj?.fifteenDaysPrice} per day | `;
             });
             setMorePricesText(newText);
@@ -52,7 +52,7 @@ export default function ProductCard({ gridView, groupData }) {
 
 
     return (
-        <div class={`product-card ${gridView ? 'gridView' : 'd-flex flex-row columnView'} `}>
+        <div  class={`product-card ${gridView ? 'gridView' : 'd-flex flex-row columnView'} `}>
             <div class="product-img">
 
                 <div class="swiper product-img-slider">
@@ -80,9 +80,9 @@ export default function ProductCard({ gridView, groupData }) {
                     <div class="price">
                         <>
                             {bookingDays?.length > 0 ? (
-                                <strong>{morePricesText}</strong>
+                                <strong className='lh-lg'>{morePricesText}</strong>
                             ) : (
-                                <strong>€{(groupData.prices.find(priceObj => priceObj.season._id === currentSeason._id))?.sixDaysPrice} per day</strong>
+                                <strong>€{(groupData.prices.find(priceObj => priceObj.season?._id === currentSeason._id))?.sixDaysPrice} per day</strong>
                             )}
                         </>
                     </div>
@@ -212,17 +212,17 @@ export default function ProductCard({ gridView, groupData }) {
 
                                     if (totalBookingDays < 3) {
                                         if (totalBookingDays === 1) {
-                                            basicPrice = (groupData.prices.find(priceObj => priceObj.season._id === currentSeason._id)).sixDaysPrice * 3;
+                                            basicPrice = (groupData.prices.find(priceObj => priceObj.season?._id === currentSeason._id)).sixDaysPrice * 3;
                                         } else {
                                             bookingDays.forEach(daysObj => {
-                                                const pricesObj = groupData.prices.find(priceObj => priceObj.season._id === daysObj.season);
+                                                const pricesObj = groupData.prices.find(priceObj => priceObj.season?._id === daysObj.season);
                                                 basicPrice += (pricesObj.sixDaysPrice * daysObj.days);
                                             })
-                                            basicPrice += (groupData.prices.find(priceObj => priceObj.season._id === currentSeason._id)).sixDaysPrice;
+                                            basicPrice += (groupData.prices.find(priceObj => priceObj.season?._id === currentSeason._id)).sixDaysPrice;
                                         }
                                     } else {
                                         bookingDays.forEach(daysObj => {
-                                            const pricesObj = groupData.prices.find(priceObj => priceObj.season._id === daysObj.season);
+                                            const pricesObj = groupData.prices.find(priceObj => priceObj.season?._id === daysObj.season);
                                             if (totalBookingDays <= 6) {
                                                 basicPrice += (pricesObj.sixDaysPrice * daysObj.days);
                                             } else if (totalBookingDays <= 14) {

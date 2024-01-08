@@ -574,14 +574,14 @@ export default function ProductsSection() {
                                             {groupsList?.sort((a, b) => {
                                                 if (bookingDays?.length == 1) {
                                                     if (bookingDays[0].days < 7) {
-                                                        return (a.prices.find(priceObj => priceObj.season._id === bookingDays[0].season))?.sixDaysPrice - (b.prices.find(priceObj => priceObj.season._id === bookingDays[0].season))?.sixDaysPrice
+                                                        return (a.prices.find(priceObj => priceObj.season?._id === bookingDays[0].season))?.sixDaysPrice - (b.prices.find(priceObj => priceObj.season?._id === bookingDays[0].season))?.sixDaysPrice
                                                     } else if (bookingDays[0].days < 15) {
-                                                        return (a.prices.find(priceObj => priceObj.season._id === bookingDays[0].season))?.fourteenDaysPrice - (b.prices.find(priceObj => priceObj.season._id === bookingDays[0].season))?.fourteenDaysPrice
+                                                        return (a.prices.find(priceObj => priceObj.season?._id === bookingDays[0].season))?.fourteenDaysPrice - (b.prices.find(priceObj => priceObj.season?._id === bookingDays[0].season))?.fourteenDaysPrice
                                                     } else {
-                                                        return (a.prices.find(priceObj => priceObj.season._id === bookingDays[0].season))?.fifteenDaysPrice - (b.prices.find(priceObj => priceObj.season._id === bookingDays[0].season))?.fifteenDaysPrice
+                                                        return (a.prices.find(priceObj => priceObj.season?._id === bookingDays[0].season))?.fifteenDaysPrice - (b.prices.find(priceObj => priceObj.season?._id === bookingDays[0].season))?.fifteenDaysPrice
                                                     }
                                                 } else if (currentSeason) {
-                                                    return (a.prices.find(priceObj => priceObj.season._id === currentSeason._id))?.sixDaysPrice - (b.prices.find(priceObj => priceObj.season._id === currentSeason._id))?.sixDaysPrice
+                                                    return (a.prices.find(priceObj => priceObj.season?._id === currentSeason?._id))?.sixDaysPrice - (b.prices.find(priceObj => priceObj.season?._id === currentSeason._id))?.sixDaysPrice
                                                 } else {
                                                     return a.prices[0]?.sixDaysPrice - b.prices[0]?.sixDaysPrice;
                                                 }

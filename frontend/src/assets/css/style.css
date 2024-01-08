@@ -12607,7 +12607,8 @@ header.style-6 .main-menu .hotline-area .content h6 a {
 	background: #fff;
 	border: 1px solid #eee;
 	transition: .35s;
-	position: relative
+	position: relative;
+	height: 650px !important;
 }
 
 .product-card .new {

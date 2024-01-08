@@ -52,17 +52,17 @@ export default function CompleteBooking() {
                 let basicPrice = 0;
                 if (bookingData?.totalBookingDays < 3) {
                     if (bookingData?.totalBookingDays === 1) {
-                        basicPrice = (selectedGroup.prices.find(priceObj => priceObj.season._id === currentSeason._id)).sixDaysPrice * 3;
+                        basicPrice = (selectedGroup.prices.find(priceObj => priceObj.season?._id === currentSeason._id)).sixDaysPrice * 3;
                     } else {
                         bookingData?.days.forEach(daysObj => {
-                            const pricesObj = selectedGroup.prices.find(priceObj => priceObj.season._id === daysObj.season)
+                            const pricesObj = selectedGroup.prices.find(priceObj => priceObj.season?._id === daysObj.season)
                             basicPrice += (pricesObj.sixDaysPrice * daysObj.days);
                         })
-                        basicPrice += (selectedGroup.prices.find(priceObj => priceObj.season._id === currentSeason._id)).sixDaysPrice;
+                        basicPrice += (selectedGroup.prices.find(priceObj => priceObj.season?._id === currentSeason._id)).sixDaysPrice;
                     }
                 } else {
                     bookingData.days.forEach(daysObj => {
-                        const pricesObj = selectedGroup.prices.find(priceObj => priceObj.season._id === daysObj.season);
+                        const pricesObj = selectedGroup.prices.find(priceObj => priceObj.season?._id === daysObj.season);
                         if (bookingData?.totalBookingDays <= 6) {
                             basicPrice += (pricesObj.sixDaysPrice * daysObj.days);
                         } else if (bookingData?.totalBookingDays <= 14) {
@@ -138,7 +138,7 @@ export default function CompleteBooking() {
         if (bookingData?.days?.length > 0) {
             let newText = '';
             bookingData?.days?.forEach((daysObj) => {
-                const pricesObj = selectedGroup.prices?.find((priceObj) => priceObj.season._id === daysObj.season)
+                const pricesObj = selectedGroup.prices?.find((priceObj) => priceObj.season?._id === daysObj.season)
                 newText += `€${bookingData.totalBookingDays <= 6 ? pricesObj?.sixDaysPrice : bookingData.totalBookingDays <= 14 ? pricesObj?.fourteenDaysPrice : pricesObj?.fifteenDaysPrice}/day | `;
             });
             setMorePricesText(newText);
@@ -167,7 +167,7 @@ export default function CompleteBooking() {
                                                                 {bookingData?.days?.length > 0 ? (
                                                                     <h3>{morePricesText}</h3>
                                                                 ) : (
-                                                                    <h3>€{(selectedGroup.prices.find(priceObj => priceObj.season._id === currentSeason._id))?.sixDaysPrice}/day</h3>
+                                                                    <h3>€{(selectedGroup.prices.find(priceObj => priceObj.season?._id === currentSeason._id))?.sixDaysPrice}/day</h3>
                                                                 )}
                                                             </>
                                                         </div>
@@ -547,11 +547,11 @@ export default function CompleteBooking() {
                                                         {bookingData?.totalBookingDays > 3 && (
                                                             <>
                                                                 {bookingData?.days.map(daysObj => {
-                                                                    const priceObj = selectedGroup.prices.find(priceObj => priceObj.season._id === daysObj.season);
+                                                                    const priceObj = selectedGroup.prices.find(priceObj => priceObj.season?._id === daysObj.season);
                                                                     return (
                                                                         <div class="row g-3">
                                                                             <div class="col-6">
-                                                                                <li>{priceObj.season.seasonName} Season:</li>
+                                                                                <li>{priceObj.season?.seasonName} Season:</li>
                                                                             </div>
                                                                             <div class="col-6">
                                                                                 <span>€{bookingData?.totalBookingDays <= 6 ? priceObj?.sixDaysPrice : bookingData?.totalBookingDays <= 14 ? priceObj?.fourteenDaysPrice : priceObj?.fifteenDaysPrice} X {daysObj.days}days = <strong>€

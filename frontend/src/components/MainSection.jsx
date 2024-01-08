@@ -109,7 +109,7 @@ export default function MainSection() {
                                         bookingDatesArr?.forEach((date, index) => {
                                             if (!outOfSeason) {
                                                 // Use some to check if the date is in any season
-                                                const isInAnySeason = allSeasons.some((seasonObj) => {
+                                                const isInAnySeason = allSeasons?.some((seasonObj) => {
                                                     return date >= new Date(seasonObj.startDate) && date <= new Date(seasonObj.endDate);
                                                 });
 
