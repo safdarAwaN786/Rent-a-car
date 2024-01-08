@@ -21,7 +21,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { logInUser } from './redux/slices/authSlice';
 import { setAllSeasons, setCurrentSeason } from './redux/slices/seasonSlice';
 import { setWebContent } from './redux/slices/webContentSlice';
-import { toast } from 'react-toastify';
+import { ToastContainer, toast } from 'react-toastify';
 import ChangePassword from './pages/ChangePassword';
 import Prices from './pages/Prices';
 import SeasonPrices from './pages/SeasonPrices';
@@ -106,6 +106,7 @@ function App() {
   return (
     <Router>
       <div className="App">
+        <ToastContainer theme='colored'/>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/reservations" element={<Reservations />} />
@@ -131,7 +132,7 @@ function App() {
           <Route path="/privacy&cookies-content" element={<Admin tab={'privacy&Cookies-Content'} />} />
           <Route path="/complete-booking" element={<CompleteBooking />} />
           <Route path="/reset-password/:userId" element={<ChangePassword />} />
-          
+
         </Routes>
       </div>
     </Router>

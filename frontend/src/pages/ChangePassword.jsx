@@ -35,7 +35,7 @@ export default function ChangePassword() {
 
     return (
         <>
-            <ToastContainer />
+            
 
             <div className='d-flex justify-content-center align-items-center flex-column'>
 

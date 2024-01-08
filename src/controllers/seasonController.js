@@ -54,7 +54,8 @@ const removeSeason = async (req, res) => {
 
         const groups = await Group.find();
         groups.map(async (groupObj) => {
-            groupObj.prices.filter(priceObj => priceObj.season._id !== deletedSeason._id)
+            groupObj.prices = groupObj.prices.filter(priceObj => !priceObj.season?.equals(req.body._id))
+            console.log(groupObj);
             await Group.findByIdAndUpdate(groupObj._id, groupObj)
         })
 

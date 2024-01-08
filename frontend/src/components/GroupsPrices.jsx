@@ -36,9 +36,12 @@ export default function GroupsPrices() {
         })
     })
 
-    useEffect(() => {
-        console.log(groupToProcess);
-    }, [groupToProcess])
+    // Sort groups based on the cheapest price for 1-6 days
+    const sortedGroups = groups && [...groups]?.sort((a, b) => {
+        const priceA = a.prices.find(priceObj => priceObj.season?._id === PricesSeasonId)?.sixDaysPrice || 0;
+        const priceB = b.prices.find(priceObj => priceObj.season?._id === PricesSeasonId)?.sixDaysPrice || 0;
+        return priceA - priceB;
+    });
 
 
 
@@ -177,7 +180,7 @@ export default function GroupsPrices() {
                             </thead>
                             <tbody>
 
-                                {groups?.map((groupObj, index) => {
+                                {sortedGroups?.map((groupObj, index) => {
                                     const priceObjToShow = groupObj.prices.find(priceObj => priceObj.season?._id === PricesSeasonId)
 
                                     return (

@@ -34,6 +34,13 @@ export default function SeasonPrices() {
         })
     })
 
+    // Sort groups based on the cheapest price for 1-6 days
+    const sortedGroups = [...groups].sort((a, b) => {
+        const priceA = a.prices.find(priceObj => priceObj.season?._id === PricesSeasonId)?.sixDaysPrice || 0;
+        const priceB = b.prices.find(priceObj => priceObj.season?._id === PricesSeasonId)?.sixDaysPrice || 0;
+        return priceA - priceB;
+    });
+
 
     return (
         <>
@@ -60,10 +67,8 @@ export default function SeasonPrices() {
                                 </tr>
                             </thead>
                             <tbody>
-
-                                {groups?.map((groupObj, index) => {
+                                {sortedGroups?.map((groupObj, index) => {
                                     const priceObjToShow = groupObj.prices.find(priceObj => priceObj.season?._id === PricesSeasonId)
-
                                     return (
                                         <tr>
                                             <th scope="row">{index + 1}. {groupObj.groupName}</th>

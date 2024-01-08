@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import Navbar from '../components/Navbar'
 import 'animate.css';
 import axios from 'axios'
-import { toast } from 'react-toastify'
+import { ToastContainer, toast } from 'react-toastify'
 import { useNavigate } from 'react-router-dom'
 import AdminProductsSection from '../components/AdminProductsSection'
 import AdminExtras from '../components/AdminExtras'
@@ -65,6 +65,8 @@ export default function Admin({ tab }) {
 
     return (
         <>
+        
+
             <Navbar />
 
             <div className='row my-5 pt-5'>
