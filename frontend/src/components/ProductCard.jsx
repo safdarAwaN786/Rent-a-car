@@ -43,11 +43,8 @@ export default function ProductCard({ gridView, groupData }) {
             let newText = '';
             console.log(bookingData);
             bookingDays.forEach((daysObj) => {
-                console.log(daysObj);
                 const pricesObj = groupData.prices?.find((priceObj) => priceObj.season._id === daysObj.season)
-                console.log(pricesObj);
                 newText += `€${bookingData.totalBookingDays <= 6 ? pricesObj?.sixDaysPrice : bookingData.totalBookingDays <= 14 ? pricesObj?.fourteenDaysPrice : pricesObj?.fifteenDaysPrice} per day | `;
-
             });
             setMorePricesText(newText);
         }
@@ -133,7 +130,7 @@ export default function ProductCard({ gridView, groupData }) {
                     )}
                 </ul>
 
-                <div class="content-btm">
+                <div class="content-btm pt-0">
                     <a onClick={() => {
                         if (loggedIn === true && user) {
 
@@ -148,7 +145,6 @@ export default function ProductCard({ gridView, groupData }) {
                                 } else if (!pickUpDate) {
                                     return toast.warning('Please Provide Pick Off Date!');
                                 }
-
                                 const pickupDateTime = new Date(`${pickUpDate}T${pickUpTime}`);
                                 const dropoffDateTime = new Date(`${dropOffDate}T${dropOffTime}`);
                                 const currentDate = new Date();

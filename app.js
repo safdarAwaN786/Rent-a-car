@@ -8,8 +8,6 @@ const MongoDBStore = require('connect-mongodb-session')(session);
 const app = express();
 require('./src/db/connectdb');
 
-
-
 const PORT = process.env.PORT || 5000;
 app.use(cors());
 

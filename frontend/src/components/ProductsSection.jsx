@@ -10,6 +10,7 @@ import { useSelector } from 'react-redux';
 export default function ProductsSection() {
     const [allDataArr, setAllDataArr] = useState(null);
     const [groupsList, setGroupsList] = useState(null);
+    const bookingDays = useSelector(state => state.bookingDays)
 
     const reGetData = () => {
         axios.get('/read-groups').then((res) => {
@@ -89,7 +90,6 @@ export default function ProductsSection() {
     }, [windowWidth])
 
     const currentSeason = useSelector(state => state.currentSeason);
-    const daysPrice = useSelector(state => state.numberOfDays?.priceText);
 
     const groupCategoryFilter = (e) => {
         if (e.target.checked) {
@@ -213,9 +213,6 @@ export default function ProductsSection() {
                     <Spinner animation="border" variant="secondary" />
                 </div>
             ) : (
-
-
-
                 <div class="product-page pt-100 mb-100">
                     <div class="container">
                         <div class="row g-xl-4 gy-5">
@@ -575,12 +572,21 @@ export default function ProductsSection() {
                                     <div class="list-grid-product-wrap grid-group-wrapper">
                                         <div class="row g-4  mb-40">
                                             {groupsList?.sort((a, b) => {
-                                                if (currentSeason) {
+                                                if (bookingDays?.length == 1) {
+                                                    if (bookingDays[0].days < 7) {
+                                                        return (a.prices.find(priceObj => priceObj.season._id === bookingDays[0].season))?.sixDaysPrice - (b.prices.find(priceObj => priceObj.season._id === bookingDays[0].season))?.sixDaysPrice
+                                                    } else if (bookingDays[0].days < 15) {
+                                                        return (a.prices.find(priceObj => priceObj.season._id === bookingDays[0].season))?.fourteenDaysPrice - (b.prices.find(priceObj => priceObj.season._id === bookingDays[0].season))?.fourteenDaysPrice
+                                                    } else {
+                                                        return (a.prices.find(priceObj => priceObj.season._id === bookingDays[0].season))?.fifteenDaysPrice - (b.prices.find(priceObj => priceObj.season._id === bookingDays[0].season))?.fifteenDaysPrice
+                                                    }
+                                                } else if (currentSeason) {
                                                     return (a.prices.find(priceObj => priceObj.season._id === currentSeason._id))?.sixDaysPrice - (b.prices.find(priceObj => priceObj.season._id === currentSeason._id))?.sixDaysPrice
                                                 } else {
                                                     return a.prices[0]?.sixDaysPrice - b.prices[0]?.sixDaysPrice;
                                                 }
                                             }).map((groupObj) => {
+                                                console.log(bookingDays)
                                                 return (
                                                     <div class={`${gridView ? 'col-lg-6 col-md-6 col-sm-12' : 'col-12'}  wow fadeInUp item`}>
                                                         <ProductCard gridView={gridView} groupData={groupObj} />

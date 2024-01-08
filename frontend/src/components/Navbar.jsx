@@ -738,7 +738,6 @@ export default function Navbar() {
                                                     transition: 'background-color 0.5s ease'
                                                 }} className='cursor-pointer p-1 border-circle sidebar-li '>
                                                     <a class="text-decoration-none cursor-pointer text-dark fs-5">Vehicle Guide</a>
-
                                                 </li>
                                                 <li onClick={() => {
                                                     navigate('/prices-seasons')

@@ -198,6 +198,7 @@ export default function AdminBookings() {
                             toast.success('Booking is Confirmed!')
                           }).catch(e => {
                             setConfirming(false)
+                            console.log(e)
                             toast.error('Booking not Confirmed, Try Again')
                           })
                         }} className='btn btn-success mx-1'>

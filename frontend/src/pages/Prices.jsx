@@ -8,7 +8,7 @@ import { setSeasonIdForPrices } from '../redux/slices/appSlice';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
-
+import dayjs from 'dayjs'
 
 export default function Prices() {
 
@@ -53,14 +53,17 @@ export default function Prices() {
                             <thead>
                                 <tr>
                                     <th scope="col"># Season</th>
+                                    <th scope="col" className='w-25'>Period</th>
                                     <th scope="col" className='w-25'>Prices</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {seasonsArr?.map((seasonObj, index) => {
+                                    console.log(seasonObj)
                                     return (
                                         <tr>
                                             <th scope="row">{index + 1}. {seasonObj.seasonName}</th>
+                                            <th scope="row">{dayjs(seasonObj.startDate).format('DD-MM-YYYY')} - {dayjs(seasonObj.endDate).format('DD-MM-YYYY')}</th>
                                             <td><button onClick={() => {
                                                 dispatch(setSeasonIdForPrices(seasonObj._id));
                                                 navigate('/prices-groups');

@@ -4,12 +4,22 @@ const Booking = require('../models/bookingModel');
 const Group = require('../models/groupModel');
 const Vat = require('../models/VAT');
 
-const transporter = nodemailer.createTransport({
-  service: 'gmail',
+// const transporter = nodemailer.createTransport({
+//   service: 'gmail',
+//   auth: {
+//     user: "yourwaycarhire@gmail.com",
+//     pass: "kvvh fsme ckfc mxjv"
+//   },
+// });
+
+var transporter = nodemailer.createTransport({
+  host: "smtp.office365.com",
+  port: 587,
+  secure: false,
   auth: {
-    user: "yourwaycarhire@gmail.com",
-    pass: "kvvh fsme ckfc mxjv"
-  },
+    user: "info@yourway-carhire.com",
+    pass: "Par75568"
+  }
 });
 
 
@@ -63,8 +73,8 @@ const addBooking = async (req, res) => {
 
 
     const mailOptionsForOwner = {
-      from: 'yourwaycarhire@gmail.com',
-      to: 'yourwaycarhire@gmail.com', // Change this to the actual email address of the platform owner
+      from: 'info@yourway-carhire.com',
+      to: 'info@yourway-carhire.com', // Change this to the actual email address of the platform owner
       subject: 'New Booking Received',
       html: `
           <!DOCTYPE html>
@@ -225,7 +235,7 @@ const addBooking = async (req, res) => {
       `
     };
     const mailOptionsForUser = {
-      from: 'yourwaycarhire@gmail.com',
+      from: 'info@yourway-carhire.com',
       to: bookingUser.email, // Change this to the actual email address of the platform owner
       subject: 'Booking Received',
       html: `
@@ -507,8 +517,6 @@ const confirmBooking = async (req, res) => {
         `;
     })
 
-
-
     let basicPrices = '';
     booking.days.forEach(dayObj => {
       const priceObj = group.prices.find(priceObj => priceObj.season?._id.equals(dayObj.season?._id));
@@ -523,7 +531,7 @@ const confirmBooking = async (req, res) => {
     })
 
     const mailOptions = {
-      from: 'yourwaycarhire@gmail.com',
+      from: 'info@yourway-carhire.com',
       to: booking.user.email,
       subject: 'Car Booking Confirmation - YourWay Car Hire',
       html: `
@@ -568,7 +576,7 @@ const confirmBooking = async (req, res) => {
             <body>
             <h1>Car Booking Confirmation - Your Way Car Hire</h1>
             <p>Dear ${booking.user.firstName} ${booking.user.lastName},</p>
-            <p>Congtatulations, Your Booking has been Confirmed with "Your Way - Car Hire". We are delighted to serve you and ensure you have a smooth and enjoyable driving experience. Here are the details of your reservation:</p>
+            <p>Congratulations, Your Booking has been Confirmed with "Your Way - Car Hire". We are delighted to serve you and ensure you have a smooth and enjoyable driving experience. Here are the details of your reservation:</p>
             <h2>Booking Info</h2>
           <table>
               <tr>
@@ -672,6 +680,7 @@ const confirmBooking = async (req, res) => {
 
     transporter.sendMail(mailOptions, async function (error, info) {
       if (error) {
+        console.log(error);
         res.status(500).send({ status: false, message: 'Internal server error' });
       } else {
         console.log('Email sent: ' + info.response);

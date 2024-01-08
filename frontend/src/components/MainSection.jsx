@@ -144,9 +144,7 @@ export default function MainSection() {
                                             }).catch((e) => {
                                                 updateVat();
                                             })
-
                                             dispatch(setBookingDays(bookingDays));
-
                                             dispatch(submitPreBooking());
                                             navigate('/vehicle-guide');
                                         }

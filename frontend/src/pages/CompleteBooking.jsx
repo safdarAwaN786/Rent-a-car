@@ -18,6 +18,7 @@ import { selectVehicle, submitPreBooking, updateBookingInfo } from '../redux/sli
 import { CiLocationArrow1 } from 'react-icons/ci'
 import { BiMinus } from 'react-icons/bi';
 import { AiOutlineCloseCircle } from 'react-icons/ai';
+import { setBookingDays } from '../redux/slices/bookingDaysSlice';
 
 export default function CompleteBooking() {
     const [applyingPromo, setApplyingPromo] = useState(false);
@@ -77,7 +78,7 @@ export default function CompleteBooking() {
     }, [promoCodeObj])
 
     useEffect(() => {
-        const vatValue = Number(((bookingData?.totalPrice / 100) * bookingData?.vatPercent).toFixed(2));
+        const vatValue = ((bookingData?.totalPrice / 100) * bookingData?.vatPercent).toFixed(2);
         dispatch(updateBookingInfo({ ...bookingData, vatValue: vatValue }))
     }, [bookingData?.totalPrice])
 
@@ -129,7 +130,7 @@ export default function CompleteBooking() {
                 totalPrice += extraObj.price * extraObj.quantity;
             }
         })
-        dispatch(updateBookingInfo({ ...bookingData, addedExtras: updatedExtras, totalPrice : totalPrice + bookingData?.airPortFee }))
+        dispatch(updateBookingInfo({ ...bookingData, addedExtras: updatedExtras, totalPrice: totalPrice + bookingData?.airPortFee }))
     }
 
     const [morePricesText, setMorePricesText] = useState('');
@@ -178,25 +179,20 @@ export default function CompleteBooking() {
                                                         <li><i ></i>Engine Size: {selectedGroup?.engineSize}</li>
                                                         <li><i ></i>Adults: {selectedGroup?.adults}</li>
                                                         <li><i ></i>Doors: {selectedGroup?.doors}</li>
-
                                                     </ul>
                                                     <ul>
                                                         <li><i ></i>Children: {selectedGroup?.children}</li>
                                                         <li><i ></i>Seats: {selectedGroup?.seats}</li>
                                                         <li><i ></i>Big Luggage: {selectedGroup?.bigLuggage}</li>
-
                                                     </ul>
                                                     <ul>
                                                         <li><i ></i>Small Luggage: {selectedGroup?.smallLuggage}</li>
                                                         <li><i ></i>Transmission: {selectedGroup?.transmissionType}</li>
                                                         {selectedGroup?.AC && (
-
                                                             <li><i ></i>AC</li>
                                                         )}
 
                                                     </ul>
-
-
                                                 </div>
                                                 <div class="col d-flex align-items-end">
                                                     <div class="form-inner">
@@ -227,7 +223,6 @@ export default function CompleteBooking() {
                     <div class="car-details-area pt-10 mb-100">
                         <div class="container">
                             <div class="row mb-50">
-
                             </div>
                             <div class="row">
                                 <div class="col-lg-8">
@@ -248,9 +243,7 @@ export default function CompleteBooking() {
                                                     <div class="title mb-20">
                                                         <h5></h5>
                                                     </div>
-
                                                     <ul>
-
                                                         <li>
                                                             <div class="icon">
                                                                 <img className='extraImg' src={SCDW} alt />
@@ -326,7 +319,7 @@ export default function CompleteBooking() {
                                                                     } else {
                                                                         updatedExtras = [];
                                                                     }
-                                                                    
+
                                                                     if (e.target.checked) {
                                                                         updatedExtras.push({
                                                                             extraName: 'GPS',
@@ -528,7 +521,7 @@ export default function CompleteBooking() {
                                                                         <span><BiMinus />€{bookingData?.promoDiscount}</span>
                                                                         <AiOutlineCloseCircle className='mx-2 cursor-pointer fs-5' onClick={() => {
                                                                             setPromoCodeObj(null);
-                                                                            dispatch(updateBookingInfo({...bookingData, promoCode : null, promoDiscount : 0}))
+                                                                            dispatch(updateBookingInfo({ ...bookingData, promoCode: null, promoDiscount: 0 }))
                                                                             toast.success('Promo Code Removed!')
                                                                         }} />
                                                                     </div>
@@ -669,6 +662,7 @@ export default function CompleteBooking() {
                                                                 // Adding a 3-second delay before navigating to '/'
                                                                 setTimeout(() => {
                                                                     dispatch(updateBookingInfo({}));
+                                                                    dispatch(setBookingDays(null))
                                                                     navigate('/reservations');
                                                                 }, 5000);
                                                             }).catch((err) => {
@@ -721,40 +715,10 @@ export default function CompleteBooking() {
                                             </div>
                                         )
                                     })}
-                                    {/* <div class="accordion-item">
-                                <h5 class="accordion-header" id="flush-headingTwo">
-                                    <button class="accordion-button collapsed" type="button"
-                                        data-bs-toggle="collapse" data-bs-target="#flush-collapseTwo"
-                                        aria-expanded="false" aria-controls="flush-collapseTwo">
-                                        Can the car be delivered to my hotel or a different location?
-                                    </button>
-                                </h5>
-                                <div id="flush-collapseTwo" class="accordion-collapse collapse"
-                                    aria-labelledby="flush-headingTwo"
-                                    data-bs-parent="#accordionFlushExample">
-                                    <div class="accordion-body">Yes, we can deliver cars to any location in Cyprus upon request. However, there may be extra charges. For specific details, please contact us at info@yourway-carhire.com.</div>
-                                </div>
-                            </div>
-                            <div class="accordion-item">
-                                <h5 class="accordion-header" id="flush-headingThree">
-                                    <button class="accordion-button collapsed" type="button"
-                                        data-bs-toggle="collapse" data-bs-target="#flush-collapseThree"
-                                        aria-expanded="false" aria-controls="flush-collapseThree">
-                                        Why is there an extra fee for vehicle pickups at Larnaka and Paphos Airports?
-                                    </button>
-                                </h5>
-                                <div id="flush-collapseThree" class="accordion-collapse collapse"
-                                    aria-labelledby="flush-headingThree"
-                                    data-bs-parent="#accordionFlushExample">
-                                    <div class="accordion-body">For on-airport deliveries, vehicles are picked up directly from the airport. There's an additional EUR 20 charge for these pickups. This fee is imposed by the Hermes Airport Authorities for every vehicle collection from the airport.</div>
-                                </div>
-                            </div> */}
-
                                 </div>
                             </div>
                         </div>
                     </div>
-
                     <Footer />
                 </>
             )}
