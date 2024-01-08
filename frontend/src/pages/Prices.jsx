@@ -62,8 +62,8 @@ export default function Prices() {
                                     console.log(seasonObj)
                                     return (
                                         <tr>
-                                            <th scope="row">{index + 1}. {seasonObj.seasonName}</th>
-                                            <th scope="row">{dayjs(seasonObj.startDate).format('DD-MM-YYYY')} - {dayjs(seasonObj.endDate).format('DD-MM-YYYY')}</th>
+                                            <td scope="row">{index + 1}. {seasonObj.seasonName}</td>
+                                            <td scope="row">{dayjs(seasonObj.startDate).format('DD-MM-YYYY')} to {dayjs(seasonObj.endDate).format('DD-MM-YYYY')}</td>
                                             <td><button onClick={() => {
                                                 dispatch(setSeasonIdForPrices(seasonObj._id));
                                                 navigate('/prices-groups');
