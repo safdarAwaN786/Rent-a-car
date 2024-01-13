@@ -52,13 +52,13 @@ export default function CompleteBooking() {
                 let basicPrice = 0;
                 if (bookingData?.totalBookingDays < 3) {
                     if (bookingData?.totalBookingDays === 1) {
-                        basicPrice = (selectedGroup.prices.find(priceObj => priceObj.season?._id === currentSeason._id)).sixDaysPrice * 3;
+                        basicPrice = (selectedGroup.prices.find(priceObj => priceObj.season?._id === currentSeason?._id)).sixDaysPrice * 3;
                     } else {
                         bookingData?.days.forEach(daysObj => {
                             const pricesObj = selectedGroup.prices.find(priceObj => priceObj.season?._id === daysObj.season)
                             basicPrice += (pricesObj.sixDaysPrice * daysObj.days);
                         })
-                        basicPrice += (selectedGroup.prices.find(priceObj => priceObj.season?._id === currentSeason._id)).sixDaysPrice;
+                        basicPrice += (selectedGroup.prices.find(priceObj => priceObj.season?._id === currentSeason?._id)).sixDaysPrice;
                     }
                 } else {
                     bookingData.days.forEach(daysObj => {
@@ -168,7 +168,7 @@ export default function CompleteBooking() {
                                                                 {bookingData?.days?.length > 0 ? (
                                                                     <h3>{morePricesText}</h3>
                                                                 ) : (
-                                                                    <h3>€{(selectedGroup.prices.find(priceObj => priceObj.season?._id === currentSeason._id))?.sixDaysPrice}/day</h3>
+                                                                    <h3>€{(selectedGroup.prices.find(priceObj => priceObj.season?._id === currentSeason?._id))?.sixDaysPrice}/day</h3>
                                                                 )}
                                                             </>
                                                         </div>

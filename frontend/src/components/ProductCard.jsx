@@ -82,7 +82,7 @@ export default function ProductCard({ gridView, groupData }) {
                             {bookingDays?.length > 0 ? (
                                 <strong className='lh-lg'>{morePricesText}</strong>
                             ) : (
-                                <strong>€{(groupData.prices.find(priceObj => priceObj.season?._id === currentSeason._id))?.sixDaysPrice} per day</strong>
+                                <strong>€{(groupData.prices.find(priceObj => priceObj.season?._id === currentSeason?._id))?.sixDaysPrice} per day</strong>
                             )}
                         </>
                     </div>
@@ -212,13 +212,13 @@ export default function ProductCard({ gridView, groupData }) {
 
                                     if (totalBookingDays < 3) {
                                         if (totalBookingDays === 1) {
-                                            basicPrice = (groupData.prices.find(priceObj => priceObj.season?._id === currentSeason._id)).sixDaysPrice * 3;
+                                            basicPrice = (groupData.prices.find(priceObj => priceObj.season?._id === currentSeason?._id)).sixDaysPrice * 3;
                                         } else {
                                             bookingDays.forEach(daysObj => {
                                                 const pricesObj = groupData.prices.find(priceObj => priceObj.season?._id === daysObj.season);
                                                 basicPrice += (pricesObj.sixDaysPrice * daysObj.days);
                                             })
-                                            basicPrice += (groupData.prices.find(priceObj => priceObj.season?._id === currentSeason._id)).sixDaysPrice;
+                                            basicPrice += (groupData.prices.find(priceObj => priceObj.season?._id === currentSeason?._id)).sixDaysPrice;
                                         }
                                     } else {
                                         bookingDays.forEach(daysObj => {

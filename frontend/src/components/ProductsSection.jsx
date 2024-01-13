@@ -581,7 +581,7 @@ export default function ProductsSection() {
                                                         return (a.prices.find(priceObj => priceObj.season?._id === bookingDays[0].season))?.fifteenDaysPrice - (b.prices.find(priceObj => priceObj.season?._id === bookingDays[0].season))?.fifteenDaysPrice
                                                     }
                                                 } else if (currentSeason) {
-                                                    return (a.prices.find(priceObj => priceObj.season?._id === currentSeason?._id))?.sixDaysPrice - (b.prices.find(priceObj => priceObj.season?._id === currentSeason._id))?.sixDaysPrice
+                                                    return (a.prices.find(priceObj => priceObj.season?._id === currentSeason?._id))?.sixDaysPrice - (b.prices.find(priceObj => priceObj.season?._id === currentSeason?._id))?.sixDaysPrice
                                                 } else {
                                                     return a.prices[0]?.sixDaysPrice - b.prices[0]?.sixDaysPrice;
                                                 }

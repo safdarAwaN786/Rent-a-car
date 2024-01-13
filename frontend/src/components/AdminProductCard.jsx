@@ -341,7 +341,7 @@ export default function AdminProductCard({ gridView, groupData, reGetData }) {
                     <h5><a className='text-decoration-none cursor-pointer fs-5' >{groupData?.vehicleName}</a> | <span>or similar</span></h5>
                     <div class="price-location">
                         <div class="price">
-                            <strong>€{(groupData.prices.find(priceObj => priceObj.season._id === currentSeason._id))?.sixDaysPrice} per day</strong>
+                            <strong>€{(groupData.prices.find(priceObj => priceObj.season?._id === currentSeason?._id))?.sixDaysPrice} per day</strong>
                         </div>
 
                     </div>

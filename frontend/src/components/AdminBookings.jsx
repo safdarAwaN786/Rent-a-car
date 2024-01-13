@@ -140,10 +140,10 @@ export default function AdminBookings() {
                         {bookingToView?.totalBookingDays > 3 && (
                           <>
                             {bookingToView.days.map(daysObj => {
-                              const pricesObj = bookingToView.group.prices.find(priceObj => priceObj.season._id === daysObj.season._id)
+                              const pricesObj = bookingToView.group.prices.find(priceObj => priceObj.season?._id === daysObj.season?._id)
                               return (
                                 <tr>
-                                  <th>{daysObj.season.seasonName} Season</th>
+                                  <th>{daysObj.season?.seasonName} Season</th>
                                   <td>€{bookingToView.totalBookingDays <= 6 ? pricesObj.sixDaysPrice : bookingToView.totalBookingDays <= 14 ? pricesObj.fourteenDaysPrice : pricesObj.fifteenDaysPrice} X {daysObj.days} = {((bookingToView.totalBookingDays <= 6 ? pricesObj.sixDaysPrice : bookingToView.totalBookingDays <= 14 ? pricesObj.fourteenDaysPrice : pricesObj.fifteenDaysPrice) * daysObj.days).toFixed(2)}</td>
                                 </tr>
                               )

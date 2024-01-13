@@ -11731,14 +11731,14 @@ header.style-6 .main-menu .hotline-area .content h6 a {
 }
 
 .gridView{
-	height: 570px !important;
+	height: 650px !important;
 }
 
 .adminGridView{
 	height: 580px !important;
 }
 .columnView{
-	height: 280px !important;
+	height: 380px !important;
 }
 
 .admin-Box {
@@ -12609,7 +12609,7 @@ header.style-6 .main-menu .hotline-area .content h6 a {
 	border: 1px solid #eee;
 	transition: .35s;
 	position: relative;
-	height: 650px !important;
+	/* height: 650px !important; */
 }
 
 .product-card .new {

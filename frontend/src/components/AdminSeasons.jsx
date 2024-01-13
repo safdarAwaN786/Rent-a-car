@@ -87,13 +87,13 @@ export default function AdminSeasons() {
                                         let wrongDate;
                                         seasonsToCheck.map((checkSeason) => {
                                             if (!wrongDate) {
-                                                if ((seasonToEdit.startDate >= checkSeason.startDate && seasonToEdit.startDate <= checkSeason.endDate) || (seasonToEdit.endDate >= checkSeason.startDate && seasonToEdit.endDate <= checkSeason.endDate)) {
-                                                    toast.warning(`Each season should have unique dates! ${checkSeason.seasonName} season already have this date.`);
+                                                if ((seasonToEdit.startDate >= checkSeason?.startDate && seasonToEdit.startDate <= checkSeason?.endDate) || (seasonToEdit.endDate >= checkSeason?.startDate && seasonToEdit.endDate <= checkSeason?.endDate)) {
+                                                    toast.warning(`Each season should have unique dates! ${checkSeason?.seasonName} season already have this date.`);
                                                     wrongDate = true;
                                                     return
                                                 }
-                                                if (seasonToEdit.startDate <= checkSeason.startDate && seasonToEdit.endDate >= checkSeason.endDate) {
-                                                    toast.warning(`Each season should have unique dates!. ${seasonToEdit.seasonName} and ${checkSeason.seasonName} repeating dates!`);
+                                                if (seasonToEdit.startDate <= checkSeason?.startDate && seasonToEdit.endDate >= checkSeason?.endDate) {
+                                                    toast.warning(`Each season should have unique dates!. ${seasonToEdit.seasonName} and ${checkSeason?.seasonName} repeating dates!`);
                                                     wrongDate = true;
                                                     return
                                                 }
@@ -187,13 +187,13 @@ export default function AdminSeasons() {
                                         let wrongDate;
                                         seasonsArr.map((checkSeason) => {
                                             if (!wrongDate) {
-                                                if ((seasonToEdit.startDate >= checkSeason.startDate && seasonToEdit.startDate <= checkSeason.endDate) || (seasonToEdit.endDate >= checkSeason.startDate && seasonToEdit.endDate <= checkSeason.endDate)) {
-                                                    toast.warning(`Each season should have unique dates! ${checkSeason.seasonName} season already have this date.`);
+                                                if ((seasonToEdit.startDate >= checkSeason?.startDate && seasonToEdit.startDate <= checkSeason?.endDate) || (seasonToEdit.endDate >= checkSeason?.startDate && seasonToEdit.endDate <= checkSeason?.endDate)) {
+                                                    toast.warning(`Each season should have unique dates! ${checkSeason?.seasonName} season already have this date.`);
                                                     wrongDate = true;
                                                     return
                                                 }
-                                                if (seasonToEdit.startDate <= checkSeason.startDate && seasonToEdit.endDate >= checkSeason.endDate) {
-                                                    toast.warning(`Each season should have unique dates!. ${seasonToEdit.seasonName} and ${checkSeason.seasonName} repeating dates!`);
+                                                if (seasonToEdit.startDate <= checkSeason?.startDate && seasonToEdit.endDate >= checkSeason?.endDate) {
+                                                    toast.warning(`Each season should have unique dates!. ${seasonToEdit.seasonName} and ${checkSeason?.seasonName} repeating dates!`);
                                                     wrongDate = true;
                                                     return
                                                 }
@@ -282,7 +282,7 @@ export default function AdminSeasons() {
                                             <td><AiOutlineEdit onClick={() => {
                                                 setEditDates(true);
                                                 setSeasonsToCheck(seasonsArr.filter((season) =>
-                                                    season.seasonName !== seasonObj.seasonName
+                                                    season?.seasonName !== seasonObj?.seasonName
                                                 ));
                                                 setSeasonToEdit(seasonObj);
                                             }} className='fs-5 cursor-pointer' /> </td>
