@@ -78,8 +78,9 @@ export default function CompleteBooking() {
     }, [promoCodeObj])
 
     useEffect(() => {
-        const vatValue = ((bookingData?.totalPrice / 100) * bookingData?.vatPercent).toFixed(2);
-        dispatch(updateBookingInfo({ ...bookingData, vatValue: vatValue }))
+        const newVatPercentage = ((bookingData?.vatPercent/100) + 1).toFixed(2);
+        const vatValue = (bookingData?.totalPrice - (bookingData?.totalPrice/newVatPercentage)).toFixed(2);
+        dispatch(updateBookingInfo({ ...bookingData, vatValue }))
     }, [bookingData?.totalPrice])
 
     useEffect(() => {

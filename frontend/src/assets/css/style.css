@@ -10294,6 +10294,7 @@ header.style-6 .main-menu ul>li .mega-menu .menu-row .menu-single-item h6 {
 @media (min-width : 800px){
 	.mainSection {
 		height: 100vh !important;
+		overflow-y: scroll !important;
 	}
 }
 

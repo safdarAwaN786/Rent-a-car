@@ -4,23 +4,23 @@ const Booking = require('../models/bookingModel');
 const Group = require('../models/groupModel');
 const Vat = require('../models/VAT');
 
-// const transporter = nodemailer.createTransport({
-//   service: 'gmail',
-//   auth: {
-//     user: "yourwaycarhire@gmail.com",
-//     pass: "kvvh fsme ckfc mxjv"
-//   },
-// });
-
-var transporter = nodemailer.createTransport({
-  host: "smtp.office365.com",
-  port: 587,
-  secure: false,
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
   auth: {
-    user: "info@yourway-carhire.com",
-    pass: "Par75568"
-  }
+    user: "yourwaycarhire@gmail.com",
+    pass: "kvvh fsme ckfc mxjv"
+  },
 });
+
+// var transporter = nodemailer.createTransport({
+//   host: "smtp.office365.com",
+//   port: 587,
+//   secure: false,
+//   auth: {
+//     user: "info@yourway-carhire.com",
+//     pass: "Par75568"
+//   }
+// });
 
 
 const addBooking = async (req, res) => {
@@ -45,24 +45,23 @@ const addBooking = async (req, res) => {
     })
     let groupPrices = '';
     group.prices.forEach(priceObj => {
-      groupPrices += `
-            <tr>
-                <td>${priceObj.season.seasonName}</td>
-                <td>€${priceObj.sixDaysPrice}</td>
-                <td>${priceObj.fourteenDaysPrice}</td>
-                <td>€${priceObj.fifteenDaysPrice}</td>
-            </tr>
+      if(priceObj.season){
+        groupPrices += `
+        <tr>
+        <td>${priceObj.season?.seasonName}</td>
+        <td>€${priceObj.sixDaysPrice}</td>
+        <td>${priceObj.fourteenDaysPrice}</td>
+        <td>€${priceObj.fifteenDaysPrice}</td>
+        </tr>
         `;
+      }
     })
     let basicPrices = '';
-    console.log(group.prices)
-    console.log(booking.days)
     booking.days.forEach(dayObj => {
       const priceObj = group.prices.find(priceObj => priceObj.season?._id.equals(dayObj.season));
-      console.log(priceObj)
       basicPrices += `
             <tr>
-                <td>${priceObj.season.seasonName}</td>
+                <td>${priceObj.season?.seasonName}</td>
                 <td>€${booking.totalBookingDays <= 6 ? priceObj.sixDaysPrice : booking.totalBookingDays <= 14 ? priceObj.fourteenDaysPrice : priceObj.fifteenDaysPrice}</td>
                 <td>${dayObj.days}</td>
                 <td>€${(booking.totalBookingDays <= 6 ? priceObj?.sixDaysPrice : booking.totalBookingDays <= 14 ? priceObj?.fourteenDaysPrice : priceObj?.fifteenDaysPrice) * dayObj.days}</td>
@@ -73,8 +72,8 @@ const addBooking = async (req, res) => {
 
 
     const mailOptionsForOwner = {
-      from: 'info@yourway-carhire.com',
-      to: 'info@yourway-carhire.com', // Change this to the actual email address of the platform owner
+      from: 'yourwaycarhire@gmail.com',
+      to: 'yourwaycarhire@gmail.com', // Change this to the actual email address of the platform owner
       subject: 'New Booking Received',
       html: `
           <!DOCTYPE html>
@@ -196,7 +195,7 @@ const addBooking = async (req, res) => {
                     </tr>
           </table>
           
-          ${booking.addedExtras.length > 0 && (
+          ${booking.addedExtras.length > 0 ? (
           `<h2>Extras Added</h2>
             <table>
           <tr>
@@ -208,7 +207,7 @@ const addBooking = async (req, res) => {
           </tr>
           ${extrasContent}
           </table>`
-        )}
+        ) : ''}
 
           <h2>TOTALS</h2>
           <table>
@@ -235,7 +234,7 @@ const addBooking = async (req, res) => {
       `
     };
     const mailOptionsForUser = {
-      from: 'info@yourway-carhire.com',
+      from: 'yourwaycarhire@gmail.com',
       to: bookingUser.email, // Change this to the actual email address of the platform owner
       subject: 'Booking Received',
       html: `
@@ -350,7 +349,7 @@ const addBooking = async (req, res) => {
                     </tr>
           </table>
           
-          ${booking.addedExtras.length > 0 && (
+          ${booking.addedExtras.length > 0 ? (
           `<h2>Extras Added</h2>
             <table>
           <tr>
@@ -362,7 +361,7 @@ const addBooking = async (req, res) => {
           </tr>
           ${extrasContent}
           </table>`
-        )}
+        ) : ''}
 
           <h2>TOTALS</h2>
           <table>
@@ -458,18 +457,15 @@ const getAllBookings = async (req, res) => {
       model: 'season'
     });
 
-    console.log(allBookings);
-
     res.status(200).send({ status: true, message: "The Following are the Bookings!", data: allBookings });
-
   } catch (error) {
+    console.log(error);
     res.status(400).send({ status: false, message: error.message });
   }
 }
 
 const deleteBooking = async (req, res) => {
   try {
-
     const deletedBooking = await Booking.findByIdAndDelete(req.params.bookingId);
     res.status(200).send({
       status: true,
@@ -522,7 +518,7 @@ const confirmBooking = async (req, res) => {
       const priceObj = group.prices.find(priceObj => priceObj.season?._id.equals(dayObj.season?._id));
       basicPrices += `
             <tr>
-                <td>${dayObj.season.seasonName}</td>
+                <td>${dayObj.season?.seasonName}</td>
                 <td>€${booking.totalBookingDays <= 6 ? priceObj?.sixDaysPrice : booking.totalBookingDays <= 14 ? priceObj?.fourteenDaysPrice : priceObj?.fifteenDaysPrice}</td>
                 <td>${dayObj.days}</td>
                 <td>€${(booking.totalBookingDays <= 6 ? priceObj?.sixDaysPrice : booking.totalBookingDays <= 14 ? priceObj?.fourteenDaysPrice : priceObj?.fifteenDaysPrice) * dayObj.days}</td>
@@ -727,9 +723,6 @@ const cancelBooking = async (req, res) => {
     return res.status(500).send({ status: false, message: 'Internal server error' });
   }
 }
-
-
-
 
 
 module.exports = { addBooking, getUserBookings, getAllBookings, deleteBooking, confirmBooking, cancelBooking };

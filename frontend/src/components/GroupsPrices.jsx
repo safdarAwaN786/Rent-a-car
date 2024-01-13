@@ -60,29 +60,19 @@ export default function GroupsPrices() {
 
 
                     {editPrices && (
-
-
                         <div className='addProductBox justify-content-center pt-5  '>
                             <div className='formBox border-circle  mt-5 pt-4 '>
-
-
                                 <div data-aos="fade-down" className=' mb-3 myBox mx-auto border-circle p-3'>
                                     <div className='d-flex justify-content-end'>
-
                                         <AiOutlineCloseSquare className='cursor-pointer fs-4' onClick={() => {
                                             setEditPrices(false);
                                             setGroupToProcess(null);
                                         }} />
                                     </div>
-
-
                                     <h1 className='text-center fs-4'>Edit {groupToProcess?.prices.find((priceObj) => priceObj.season?._id === PricesSeasonId)?.season?.seasonName} Prices for : {groupToProcess.groupName}</h1>
-
                                     <form encType='multipart/form-data' onSubmit={(event) => {
                                         event.preventDefault();
                                         setEditingPrices(true);
-
-                                        console.log(groupToProcess);
                                         axios.post(`/edit-group/${groupToProcess._id}`, groupToProcess)
                                             .then(response => {
                                                 setEditingPrices(false);
@@ -90,28 +80,19 @@ export default function GroupsPrices() {
                                                 setGroupToProcess(null);
                                                 updateData();
                                                 toast.success("Prices Updated Successfully!");
-
                                             }).catch(error => {
                                                 setEditingPrices(false);
                                                 toast.error('Error in Updating Prices!')
                                                 console.error('Error updating Pricing', error)
                                             });
-
-
                                     }}>
-
-
                                         <div className='d-flex flex-column'>
-
                                             <div className='extraBox my-2 border-circle p-2 d-flex  justify-content-between'>
                                                 <label class="form-check-label" >1-6 Days Price :</label>
                                                 <div><span>€</span>
                                                     <input value={(groupToProcess.prices.find(priceObj => priceObj.season?._id === PricesSeasonId))?.sixDaysPrice} onChange={(e) => {
-
                                                         const updatedGroup = { ...groupToProcess }
-
                                                         updatedGroup.prices.find(priceObj => priceObj.season?._id === PricesSeasonId).sixDaysPrice = e.target.value
-                                                        console.log(updatedGroup)
                                                         setGroupToProcess(updatedGroup);
                                                     }} type='number' className='p-1 mx-2 border border-secondary border-circle mb-1' required />
                                                 </div>
