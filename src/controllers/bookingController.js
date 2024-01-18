@@ -2,8 +2,8 @@ const nodemailer = require('nodemailer');
 const User = require('../models/User');
 const Booking = require('../models/bookingModel');
 const Group = require('../models/groupModel');
-const Vat = require('../models/VAT');
 
+// Curretly, this one is under use.
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
@@ -73,7 +73,7 @@ const addBooking = async (req, res) => {
 
     const mailOptionsForOwner = {
       from: 'yourwaycarhire@gmail.com',
-      to: 'yourwaycarhire@gmail.com', // Change this to the actual email address of the platform owner
+      to: 'yourwaycarhire@gmail.com', 
       subject: 'New Booking Received',
       html: `
           <!DOCTYPE html>
@@ -234,8 +234,8 @@ const addBooking = async (req, res) => {
       `
     };
     const mailOptionsForUser = {
-      from: 'yourwaycarhire@gmail.com',
-      to: bookingUser.email, // Change this to the actual email address of the platform owner
+      from: 'yourwaycarhire@gmail.com', //this will be replaced with "info@yourway-carhire.com"
+      to: bookingUser.email, 
       subject: 'Booking Received',
       html: `
           <!DOCTYPE html>
