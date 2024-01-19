@@ -52,7 +52,7 @@ export default function ProductCard({ gridView, groupData }) {
 
 
     return (
-        <div  class={`product-card ${gridView ? 'gridView' : 'd-flex flex-row columnView'} `}>
+        <div class={`product-card ${gridView ? 'gridView' : 'd-flex flex-row columnView'} `}>
             <div class="product-img">
 
                 <div class="swiper product-img-slider">
@@ -178,9 +178,13 @@ export default function ProductCard({ gridView, groupData }) {
                                 bookingDatesArr?.map((date, index) => {
                                     if (!outOfSeason) {
                                         // Use some to check if the date is in any season
-                                        const isInAnySeason = allSeasons.some((seasonObj) => {
-                                            return date >= new Date(seasonObj.startDate) && date <= new Date(seasonObj.endDate);
-                                        });
+                                        let isInAnySeason = false;
+                                        for (let index = 0; index < allSeasons.length; index++) {
+                                            if ((date >= new Date(allSeasons[index].startDate)) && (date <= new Date(allSeasons[index].endDate))) {
+                                                isInAnySeason = true;
+                                                break;
+                                            }
+                                        }
 
                                         if (isInAnySeason) {
                                             allSeasons.forEach((seasonObj) => {
@@ -234,7 +238,7 @@ export default function ProductCard({ gridView, groupData }) {
                                     }
                                     dispatch(setBookingDays(bookingDays))
 
-                                    dispatch(updateBookingInfo({ ...bookingData, group: groupData._id, basicPrice: (basicPrice).toFixed(2), totalBookingDays , days: bookingDays, user: user._id }))
+                                    dispatch(updateBookingInfo({ ...bookingData, group: groupData._id, basicPrice: (basicPrice).toFixed(2), totalBookingDays, days: bookingDays, user: user._id }))
                                     dispatch(selectGroup(groupData));
                                     navigate('/complete-booking');
                                 }
