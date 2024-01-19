@@ -7,6 +7,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { clearPreSubmission, submitPreBooking, updateBookingInfo } from '../redux/slices/bookingSlices';
 import { setBookingDays } from '../redux/slices/bookingDaysSlice';
 import axios from 'axios';
+import moment from 'moment';
+
 
 export default function MainSection() {
 
@@ -80,7 +82,7 @@ export default function MainSection() {
                                         const dropoffDateTime = new Date(`${dropOffDate}T${dropOffTime}`);
                                         const currentDate = new Date();
 
-                                        if (dropoffDateTime <= pickupDateTime) {
+                                        if (moment(dropoffDateTime).isSameOrBefore(pickupDateTime)) {
                                             return toast.warning('Drop off date should be later than Pick Up Date!');
                                         }
 
@@ -110,12 +112,17 @@ export default function MainSection() {
                                             if (!outOfSeason) {
                                                 // Use some to check if the date is in any season
                                                 const isInAnySeason = allSeasons?.some((seasonObj) => {
-                                                    return date >= new Date(seasonObj.startDate) && date <= new Date(seasonObj.endDate);
+                                                    // return date >= new Date(seasonObj.startDate) && date <= new Date(seasonObj.endDate);
+
+                                                    const startDate = new Date(seasonObj.startDate);
+                                                    const endDate = new Date(seasonObj.endDate);
+                                                   
+                                                    return moment(date).isSameOrAfter(startDate) && moment(date).isSameOrBefore(endDate);
                                                 });
 
                                                 if (isInAnySeason) {
                                                     allSeasons.forEach((seasonObj) => {
-                                                        if (date >= new Date(seasonObj.startDate) && date <= new Date(seasonObj.endDate)) {
+                                                        if (moment(date).isSameOrAfter(new Date(seasonObj.startDate)) && moment(date).isSameOrBefore(new Date(seasonObj.endDate))) {
                                                             const seasonExist = bookingDays.find(daysObj => daysObj.season === seasonObj._id);
                                                             if (seasonExist) {
                                                                 seasonExist.days += 1;
@@ -131,8 +138,6 @@ export default function MainSection() {
                                                 } else {
                                                     outOfSeason = true;
                                                 }
-                                            } else {
-                                                return;
                                             }
                                         })
                                         if (outOfSeason) {
