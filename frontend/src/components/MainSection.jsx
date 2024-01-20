@@ -126,7 +126,7 @@ export default function MainSection() {
                                                         isInAnySeason = true;
                                                         break;
                                                     }
-                                                }
+                                                } 
                                                 console.log(isInAnySeason);
                                                 if (isInAnySeason) {
                                                     allSeasons.forEach((seasonObj) => {
