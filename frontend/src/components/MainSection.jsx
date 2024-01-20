@@ -118,7 +118,11 @@ export default function MainSection() {
                                                     date.setHours(0, 0, 0, 0);
                                                     seasonStartDate.setHours(0, 0, 0, 0);
                                                     seasonEndDate.setHours(0, 0, 0, 0);
+
                                                     if(!(date >= seasonStartDate && date <= seasonEndDate)){
+                                                        console.log("DATE",date)
+                                                        console.log("seasonStartDate",seasonStartDate)
+                                                        console.log("seasonEndDate",seasonEndDate)
                                                         isInAnySeason = false
                                                         index1++
                                                         continue
