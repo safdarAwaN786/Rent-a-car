@@ -111,23 +111,21 @@ export default function MainSection() {
                                         bookingDatesArr?.forEach((date, index) => {
                                             if (!outOfSeason) {
                                                 // Use some to check if the date is in any season
-                                                // const isInAnySeason = allSeasons?.some((seasonObj) => {
-                                                //     // return date >= new Date(seasonObj.startDate) && date <= new Date(seasonObj.endDate);
-
-                                                //     const startDate = new Date(seasonObj.startDate);
-                                                //     const endDate = new Date(seasonObj.endDate);
-
-                                                //     return moment(date).isSameOrAfter(startDate) && moment(date).isSameOrBefore(endDate);
-                                                // });
-
-                                                let isInAnySeason = false;
-                                                for (let index = 0; index < allSeasons.length; index++) {
-                                                    if ((date >= new Date(allSeasons[index].startDate)) && (date <= new Date(allSeasons[index].endDate))) {
-                                                        isInAnySeason = true;
-                                                        break;
+                                                let isInAnySeason = true
+                                                for (let index1 = 0; index1 < allSeasons.length; ) {
+                                                    let seasonStartDate =  new Date(allSeasons[index1].startDate)
+                                                    let seasonEndDate =  new Date(allSeasons[index1].endDate)
+                                                    date.setHours(0, 0, 0, 0);
+                                                    seasonStartDate.setHours(0, 0, 0, 0);
+                                                    seasonEndDate.setHours(0, 0, 0, 0);
+                                                    if(!(date >= seasonStartDate && date <= seasonEndDate)){
+                                                        isInAnySeason = false
+                                                        index1++
+                                                        continue
                                                     }
-                                                } 
-                                                console.log(isInAnySeason);
+                                                    isInAnySeason = true
+                                                    break
+                                                }
                                                 if (isInAnySeason) {
                                                     allSeasons.forEach((seasonObj) => {
                                                         if (moment(date).isSameOrAfter(new Date(seasonObj.startDate)) && moment(date).isSameOrBefore(new Date(seasonObj.endDate))) {
