@@ -151,7 +151,7 @@ export default function MainSection() {
                                                 }
                                             }
                                         })
-                                        if (outOfSeason) {
+                                        if (!outOfSeason) {
                                             toast.error('Sorry, Selected dates are out of Booking Range!');
                                             return
                                         } else {
