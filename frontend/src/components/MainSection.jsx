@@ -112,24 +112,8 @@ export default function MainSection() {
                                             if (!outOfSeason) {
                                                 // Use some to check if the date is in any season
                                                 let isInAnySeason = true
-                                                for (let index1 = 0; index1 < allSeasons.length; ) {
-                                                    let seasonStartDate =  new Date(allSeasons[index1].startDate)
-                                                    let seasonEndDate =  new Date(allSeasons[index1].endDate)
-                                                    date.setHours(0, 0, 0, 0);
-                                                    seasonStartDate.setHours(0, 0, 0, 0);
-                                                    seasonEndDate.setHours(0, 0, 0, 0);
 
-                                                    if(!(date >= seasonStartDate && date <= seasonEndDate)){
-                                                        console.log("DATE",date)
-                                                        console.log("seasonStartDate",seasonStartDate)
-                                                        console.log("seasonEndDate",seasonEndDate)
-                                                        isInAnySeason = false
-                                                        index1++
-                                                        continue
-                                                    }
-                                                    isInAnySeason = true
-                                                    break
-                                                }
+                                                
                                                 if (isInAnySeason) {
                                                     allSeasons.forEach((seasonObj) => {
                                                         if (moment(date).isSameOrAfter(new Date(seasonObj.startDate)) && moment(date).isSameOrBefore(new Date(seasonObj.endDate))) {
