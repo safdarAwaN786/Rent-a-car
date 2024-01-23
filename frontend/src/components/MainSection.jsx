@@ -151,19 +151,14 @@ export default function MainSection() {
                                                 }
                                             }
                                         })
-                                        if (!outOfSeason) {
-                                            toast.error('Sorry, Selected dates are out of Booking Range!');
-                                            return
-                                        } else {
-                                            axios.get("/get-vat").then((response) => {
-                                                dispatch(updateBookingInfo({ ...bookingData, vatPercent: response.data[0].value, totalBookingDays }))
-                                            }).catch((e) => {
-                                                updateVat();
-                                            })
-                                            dispatch(setBookingDays(bookingDays));
-                                            dispatch(submitPreBooking());
-                                            navigate('/vehicle-guide');
-                                        }
+                                        axios.get("/get-vat").then((response) => {
+                                            dispatch(updateBookingInfo({ ...bookingData, vatPercent: response.data[0].value, totalBookingDays }))
+                                        }).catch((e) => {
+                                            updateVat();
+                                        })
+                                        dispatch(setBookingDays(bookingDays));
+                                        dispatch(submitPreBooking());
+                                        navigate('/vehicle-guide');
                                     }}
                                 >
 
