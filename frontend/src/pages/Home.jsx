@@ -12,6 +12,7 @@ export default function Home() {
     return (
         <div>
             <Navbar   />
+            <MainSection  />
             <WorkFlowSection />
             <ChooseUsSection />
             <BrandsSection />
