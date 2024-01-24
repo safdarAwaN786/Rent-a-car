@@ -4,11 +4,22 @@ const Booking = require('../models/bookingModel');
 const Group = require('../models/groupModel');
 
 // Curretly, this one is under use.
+// const transporter = nodemailer.createTransport({
+//   service: 'gmail',
+//   auth: {
+//     user: "yourwaycarhire@gmail.com",
+//     pass: "kvvh fsme ckfc mxjv"
+//   },
+// });
+
+// Create a Nodemailer transporter using Outlook settings
 const transporter = nodemailer.createTransport({
-  service: 'gmail',
+  host: 'smtp-mail.outlook.com', // Outlook SMTP server
+  port: 587, // Outlook SMTP port (587 is the standard non-encrypted port)
+  secure: false, // true for 465, false for other ports
   auth: {
-    user: "yourwaycarhire@gmail.com",
-    pass: "kvvh fsme ckfc mxjv"
+    user: 'yourway-carhire@outlook.com', // Your Outlook email address
+    pass: 'abc123ABC', // Your Outlook email password
   },
 });
 
@@ -72,8 +83,8 @@ const addBooking = async (req, res) => {
 
 
     const mailOptionsForOwner = {
-      from: 'yourwaycarhire@gmail.com',
-      to: 'yourwaycarhire@gmail.com', 
+      from: 'yourway-carhire@outlook.com',
+      to: 'yourway-carhire@outlook.com', 
       subject: 'New Booking Received',
       html: `
           <!DOCTYPE html>
@@ -234,7 +245,7 @@ const addBooking = async (req, res) => {
       `
     };
     const mailOptionsForUser = {
-      from: 'yourwaycarhire@gmail.com', //this will be replaced with "info@yourway-carhire.com"
+      from: 'yourway-carhire@outlook.com', //this will be replaced with "info@yourway-carhire.com"
       to: bookingUser.email, 
       subject: 'Booking Received',
       html: `
@@ -527,7 +538,7 @@ const confirmBooking = async (req, res) => {
     })
 
     const mailOptions = {
-      from: 'info@yourway-carhire.com',
+      from: 'yourway-carhire@outlook.com',
       to: booking.user.email,
       subject: 'Car Booking Confirmation - YourWay Car Hire',
       html: `
