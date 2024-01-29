@@ -4,12 +4,14 @@ const jwt = require('jsonwebtoken');
 const nodemailer = require('nodemailer');
 
 const transporter = nodemailer.createTransport({
-    service: 'gmail',
+    host: 'smtp-mail.outlook.com', // Outlook SMTP server
+    port: 587, // Outlook SMTP port (587 is the standard non-encrypted port)
+    secure: false, // true for 465, false for other ports
     auth: {
-        user: 'yourwaycarhire@gmail.com',
-        pass: 'sqvm jlqn xsis ysfn'
-    }
-});
+      user: 'yourway-carhire@outlook.com', // Your Outlook email address
+      pass: 'abc123ABC', // Your Outlook email password
+    },
+  });
 
 // User Signup
 const signup = async (req, res) => {
@@ -140,25 +142,15 @@ const forgotPassword = async (req, res) => {
             return res.status(400).json({ message: 'User not found!' });
         }
 
-
-
-        // Send the new password to the user's email
-        const transporter = nodemailer.createTransport({
-            service: 'gmail',
-            auth: {
-                user: 'yourwaycarhire@gmail.com',
-                pass: 'sqvm jlqn xsis ysfn'
-            }
-        });
         const mailOptions = {
-            from: 'yourwaycarhire@gmail.com',
-            to: user.email,
+            from: 'yourway-carhire@outlook.com',
+            to: email,
             subject: 'Password Reset',
             html: `
                 <p>Hello ${user.firstName},</p>
                 <p>We received a request to reset your password.</strong></p>
                 <p>Click the button below to reset your password:</p>
-                <a href="https://rent-a-car-1nsj.onrender.com/${user._id}" style="display: inline-block; padding: 10px 20px; background-color: #007BFF; color: #ffffff; text-decoration: none; border-radius: 5px;">Reset Password</a>
+                <a href="https://car-rental-p3qk.onrender.com/reset-password/${user._id}" style="display: inline-block; padding: 10px 20px; background-color: #007BFF; color: #ffffff; text-decoration: none; border-radius: 5px;">Reset Password</a>
                 <p>If you did not request a password reset, please ignore this email.</p>
                 <p>Best regards,<br>Your Way Car Hire</p>
             `
@@ -179,9 +171,6 @@ const forgotPassword = async (req, res) => {
 
 const changePassword = async (req, res) => {
     try {
-        console.log('changing Pasword');
-        console.log(req.params);
-        console.log(req.body);
         let user = await User.findById(req.params.userId);
         // Generate a new random password
         const { newPassword } = req.body;
@@ -210,14 +199,11 @@ const changePassword = async (req, res) => {
 }
 
 const sendMessage = async (req, res) => {
-    console.log(req.body);
     try {
         
-   
-
     const mailOptions = {
-        from: 'yourwaycarhire@gmail.com',
-        to: 'naumanahmed449@gmail.com',
+        from: 'yourway-carhire@outlook.com',
+        to: 'yourway-carhire@outlook.com',
         subject: `${req.body.subject}`,
         html: `
             <!DOCTYPE html>

@@ -42,10 +42,8 @@ const uploadToCloudinary = (buffer) => {
 const addGroup = async (req, res) => {
 
   try {
-
     var imageUrl = '';
     if (req.file) {
-
       imageUrl = await uploadToCloudinary(req.file.buffer).then((result) => {
         return (result.secure_url)
       }).catch((err) => {

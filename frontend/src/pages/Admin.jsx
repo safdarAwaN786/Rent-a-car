@@ -11,10 +11,6 @@ import AdminPricing from '../components/AdminPricing'
 import AdminBookings from '../components/AdminBookings'
 import AdminSeasons from '../components/AdminSeasons'
 import { IoIosArrowDropdown, IoIosArrowDropup } from 'react-icons/io'
-
-import WinterPricing from '../components/WinterPricing'
-import SummerPricing from '../components/SummerPricing'
-import SummerHighPricing from '../components/SummerHighPricing'
 import LandingPageContent from '../components/LandingPageContent';
 import ReservationsContent from '../components/ReservationsContent';
 import TermsConditionsContent from '../components/TermsConditionsContent';

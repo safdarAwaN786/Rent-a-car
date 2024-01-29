@@ -78,8 +78,8 @@ export default function CompleteBooking() {
     }, [promoCodeObj])
 
     useEffect(() => {
-        const newVatPercentage = (bookingData?.vatPercent/100) + 1;
-        const vatValue = (bookingData?.totalPrice - (bookingData?.totalPrice/newVatPercentage)).toFixed(2);
+        const newVatPercentage = (bookingData?.vatPercent / 100) + 1;
+        const vatValue = (bookingData?.totalPrice - (bookingData?.totalPrice / newVatPercentage)).toFixed(2);
         dispatch(updateBookingInfo({ ...bookingData, vatValue }))
     }, [bookingData?.totalPrice])
 
@@ -545,6 +545,9 @@ export default function CompleteBooking() {
                                                     </div>
                                                     <h6 class="product-widget-title mb-20">Basic Price</h6>
                                                     <div class="checkbox-container">
+                                                        {bookingData?.totalBookingDays < 3 && (
+                                                            <span>There is a minimum charge of 3 days rental.</span>
+                                                        )}
                                                         {bookingData?.totalBookingDays > 3 && (
                                                             <>
                                                                 {bookingData?.days.map(daysObj => {

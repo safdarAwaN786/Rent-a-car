@@ -59,7 +59,6 @@ export default function Prices() {
                             </thead>
                             <tbody>
                                 {seasonsArr?.map((seasonObj, index) => {
-                                    console.log(seasonObj)
                                     return (
                                         <tr>
                                             <td scope="row">{index + 1}. {seasonObj.seasonName}</td>

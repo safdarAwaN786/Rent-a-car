@@ -16,7 +16,6 @@ export default function AdminBookings() {
   const [canceling, setCanceling] = useState(false);
 
   const formatDate = (date) => {
-
     const newDate = new Date(date);
     const formatDate = newDate.toLocaleDateString('en-GB', {
       day: '2-digit',

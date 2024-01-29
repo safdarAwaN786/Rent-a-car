@@ -2,9 +2,7 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import Spinner from 'react-bootstrap/esm/Spinner';
 import { AiOutlineCloseSquare, AiOutlineEdit, AiOutlineEye } from 'react-icons/ai'
-import { MdOutlineDelete } from 'react-icons/md'
 import { useSelector } from 'react-redux';
-import Select from 'react-select';
 import { toast } from 'react-toastify';
 
 

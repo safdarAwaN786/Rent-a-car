@@ -163,7 +163,7 @@ export default function Navbar() {
                     console.error('Error logging in:', error)
                 });
         } else {
-            toast.warning('Kindly type Email and Password!')
+            toast.warning('Invalid Credentials!')
         }
     };
 
@@ -302,7 +302,7 @@ export default function Navbar() {
                                     </div>
                                 </div>
                                 <div class="terms-conditon">
-                                    <p>By sign up,you agree to the <a className='cursor-pointer' onClick={() => {
+                                    <p>By signing up, You agree to the <a className='cursor-pointer' onClick={() => {
                                         if (loginCloseButtonRef.current) {
                                             loginCloseButtonRef.current.click();
                                         }
@@ -310,7 +310,7 @@ export default function Navbar() {
                                             signUpCloseButtonRef.current.click();
                                         }
                                         navigate('/terms-and-conditions');
-                                    }}>‘terms & conditions’</a></p>
+                                    }}>‘Terms & Conditions’</a></p>
                                 </div>
                             </form>
                         </div>
@@ -413,7 +413,7 @@ export default function Navbar() {
                                     </div>
                                 </div>
                                 <div class="terms-conditon">
-                                    <p>By sign up,you agree to the <a className='cursor-pointer' onClick={() => {
+                                    <p>By signing up, You agree to the <a className='cursor-pointer' onClick={() => {
                                         if (loginCloseButtonRef.current) {
                                             loginCloseButtonRef.current.click();
                                         }
@@ -421,7 +421,7 @@ export default function Navbar() {
                                             signUpCloseButtonRef.current.click();
                                         }
                                         navigate('/terms-and-conditions');
-                                    }}>‘terms & conditions’</a></p>
+                                    }}>‘Terms & Conditions’</a></p>
                                 </div>
                             </form>
                         </div>
