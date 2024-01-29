@@ -84,7 +84,7 @@ const addBooking = async (req, res) => {
 
     const mailOptionsForOwner = {
       from: 'yourway-carhire@outlook.com',
-      to: 'yourway-carhire@outlook.com', 
+      to: ['yourway-carhire@outlook.com', 'info@yourway-carhire.com'],
       subject: 'New Booking Received',
       html: `
           <!DOCTYPE html>
