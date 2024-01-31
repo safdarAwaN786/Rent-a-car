@@ -16,5 +16,6 @@ router.post('/send-message', userController.sendMessage);
 router.get('/logout', userController.logout);
 
 router.get('/verify-user', authMiddleware, userController.getUserData);
+router.get('/check-user/:userId', userController.checkUserExistance);
 
 module.exports = router;

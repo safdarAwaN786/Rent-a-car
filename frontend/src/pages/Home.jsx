@@ -8,11 +8,11 @@ import FleetSection from '../components/FleetSection'
 import Footer from '../components/Footer'
 
 
-export default function Home() {
+export default function Home(props) {
     return (
         <div>
-            <Navbar   />
-            <MainSection  />
+            <Navbar resetPassword={props.resetPassword} />
+            <MainSection />
             <WorkFlowSection />
             <ChooseUsSection />
             <BrandsSection />

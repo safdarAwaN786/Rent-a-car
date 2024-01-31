@@ -8,15 +8,14 @@ const transporter = nodemailer.createTransport({
     port: 587, // Outlook SMTP port (587 is the standard non-encrypted port)
     secure: false, // true for 465, false for other ports
     auth: {
-      user: 'yourway-carhire@outlook.com', // Your Outlook email address
-      pass: 'abc123ABC', // Your Outlook email password
+        user: 'yourway-carhire@outlook.com', // Your Outlook email address
+        pass: 'abc123ABC', // Your Outlook email password
     },
-  });
+});
 
 // User Signup
 const signup = async (req, res) => {
     const { firstName, lastName, email, password } = req.body;
-
     try {
         let user = await User.findOne({ email });
 
@@ -47,7 +46,6 @@ const signup = async (req, res) => {
         jwt.sign(
             payload,
             '159abr',
-
             (err, token) => {
                 if (err) throw err;
                 res.json({ token });
@@ -62,17 +60,16 @@ const signup = async (req, res) => {
 // User Login
 const login = async (req, res) => {
     const { email, password } = req.body;
-    console.log(req.body);
     try {
         let user = await User.findOne({ email });
 
         if (!user) {
-            return res.status(400).json({ message: 'User not exists!' });
+            return res.status(400).json({ message: 'Incorrect email address or password entered!' });
         }
 
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
-            return res.status(400).json({ message: 'Incorrect Password!' });
+            return res.status(400).json({ message: 'Incorrect email address or password entered!' });
         }
 
         const payload = {
@@ -84,7 +81,6 @@ const login = async (req, res) => {
         jwt.sign(
             payload,
             '159abr',
-
             (err, token) => {
                 if (err) throw err;
                 res.json({ token });
@@ -101,6 +97,29 @@ const getUserData = async (req, res) => {
     try {
         // Extract the user ID from the request or token
         const userId = req.user.id; // Assuming you have set the user ID in the request during authentication
+
+        // Fetch user data from the database
+        const user = await User.findById(userId);
+
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        // Send the user data as a response
+        const userData = user;
+
+        res.json(userData);
+        console.log('verified user');
+    } catch (error) {
+        console.error('Error fetching user data:', error);
+        res.status(500).json({ error: 'Server error' });
+    }
+};
+
+const checkUserExistance = async (req, res) => {
+    try {
+        // Extract the user ID from the request or token
+        const userId = req.params.userId; // Assuming you have set the user ID in the request during authentication
 
         // Fetch user data from the database
         const user = await User.findById(userId);
@@ -148,13 +167,15 @@ const forgotPassword = async (req, res) => {
             subject: 'Password Reset',
             html: `
                 <p>Hello ${user.firstName},</p>
-                <p>We received a request to reset your password.</strong></p>
-                <p>Click the button below to reset your password:</p>
+                <p>We received a request to reset your password for Your Way Car Hire account.</p>
+                <p>Click the button below to securely reset your password:</p>
                 <a href="https://car-rental-p3qk.onrender.com/reset-password/${user._id}" style="display: inline-block; padding: 10px 20px; background-color: #007BFF; color: #ffffff; text-decoration: none; border-radius: 5px;">Reset Password</a>
-                <p>If you did not request a password reset, please ignore this email.</p>
+                <p>If you didn't request a password reset, please ignore this email.</p>
+                <p>For your security, the password reset link is valid for a limited time.</p>
                 <p>Best regards,<br>Your Way Car Hire</p>
             `
         };
+
 
         transporter.sendMail(mailOptions, (error, info) => {
             if (error) {
@@ -200,18 +221,19 @@ const changePassword = async (req, res) => {
 
 const sendMessage = async (req, res) => {
     try {
-        
-    const mailOptions = {
-        from: 'yourway-carhire@outlook.com',
-        to: ['yourway-carhire@outlook.com', 'info@yourway-carhire.com'],
-        subject: `${req.body.subject}`,
-        html: `
-            <!DOCTYPE html>
-            <html>
-            <head>
-                <meta charset="utf-8">
-                <title>Message Form User</title>
-                <style>
+
+        const mailOptions = {
+            from: 'yourway-carhire@outlook.com',
+            to: ['yourway-carhire@outlook.com', 'info@yourway-carhire.com'],
+            subject: `${req.body.subject}`,
+            html: `
+                <!DOCTYPE html>
+                <html lang="en">
+                <head>
+                    <meta charset="UTF-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <title>Message from User</title>
+                    <style>
                     table {
                         border-collapse: collapse;
                         width: 100%;
@@ -226,59 +248,57 @@ const sendMessage = async (req, res) => {
                         padding: 8px;
                     }
                 </style>
-            </head>
-            <body>
-                <h1>Message From User</h1>
-    
-                <p>A new message has been received from the website contact form. Details are as follows:</p>
-    
-                <table>
-                    <tr>
-                        <th>Field</th>
-                        <th>Value</th>
-                    </tr>
-                    <tr>
-                        <td>Full Name</td>
-                        <td>${req.body.fullName}</td>
-                    </tr>
-                    <tr>
-                        <td>Phone</td>
-                        <td>${req.body.phone}</td>
-                    </tr>
-                    <tr>
-                        <td>Email</td>
-                        <td>${req.body.email}</td>
-                    </tr>
-                    <tr>
-                        <td>Subject</td>
-                        <td>${req.body.subject}</td>
-                    </tr>
-                    <tr>
-                        <td>Short Notes</td>
-                        <td>${req.body.shortNotes}</td>
-                    </tr>
-                </table>
-    
-                
-            </body>
-            </html>
-        `,
-    };
+                </head>
+                <body>
+                    <h1>Message from User</h1>
+                    <p>A new message has been received from the website contact form. Details are as follows:</p>
+                    
+                    <table>
+                        <tr>
+                            <th>Field</th>
+                            <th>Value</th>
+                        </tr>
+                        <tr>
+                            <td>Full Name</td>
+                            <td>${req.body.fullName}</td>
+                        </tr>
+                        <tr>
+                            <td>Phone</td>
+                            <td>${req.body.phone}</td>
+                        </tr>
+                        <tr>
+                            <td>Email</td>
+                            <td>${req.body.email}</td>
+                        </tr>
+                        <tr>
+                            <td>Subject</td>
+                            <td>${req.body.subject}</td>
+                        </tr>
+                        <tr>
+                            <td>Short Notes</td>
+                            <td>${req.body.shortNotes}</td>
+                        </tr>
+                    </table>
+                </body>
+                </html>
+            `,
+        };
 
 
-    transporter.sendMail(mailOptions, async function (error, info) {
-        if (error) {
-            res.status(500).send({ status: false, message: 'Internal server error' });
-        } else {
-            console.log('Email sent: ' + info.response);
-            res.status(200).send({
-                status: true,
-                message: 'The Message is Sended!',
-            });
-        }
-    });
-} catch (error) {
-    res.status(500).json({ error: 'Server error' });
-}}
+        transporter.sendMail(mailOptions, async function (error, info) {
+            if (error) {
+                res.status(500).send({ status: false, message: 'Internal server error' });
+            } else {
+                console.log('Email sent: ' + info.response);
+                res.status(200).send({
+                    status: true,
+                    message: 'The Message is Sended!',
+                });
+            }
+        });
+    } catch (error) {
+        res.status(500).json({ error: 'Server error' });
+    }
+}
 
-module.exports = { signup, login, logout, getUserData, forgotPassword, changePassword, sendMessage };
+module.exports = { signup, login, checkUserExistance, logout, getUserData, forgotPassword, changePassword, sendMessage };

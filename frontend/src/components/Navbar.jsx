@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { useNavigate } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
 import logo from '../assets/img/home2/icon/bottom_logo.png'
 import blackLogo from '../assets/img/black-logo.png'
 import { VscAccount } from 'react-icons/vsc'
@@ -16,13 +16,32 @@ import { useDispatch, useSelector } from 'react-redux'
 import { logInUser, logOutUser } from '../redux/slices/authSlice'
 import { IoIosArrowDropdown, IoIosArrowDropup } from 'react-icons/io'
 
-export default function Navbar() {
+export default function Navbar(props) {
     const [validationMessage, setValidationMessage] = useState(null);
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [confirmPassword, setConfirmPassword] = useState(null);
     const loginButtonRef = useRef(null);
     const [show, setShow] = useState(false);
+    const [changePassword, setChangePassword] = useState(false);
+    const [newPassowrd, setNewPassword] = useState(null);
+    const [changingPassword, setChangingPassword] = useState(false);
+    const [confirmNewPassword, setConfirmNewPassword] = useState(null);
+    const { userId } = useParams();
+    useEffect(() => {
+        if (props.resetPassword) {
+            axios.get(`/check-user/${userId}`).then(response => {
+                if (response.data) {
+                    setChangePassword(true);
+                } else {
+                    navigate('/');
+                }
+            }).catch(error => {
+                console.log(error);
+                navigate('/');
+            });
+        }
+    }, [])
 
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
@@ -61,17 +80,15 @@ export default function Navbar() {
         if (userToken) {
             console.log(userToken);
             // Make a request to the backend to verify the user token and get user information
-            axios.get('/verify-user', { headers: { Authorization: `Bearer ${userToken}` } })
-                .then(response => {
-                    dispatch(logInUser({
-                        loggedIn: true,
-                        user: response.data
-                    }))
-                    if (response.data.IsAdmin) {
-                        navigate('/admin-vehicles')
-                    }
-                })
-                .catch(error => console.error('Error fetching user data:', error));
+            axios.get('/verify-user', { headers: { Authorization: `Bearer ${userToken}` } }).then(response => {
+                dispatch(logInUser({
+                    loggedIn: true,
+                    user: response.data
+                }))
+                if (response.data.IsAdmin) {
+                    navigate('/admin-vehicles')
+                }
+            }).catch(error => console.error('Error fetching user data:', error));
         }
     }, []);
     // Check if the user is logged in
@@ -136,8 +153,8 @@ export default function Navbar() {
     // User login function
     const handleLogin = () => {
         if (userDataToSend?.email && userDataToSend?.password) {
-        setLoggingIn(true);
-        // Perform login API request
+            setLoggingIn(true);
+            // Perform login API request
             axios.post('/login', userDataToSend)
                 .then(response => {
                     setLoggingIn(false);
@@ -190,7 +207,7 @@ export default function Navbar() {
 
     return (
         <>
-            
+
             <div class="modal signUp-modal fade" id="signUpModal01" tabindex="-1" aria-labelledby="signUpModal01Label"
                 aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered">
@@ -254,7 +271,7 @@ export default function Navbar() {
                                                     updateUserData(e);
                                                     CheckPassword(e.target.value);
                                                 }} name='password' id="password" type={`${showPassword ? 'text' : 'password'}`} placeholder="*** ***" />
-                                                
+
                                                 {showPassword ? (
                                                     <AiOutlineEyeInvisible onClick={() => {
                                                         setShowPassword(false);
@@ -350,31 +367,31 @@ export default function Navbar() {
                                             <label>Password*</label>
                                             <div className='d-felx flex-row justify-content-between passwordBox'>
                                                 {showLoginPassword ? (
-                                                        <input
-                                                            onChange={(e) => {
-                                                                updateUserData(e);
-                                                                console.log(userDataToSend)
-                                                            }}
-                                                            value={userDataToSend?.password}
-                                                            name='password'
-                                                            id="password3"
-                                                            type='text'
-                                                            placeholder="*** ***"
-                                                            required
-                                                        />
-                                                    ) : (
-                                                        <input
-                                                            onChange={(e) => {
-                                                                updateUserData(e);
-                                                            }}
-                                                            value={userDataToSend?.password}
-                                                            name='password'
-                                                            id="password3"
-                                                            type='password'
-                                                            placeholder="*** ***"
-                                                            required
-                                                        />
-                                                    )
+                                                    <input
+                                                        onChange={(e) => {
+                                                            updateUserData(e);
+                                                            console.log(userDataToSend)
+                                                        }}
+                                                        value={userDataToSend?.password}
+                                                        name='password'
+                                                        id="password3"
+                                                        type='text'
+                                                        placeholder="*** ***"
+                                                        required
+                                                    />
+                                                ) : (
+                                                    <input
+                                                        onChange={(e) => {
+                                                            updateUserData(e);
+                                                        }}
+                                                        value={userDataToSend?.password}
+                                                        name='password'
+                                                        id="password3"
+                                                        type='password'
+                                                        placeholder="*** ***"
+                                                        required
+                                                    />
+                                                )
                                                 }
                                                 {showLoginPassword ? (
                                                     <AiOutlineEyeInvisible onClick={() => {
@@ -428,6 +445,82 @@ export default function Navbar() {
                     </div>
                 </div>
             </div>
+            {changePassword && (
+                <div className='addProductBox justify-content-center pt-5  '>
+                    <div className='formBox border-circle  mt-5 pt-4 '>
+                        <div data-aos="fade-down" className=' mb-3 myBox mx-auto border-circle p-3'>
+                            {/* <div className='d-flex justify-content-end'>
+                                <button onClick={() => {
+                                    setChangePassword(false);
+                                }} type="button" ><i
+                                    class="bi bi-x"></i></button>
+                            </div> */}
+                            <h4 className='text-center fs-4'>Change Password</h4>
+
+                            <form onSubmit={(e) => {
+                                e.preventDefault();
+                                if (validationMessage === 'Password is valid!') {
+                                    if (newPassowrd === confirmNewPassword) {
+                                        setChangingPassword(true);
+                                        axios.post(`/change-password/${userId}`, { newPassword: newPassowrd }).then((res) => {
+                                            toast.success('Password Changed Successfully');
+                                            setChangingPassword(false);
+                                            navigate('/');
+                                            setChangePassword(false)
+                                        }).catch((err) => {
+                                            setChangingPassword(false);
+                                            toast.error('Error in Password Changing, Try Again!')
+                                        })
+                                    } else {
+                                        toast.warning('Confirm Password not matched!')
+                                    }
+                                } else {
+                                    toast.warning(validationMessage)
+                                }
+                            }}>
+                                <div className='d-flex flex-column'>
+
+                                    <div class="form-inner">
+                                        <label className='w-100 ms-2'>New Password</label>
+                                        <input className='w-100 p-1 mx-2 border border-secondary border-circle mb-1' onChange={(e) => {
+                                            setNewPassword(e.target.value);
+                                            CheckPassword(e.target.value);
+                                        }} placeholder="New Password" required />
+                                    </div>
+
+
+                                    <div class="form-inner">
+                                        <label className='w-100 ms-2'>Confirm New Password</label>
+                                        <div className='w-100 p-1 mx-2 border border-secondary border-circle mb-1'>
+                                            <input
+                                                onChange={(e) => {
+                                                    setConfirmNewPassword(e.target.value);
+                                                }}
+                                                placeholder="Confirm Password"
+                                                required
+                                            />
+                                        </div>
+                                    </div>
+                                    <div class="form-inner mt-4">
+                                        <button class="primary-btn2 ms-2" type="submit">
+                                            {changingPassword ? (
+                                                <Spinner animation="border" size="sm" />
+                                            ) : (
+                                                'Save'
+                                            )}
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+
+
+
+
             {forgotPassword && (
                 <div className='addProductBox justify-content-center pt-5  '>
                     <div className='formBox border-circle  mt-5 pt-4 '>
@@ -508,7 +601,7 @@ export default function Navbar() {
                                     <li>
                                         <a onClick={() => {
                                             navigate('/prices-seasons')
-                                        }}  class="text-decoration-none cursor-pointer">Prices</a>
+                                        }} class="text-decoration-none cursor-pointer">Prices</a>
                                     </li>
                                     <li>
                                         <a onClick={() => {
