@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import Home from './pages/Home';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
@@ -105,9 +105,10 @@ function App() {
   return (
     <Router>
       <div className="App">
-        <ToastContainer theme='colored'/>
+        <ToastContainer theme='colored' />
         <Routes>
           <Route path="/" element={<Home resetPassword={false} />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
           <Route path="/reservations" element={<Reservations />} />
           <Route path="/contact" element={<ContactUs />} />
           <Route path="/prices-seasons" element={<Prices />} />
