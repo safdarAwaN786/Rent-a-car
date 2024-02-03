@@ -546,7 +546,7 @@ export default function CompleteBooking() {
                                                     <h6 class="product-widget-title mb-20">Basic Price</h6>
                                                     <div class="checkbox-container">
                                                         {bookingData?.totalBookingDays < 3 && (
-                                                            <span>There is a minimum charge of 3 days rental.</span>
+                                                            <b className='text-danger'>There is a minimum charge of 3 days rental.</b>
                                                         )}
                                                         {bookingData?.totalBookingDays > 3 && (
                                                             <>

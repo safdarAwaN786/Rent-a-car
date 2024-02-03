@@ -163,7 +163,7 @@ const forgotPassword = async (req, res) => {
 
         const mailOptions = {
             from: 'yourway-carhire@outlook.com',
-            to: email,
+            to: user.email,
             subject: 'Password Reset',
             html: `
                 <p>Hello ${user.firstName},</p>
@@ -179,6 +179,7 @@ const forgotPassword = async (req, res) => {
 
         transporter.sendMail(mailOptions, (error, info) => {
             if (error) {
+                console.log(error);
                 return res.status(500).json({ message: 'Error sending email' });
             }
             console.log('Email sent: ' + info.response);
