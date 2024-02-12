@@ -13,15 +13,15 @@ const Group = require('../models/groupModel');
 // });
 
 // Create a Nodemailer transporter using Outlook settings
-const transporter = nodemailer.createTransport({
-  host: 'smtp-mail.outlook.com', // Outlook SMTP server
-  port: 587, // Outlook SMTP port (587 is the standard non-encrypted port)
-  secure: false, // true for 465, false for other ports
-  auth: {
-    user: 'yourway-carhire@outlook.com', // Your Outlook email address
-    pass: 'abc123ABC', // Your Outlook email password
-  },
-});
+// const transporter = nodemailer.createTransport({
+//   host: 'smtp-mail.outlook.com', // Outlook SMTP server
+//   port: 587, // Outlook SMTP port (587 is the standard non-encrypted port)
+//   secure: false, // true for 465, false for other ports
+//   auth: {
+//     user: 'yourway-carhire@outlook.com', // Your Outlook email address
+//     pass: 'abc123ABC', // Your Outlook email password
+//   },
+// });
 
 // var transporter = nodemailer.createTransport({
 //   host: "smtp.office365.com",
@@ -33,6 +33,15 @@ const transporter = nodemailer.createTransport({
 //   }
 // });
 
+var transporter = nodemailer.createTransport({
+  host: "mail-out.cytanet.com.cy",
+  port: 465, // or 587 for TLS
+  secure: true,
+  auth: {
+    user: "apetsas",
+    pass: "User!0802ap"
+  }
+});
 
 const addBooking = async (req, res) => {
   try {
@@ -83,8 +92,8 @@ const addBooking = async (req, res) => {
 
 
     const mailOptionsForOwner = {
-      from: 'yourway-carhire@outlook.com',
-      to: ['yourway-carhire@outlook.com', 'info@yourway-carhire.com'],
+      from: 'info@yourway-carhire.com',
+      to: 'info@yourway-carhire.com',
       subject: 'New Booking Received',
       html: `
           <!DOCTYPE html>
@@ -245,7 +254,7 @@ const addBooking = async (req, res) => {
       `
     };
     const mailOptionsForUser = {
-      from: 'yourway-carhire@outlook.com', //this will be replaced with "info@yourway-carhire.com"
+      from: 'info@yourway-carhire.com', //this will be replaced with "info@yourway-carhire.com"
       to: bookingUser.email, 
       subject: 'Booking Received',
       html: `
@@ -538,8 +547,8 @@ const confirmBooking = async (req, res) => {
     })
 
     const mailOptions = {
-      from: 'yourway-carhire@outlook.com',
-      to: booking.user.email,
+      from: 'info@yourway-carhire.com',
+      to: 'info@yourway-carhire.com',
       subject: 'Car Booking Confirmation - YourWay Car Hire',
       html: `
             <!DOCTYPE html>

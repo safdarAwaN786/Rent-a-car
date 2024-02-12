@@ -8,7 +8,7 @@ const MongoDBStore = require('connect-mongodb-session')(session);
 const app = express();
 require('./src/db/connectdb');
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5001;
 app.use(cors());
 
 // Automatically parse incoming JSON to an object so we can access it in our request handlers
