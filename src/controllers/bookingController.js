@@ -35,7 +35,7 @@ const Group = require('../models/groupModel');
 
 var transporter = nodemailer.createTransport({
   host: "mail-out.cytanet.com.cy",
-  port: 465, // or 587 for TLS
+  port: 25, // or 587 for TLS
   secure: true,
   auth: {
     user: "apetsas",
