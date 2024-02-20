@@ -23,25 +23,29 @@ const Group = require('../models/groupModel');
 //   },
 // });
 
-// var transporter = nodemailer.createTransport({
-//   host: "smtp.office365.com",
-//   port: 587,
-//   secure: false,
-//   auth: {
-//     user: "info@yourway-carhire.com",
-//     pass: "Par75568"
-//   }
-// });
-
 var transporter = nodemailer.createTransport({
-  host: "mail-out.cytanet.com.cy",
-  port: 25, // or 587 for TLS
-  secure: true,
+  host: "smtp-legacy.office365.com",
+  port: 587,
+  secure: false,
   auth: {
-    user: "apetsas",
-    pass: "User!0802ap"
+    user: "info@yourway-carhire.com",
+    pass: "Par75568"
   }
 });
+
+// var transporter = nodemailer.createTransport({
+//   host: "mail-out.cytanet.com.cy",
+//   port: 25, // or 587 for TLS
+//   secure: true,
+//   auth: {
+//     user: "apetsas",
+//     pass: "User!0802ap"
+//   },
+//   tls: {
+//     // Add SSL options here
+//     secureOptions: 0x02000000
+// }
+// });
 
 const addBooking = async (req, res) => {
   try {
