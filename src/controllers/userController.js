@@ -224,8 +224,8 @@ const sendMessage = async (req, res) => {
     try {
 
         const mailOptions = {
-            from: 'yourway-carhire@outlook.com',
-            to: ['yourway-carhire@outlook.com', 'info@yourway-carhire.com'],
+            from: 'info@yourway-carhire.com',
+            to: 'info@yourway-carhire.com',
             subject: `${req.body.subject}`,
             html: `
                 <!DOCTYPE html>

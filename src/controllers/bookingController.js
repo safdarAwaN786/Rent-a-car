@@ -236,7 +236,7 @@ const addBooking = async (req, res) => {
           <h2>TOTALS</h2>
           <table>
               <tr>
-                  <th>Air Port Fee:</th>
+                  <th>AirPort Fee:</th>
                   <td>€${booking.airPortFee}</td>
               </tr>
               <tr>
@@ -390,7 +390,7 @@ const addBooking = async (req, res) => {
           <h2>TOTALS</h2>
           <table>
               <tr>
-                  <th>Air Port Fee:</th>
+                  <th>AirPort Fee:</th>
                   <td>€${booking.airPortFee}</td>
               </tr>
               <tr>
@@ -672,7 +672,7 @@ const confirmBooking = async (req, res) => {
           <h2>TOTALS</h2>
           <table>
               <tr>
-                  <th>Air Port Fee:</th>
+                  <th>AirPort Fee:</th>
                   <td>€${booking.airPortFee}</td>
               </tr>
               <tr>
