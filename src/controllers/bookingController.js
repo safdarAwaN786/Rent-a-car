@@ -552,7 +552,7 @@ const confirmBooking = async (req, res) => {
 
     const mailOptions = {
       from: 'info@yourway-carhire.com',
-      to: 'info@yourway-carhire.com',
+      to: booking.user.email,
       subject: 'Car Booking Confirmation - YourWay Car Hire',
       html: `
             <!DOCTYPE html>
