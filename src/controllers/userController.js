@@ -3,15 +3,25 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const nodemailer = require('nodemailer');
 
-const transporter = nodemailer.createTransport({
-    host: 'smtp-mail.outlook.com', // Outlook SMTP server
-    port: 587, // Outlook SMTP port (587 is the standard non-encrypted port)
-    secure: false, // true for 465, false for other ports
+var transporter = nodemailer.createTransport({
+    host: "smtp-legacy.office365.com",
+    port: 587,
+    secure: false,
     auth: {
-        user: 'yourway-carhire@outlook.com', // Your Outlook email address
-        pass: 'abc123ABC', // Your Outlook email password
-    },
-});
+      user: "info@yourway-carhire.com",
+      pass: "Par75568"
+    }
+  });
+
+// const transporter = nodemailer.createTransport({
+//     host: 'smtp-mail.outlook.com', // Outlook SMTP server
+//     port: 587, // Outlook SMTP port (587 is the standard non-encrypted port)
+//     secure: false, // true for 465, false for other ports
+//     auth: {
+//         user: 'yourway-carhire@outlook.com', // Your Outlook email address
+//         pass: 'abc123ABC', // Your Outlook email password
+//     },
+// });
 
 // User Signup
 const signup = async (req, res) => {
@@ -222,7 +232,7 @@ const changePassword = async (req, res) => {
 
 const sendMessage = async (req, res) => {
     try {
-
+        console.log("1")
         const mailOptions = {
             from: 'info@yourway-carhire.com',
             to: 'info@yourway-carhire.com',
@@ -288,6 +298,7 @@ const sendMessage = async (req, res) => {
 
         transporter.sendMail(mailOptions, async function (error, info) {
             if (error) {
+                console.log('Email error: ' + error);
                 res.status(500).send({ status: false, message: 'Internal server error' });
             } else {
                 console.log('Email sent: ' + info.response);
@@ -298,6 +309,7 @@ const sendMessage = async (req, res) => {
             }
         });
     } catch (error) {
+        console.log(error)
         res.status(500).json({ error: 'Server error' });
     }
 }
